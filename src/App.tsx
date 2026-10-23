@@ -1,4 +1,3 @@
-import { lazy, Suspense } from 'react'
 import { createBrowserRouter, RouterProvider, type RouteObject } from 'react-router-dom'
 import { LangLayout } from '@/components/Layout'
 import Business from '@/pages/Business'
@@ -12,19 +11,24 @@ import ProductPage from '@/pages/Product'
 import RootRedirect from '@/pages/RootRedirect'
 
 // the dashboard is for the owner only: its code (and the Supabase auth library) loads on /admin/ alone
-const Admin = lazy(() => import('@/admin/AdminApp'))
+const admin = () => import('@/admin/AdminApp')
+const AdminLoading = () => <div className="min-h-dvh bg-paper" />
 
 export const basename = import.meta.env.BASE_URL.replace(/\/$/, '') || '/'
 
 export const routes: RouteObject[] = [
   { path: '/', element: <RootRedirect /> },
+  // explicit child routes: a "/admin/*" splat would rank below "/:lang/products" and lose /admin/products
   {
-    path: '/admin/*',
-    element: (
-      <Suspense fallback={<div className="min-h-dvh bg-paper" />}>
-        <Admin />
-      </Suspense>
-    ),
+    path: '/admin',
+    lazy: async () => ({ Component: (await admin()).default }),
+    HydrateFallback: AdminLoading,
+    children: [
+      { index: true, lazy: async () => ({ Component: (await admin()).Orders }) },
+      { path: 'quotes', lazy: async () => ({ Component: (await admin()).Quotes }) },
+      { path: 'products', lazy: async () => ({ Component: (await admin()).Products }) },
+      { path: 'products/:id', lazy: async () => ({ Component: (await admin()).ProductEdit }) },
+    ],
   },
   {
     path: '/:lang',
