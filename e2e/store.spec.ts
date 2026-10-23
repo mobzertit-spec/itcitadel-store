@@ -1,31 +1,39 @@
 import { expect, test } from '@playwright/test'
+import catalog from '../src/data/catalog.json' with { type: 'json' }
 import { fakeSupabase } from './supabase.ts'
+
+// the catalog changes from the dashboard (and CI refreshes it before testing): read products and prices from it
+const priced = catalog.products.find((p) => !p.quote_only && p.product_variants.length > 0)!
+const plan = priced.product_variants.at(-1)!
+const quoteOnly = catalog.products.find((p) => p.quote_only)
+const grouped = (n: number) => new Intl.NumberFormat('fr-FR').format(n).replace(/\s/g, ' ')
 
 test('the Arabic home page reads right to left and lists the products', async ({ page }) => {
   await fakeSupabase(page)
   await page.goto('/ar/')
   await expect(page.locator('html')).toHaveAttribute('dir', 'rtl')
   await expect(page.getByRole('heading', { level: 1 })).toContainText('بالدينار')
-  await expect(page.getByRole('link', { name: /ChatGPT Plus/ }).first()).toBeVisible()
+  await expect(page.getByRole('link', { name: new RegExp(priced.name) }).first()).toBeVisible()
   // no sideways scrolling, in either direction
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
 })
 
 test('the language switch keeps the visitor on the same page', async ({ page }) => {
   await fakeSupabase(page)
-  await page.goto('/ar/p/kaspersky/')
+  await page.goto(`/ar/p/${priced.slug}/`)
   await page.getByRole('link', { name: 'FR' }).click()
-  await expect(page).toHaveURL(/\/fr\/p\/kaspersky\/$/)
+  await expect(page).toHaveURL(new RegExp(`/fr/p/${priced.slug}/$`))
   await expect(page.locator('html')).toHaveAttribute('dir', 'ltr')
   await expect(page.getByText('Choisissez la formule')).toBeVisible()
 })
 
 test('ordering sends the chosen plan and quantity, never a price, and shows the order number', async ({ page }) => {
   const sent = await fakeSupabase(page)
-  await page.goto('/ar/p/chatgpt-plus/')
-  await page.getByRole('radio', { name: /3 أشهر/ }).check()
+  await page.goto(`/ar/p/${priced.slug}/`)
+  // the radio's name is "<plan> <price>"
+  await page.getByRole('radio', { name: new RegExp(`^${plan.label_ar.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}`) }).check()
   await page.getByRole('button', { name: '+' }).click()
-  await expect(page.getByText('31 800')).toBeVisible()
+  await expect(page.getByText(grouped(plan.price_dzd * 2)).first()).toBeVisible()
   await page.getByRole('button', { name: 'اطلب الآن' }).click()
 
   await page.getByRole('button', { name: 'تأكيد الطلب' }).click()
@@ -39,16 +47,17 @@ test('ordering sends the chosen plan and quantity, never a price, and shows the 
   await expect(page.getByText('شكراً! وصلنا طلبك')).toBeVisible()
   await expect(page.getByText('#1007')).toBeVisible()
   const order = sent.find((r) => r.url.includes('place-order') && r.method === 'POST')!.body as Record<string, unknown>
-  expect(order).toMatchObject({ variant_id: '3fd82663-a81f-4c8b-a9eb-4e4b90788237', quantity: 2, lang: 'ar', phone: '0661 23 45 67' })
+  expect(order).toMatchObject({ variant_id: plan.id, quantity: 2, lang: 'ar', phone: '0661 23 45 67' })
   expect(Object.keys(order).some((k) => /price|total/.test(k))).toBe(false)
 })
 
 test('a quote-only product leads to the business form, already filled in', async ({ page }) => {
+  test.skip(!quoteOnly, 'no quote-only product in the catalog')
   const sent = await fakeSupabase(page)
-  await page.goto('/fr/p/adobe-creative-cloud/')
+  await page.goto(`/fr/p/${quoteOnly!.slug}/`)
   await page.getByRole('button', { name: 'Demander le prix' }).click()
-  await expect(page).toHaveURL(/\/fr\/business\/\?p=adobe-creative-cloud/)
-  await expect(page.getByLabel('De quoi avez-vous besoin ?')).toHaveValue(/Adobe Creative Cloud/)
+  await expect(page).toHaveURL(new RegExp(`/fr/business/\\?p=${quoteOnly!.slug}`))
+  await expect(page.getByLabel('De quoi avez-vous besoin ?')).toHaveValue(new RegExp(quoteOnly!.name))
   await page.getByLabel('Raison sociale').fill('SARL Atlas')
   await page.getByLabel('Nom du contact').fill('Nadia')
   await page.getByLabel('Téléphone').fill('0550 61 00 84')
@@ -98,7 +107,7 @@ test('the owner changes a price from the dashboard', async ({ page }) => {
   await page.getByLabel('كلمة المرور').fill('secret-password')
   await page.getByRole('button', { name: 'دخول' }).click()
   await expect(page.getByRole('heading', { name: 'المنتجات والأسعار' })).toBeVisible()
-  await page.getByRole('link', { name: /ChatGPT Plus/ }).first().click()
+  await page.getByRole('link', { name: new RegExp(priced.name) }).first().click()
   await page.getByLabel('السعر', { exact: true }).first().fill('5900')
   await page.getByRole('button', { name: 'حفظ', exact: true }).click()
   await expect(page).toHaveURL(/\/admin\/products$/)

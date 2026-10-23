@@ -1,0 +1,63 @@
+name: Deploy the store to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  # nightly: refresh the prerendered pages with the prices and products set in the dashboard
+  schedule:
+    - cron: '17 2 * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  pages: write
+  id-token: write
+
+concurrency:
+  group: pages
+  cancel-in-progress: true
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          cache: npm
+      - id: pages
+        uses: actions/configure-pages@v5
+      - run: npm ci
+      - run: npm run snapshot
+      - run: npm run lint
+      - run: npm test
+      # browser tests run on a build served from "/"; the published build below lives under the repository path
+      - name: Browser tests
+        run: |
+          npm run build
+          npx playwright install --with-deps chromium
+          npx playwright test --project desktop
+        env:
+          CI: true
+      # Optional marketing tags: Settings → Secrets and variables → Actions → Variables
+      - name: Build for GitHub Pages
+        run: npm run build
+        env:
+          VITE_BASE: ${{ steps.pages.outputs.base_path }}/
+          VITE_SITE_URL: ${{ steps.pages.outputs.base_url }}/
+          VITE_META_PIXEL_ID: ${{ vars.VITE_META_PIXEL_ID }}
+          VITE_GA_ID: ${{ vars.VITE_GA_ID }}
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4
