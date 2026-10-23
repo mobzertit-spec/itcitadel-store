@@ -36,9 +36,7 @@ npx playwright test  # اختبارات المتصفح (بعد build)
    - ثم أضف الحساب إلى جدول المدراء في SQL Editor:
      `insert into public.admins (user_id) select id from auth.users where email = 'بريدك';`
    - وأخيراً أوقف التسجيل العام: Authentication ← Sign In / Providers ← Allow new users to sign up ← Off.
-2. **تيليغرام:** أنشئ بوتاً عبر @BotFather، ثم ضع في Supabase ← Edge Functions ← Secrets:
-   - `TELEGRAM_BOT_TOKEN`
-   - `TELEGRAM_CHAT_ID`
+2. **تيليغرام:** أنشئ بوتاً عبر @BotFather واضغط Start فيه، ثم ضع في Supabase ← Edge Functions ← Secrets قيمة `TELEGRAM_BOT_TOKEN` فقط، ثم شغّل الدالة `telegram-setup` مرة واحدة: تجد محادثتك وتربطها وترسل لك رسالة تأكيد.
 3. **أسرار أخرى:**
    - `ALLOWED_ORIGINS=https://mobzertit-spec.github.io`، وأضف نطاقك لاحقاً مفصولاً بفاصلة.
    - `RATE_SALT`: أي نص عشوائي طويل.

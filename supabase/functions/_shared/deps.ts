@@ -1,6 +1,7 @@
 /**
  * Production wiring for the handlers: Supabase (service role) and Telegram.
- * Secrets (Edge Function settings): TELEGRAM_BOT_TOKEN, TELEGRAM_CHAT_ID (one id, or several separated by commas),
+ * Secrets (Edge Function settings): TELEGRAM_BOT_TOKEN, optionally TELEGRAM_CHAT_ID (ids separated by commas; else the
+ * chat linked by telegram-setup is used),
  * ALLOWED_ORIGINS (e.g. https://mobzertit-spec.github.io,https://itcitadel.dz), RATE_SALT.
  * SUPABASE_URL and SUPABASE_SERVICE_ROLE_KEY are provided by Supabase.
  */
@@ -11,8 +12,13 @@ const env = (k: string) => Deno.env.get(k) ?? ''
 
 export function productionDeps(limits: { perVisitor: number; perDay: number }): Deps {
   const db = createClient(env('SUPABASE_URL'), env('SUPABASE_SERVICE_ROLE_KEY'), { auth: { persistSession: false } })
-  const token = env('TELEGRAM_BOT_TOKEN')
-  const chats = env('TELEGRAM_CHAT_ID').split(',').map((s) => s.trim()).filter(Boolean)
+  // the owner's chat: TELEGRAM_CHAT_ID if set, else the one linked by the telegram-setup function
+  const chatIds = async () => {
+    const fromEnv = env('TELEGRAM_CHAT_ID').split(',').map((s) => s.trim()).filter(Boolean)
+    if (fromEnv.length) return fromEnv
+    const { data } = await db.from('settings').select('value').eq('key', 'telegram_chat_id').maybeSingle()
+    return data ? [data.value as string] : []
+  }
 
   return {
     allowedOrigins: env('ALLOWED_ORIGINS').split(',').map((s) => s.trim()).filter(Boolean),
@@ -33,7 +39,9 @@ export function productionDeps(limits: { perVisitor: number; perDay: number }): 
       return data.number as number
     },
     notify: async (html) => {
-      if (!token || !chats.length) return console.warn('Telegram is not configured: set TELEGRAM_BOT_TOKEN and TELEGRAM_CHAT_ID')
+      const token = env('TELEGRAM_BOT_TOKEN') // read per message: a secret saved later applies without a redeploy
+      const chats = token ? await chatIds() : []
+      if (!token || !chats.length) return console.warn('Telegram is not linked: set TELEGRAM_BOT_TOKEN, then run telegram-setup')
       await Promise.all(
         chats.map(async (chat_id) => {
           const res = await fetch(`https://api.telegram.org/bot${token}/sendMessage`, {
