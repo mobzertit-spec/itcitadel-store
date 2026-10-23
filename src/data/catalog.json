@@ -1,0 +1,394 @@
+{
+ "categories": [
+  {
+   "id": "ai",
+   "name_ar": "الذكاء الاصطناعي",
+   "name_fr": "Intelligence artificielle",
+   "name_en": "AI",
+   "sort": 1
+  },
+  {
+   "id": "design",
+   "name_ar": "التصميم والإبداع",
+   "name_fr": "Design et création",
+   "name_en": "Design",
+   "sort": 2
+  },
+  {
+   "id": "collab",
+   "name_ar": "العمل الجماعي",
+   "name_fr": "Travail collaboratif",
+   "name_en": "Collaboration",
+   "sort": 3
+  },
+  {
+   "id": "security",
+   "name_ar": "الحماية",
+   "name_fr": "Sécurité",
+   "name_en": "Security",
+   "sort": 4
+  }
+ ],
+ "products": [
+  {
+   "id": "fbdf95fd-bfd7-4aee-8134-e0dc5f070dc6",
+   "slug": "chatgpt-plus",
+   "category_id": "ai",
+   "name": "ChatGPT Plus",
+   "tagline_ar": "المساعد الذكي الأشهر للعمل والدراسة، مفعّل على حسابك أنت.",
+   "tagline_fr": "L'assistant IA le plus utilisé au travail et dans les études, activé sur votre propre compte.",
+   "tagline_en": "The most popular AI assistant for work and study, activated on your own account.",
+   "description_ar": "نفعّل اشتراك ChatGPT Plus الرسمي على حسابك الشخصي في OpenAI، وتدفع بالدينار. لا حسابات مشتركة مع أشخاص آخرين: حسابك يبقى ملكك، ومحادثاتك تبقى خاصة بك.",
+   "description_fr": "Nous activons l'abonnement officiel ChatGPT Plus sur votre propre compte OpenAI, et vous payez en dinars. Aucun compte partagé avec d'autres personnes : votre compte reste à vous et vos conversations restent privées.",
+   "description_en": "We activate the official ChatGPT Plus subscription on your own OpenAI account, and you pay in dinars. No accounts shared with strangers: your account stays yours and your chats stay private.",
+   "features_ar": [
+    "أحدث نماذج OpenAI",
+    "حدود استخدام أعلى بكثير من النسخة المجانية",
+    "إنشاء الصور وتحليل الملفات",
+    "تفعيل خلال 24 ساعة بعد الدفع"
+   ],
+   "features_fr": [
+    "Les derniers modèles d'OpenAI",
+    "Des limites d'utilisation bien plus élevées que la version gratuite",
+    "Création d'images et analyse de fichiers",
+    "Activation sous 24 h après paiement"
+   ],
+   "features_en": [
+    "The latest OpenAI models",
+    "Much higher usage limits than the free plan",
+    "Image generation and file analysis",
+    "Activated within 24 hours of payment"
+   ],
+   "requirements_ar": "البريد الإلكتروني لحسابك في ChatGPT. نشرح لك طريقة التفعيل عندما نتصل بك.",
+   "requirements_fr": "L'adresse e-mail de votre compte ChatGPT. Nous vous expliquons la procédure d'activation lors de notre appel.",
+   "requirements_en": "The email address of your ChatGPT account. We explain how activation works when we call you.",
+   "image_url": null,
+   "per_user": false,
+   "quote_only": false,
+   "featured": true,
+   "sort": 1,
+   "product_variants": [
+    {
+     "id": "38cac467-2e4f-4813-90b8-77c64cab8492",
+     "label_ar": "شهر واحد",
+     "label_fr": "1 mois",
+     "label_en": "1 month",
+     "price_dzd": 5500,
+     "sort": 1
+    },
+    {
+     "id": "3fd82663-a81f-4c8b-a9eb-4e4b90788237",
+     "label_ar": "3 أشهر",
+     "label_fr": "3 mois",
+     "label_en": "3 months",
+     "price_dzd": 15900,
+     "sort": 2
+    }
+   ]
+  },
+  {
+   "id": "336961d7-f7e9-422d-ad07-6027972b1fa8",
+   "slug": "freepik-premium",
+   "category_id": "design",
+   "name": "Freepik Premium",
+   "tagline_ar": "ملايين الصور والفيكتور والقوالب لمشاريعك، برخصة استعمال تجاري.",
+   "tagline_fr": "Des millions de photos, vecteurs et modèles pour vos projets, avec licence commerciale.",
+   "tagline_en": "Millions of photos, vectors and templates for your projects, with a commercial licence.",
+   "description_ar": "اشتراك Freepik Premium رسمي على حسابك أنت، وليس حساباً مشتركاً بين عشرات الأشخاص. تحمّل المحتوى المميز بدون ذكر المصدر، وتستعمل أدوات Freepik للذكاء الاصطناعي حسب ما تتيحه الخطة.",
+   "description_fr": "Un abonnement Freepik Premium officiel sur votre propre compte, pas un compte partagé entre des dizaines de personnes. Téléchargez le contenu premium sans attribution et utilisez les outils IA de Freepik selon votre formule.",
+   "description_en": "An official Freepik Premium subscription on your own account, not an account shared by dozens of people. Download premium content without attribution and use the Freepik AI tools your plan includes.",
+   "features_ar": [
+    "المحتوى المميز بدون ذكر المصدر",
+    "رخصة استعمال تجاري لأعمال زبائنك",
+    "أدوات الذكاء الاصطناعي من Freepik",
+    "تفعيل خلال 24 ساعة بعد الدفع"
+   ],
+   "features_fr": [
+    "Contenu premium sans attribution",
+    "Licence commerciale pour les projets de vos clients",
+    "Outils IA de Freepik",
+    "Activation sous 24 h après paiement"
+   ],
+   "features_en": [
+    "Premium content without attribution",
+    "Commercial licence for client work",
+    "Freepik AI tools",
+    "Activated within 24 hours of payment"
+   ],
+   "requirements_ar": "البريد الإلكتروني لحسابك في Freepik، أو ننشئ لك حساباً جديداً باسمك.",
+   "requirements_fr": "L'adresse e-mail de votre compte Freepik, ou nous créons un compte à votre nom.",
+   "requirements_en": "The email address of your Freepik account, or we create a new account in your name.",
+   "image_url": null,
+   "per_user": false,
+   "quote_only": false,
+   "featured": true,
+   "sort": 2,
+   "product_variants": [
+    {
+     "id": "b84e2c00-06fd-431c-967f-e3a827eb8836",
+     "label_ar": "شهر واحد",
+     "label_fr": "1 mois",
+     "label_en": "1 month",
+     "price_dzd": 5500,
+     "sort": 1
+    },
+    {
+     "id": "aa2c036a-70be-493f-a2ea-05f394d23862",
+     "label_ar": "12 شهراً",
+     "label_fr": "12 mois",
+     "label_en": "12 months",
+     "price_dzd": 49000,
+     "sort": 2
+    }
+   ]
+  },
+  {
+   "id": "02d45dcc-cec0-426b-9b82-21b82072c1c9",
+   "slug": "adobe-creative-cloud",
+   "category_id": "design",
+   "name": "Adobe Creative Cloud",
+   "tagline_ar": "Photoshop وIllustrator وPremiere Pro وباقي تطبيقات Adobe، بفاتورة جزائرية.",
+   "tagline_fr": "Photoshop, Illustrator, Premiere Pro et toutes les applications Adobe, avec facture algérienne.",
+   "tagline_en": "Photoshop, Illustrator, Premiere Pro and the rest of Adobe's apps, with an Algerian invoice.",
+   "description_ar": "نوفّر اشتراكات Adobe Creative Cloud للأفراد والشركات، مفعّلة على حسابك. تتغير الأسعار حسب الخطة وعدد المستخدمين، لذلك نرسل لك عرض سعر دقيقاً خلال يوم عمل.",
+   "description_fr": "Nous fournissons les abonnements Adobe Creative Cloud aux particuliers et aux entreprises, activés sur votre compte. Le prix dépend de la formule et du nombre d'utilisateurs : nous vous envoyons un devis précis sous un jour ouvré.",
+   "description_en": "We provide Adobe Creative Cloud subscriptions for individuals and companies, activated on your account. Prices depend on the plan and the number of users, so we send you an exact quote within one business day.",
+   "features_ar": [
+    "كل تطبيقات Adobe أو تطبيق واحد حسب حاجتك",
+    "مساحة تخزين سحابية",
+    "فاتورة للشركات",
+    "مساعدة في التثبيت"
+   ],
+   "features_fr": [
+    "Toutes les applications Adobe ou une seule, selon votre besoin",
+    "Stockage cloud",
+    "Facture pour les entreprises",
+    "Aide à l'installation"
+   ],
+   "features_en": [
+    "Every Adobe app, or just the one you need",
+    "Cloud storage",
+    "Invoice for companies",
+    "Help with installation"
+   ],
+   "requirements_ar": "البريد الإلكتروني لحسابك في Adobe، والتطبيقات التي تحتاجها.",
+   "requirements_fr": "L'adresse e-mail de votre compte Adobe et les applications dont vous avez besoin.",
+   "requirements_en": "The email address of your Adobe account and the apps you need.",
+   "image_url": null,
+   "per_user": false,
+   "quote_only": true,
+   "featured": true,
+   "sort": 3,
+   "product_variants": [
+    {
+     "id": "17d8c88a-7dd3-4794-922f-038eb86daba0",
+     "label_ar": "كل التطبيقات · 12 شهراً",
+     "label_fr": "Toutes les applications · 12 mois",
+     "label_en": "All apps · 12 months",
+     "price_dzd": 0,
+     "sort": 1
+    },
+    {
+     "id": "9205713f-a0d8-43f5-ac80-c8d359bf9c65",
+     "label_ar": "Photoshop · 12 شهراً",
+     "label_fr": "Photoshop · 12 mois",
+     "label_en": "Photoshop · 12 months",
+     "price_dzd": 0,
+     "sort": 2
+    },
+    {
+     "id": "8c39c40c-9685-44a9-b302-3b60ce83796f",
+     "label_ar": "Illustrator · 12 شهراً",
+     "label_fr": "Illustrator · 12 mois",
+     "label_en": "Illustrator · 12 months",
+     "price_dzd": 0,
+     "sort": 3
+    }
+   ]
+  },
+  {
+   "id": "fd95b7bc-e52b-4e2f-be98-ada5dfa53e72",
+   "slug": "google-workspace",
+   "category_id": "collab",
+   "name": "Google Workspace",
+   "tagline_ar": "بريد مهني باسم شركتك، مع Drive وMeet ومستندات Google.",
+   "tagline_fr": "Une messagerie professionnelle à votre nom de domaine, avec Drive, Meet et Google Docs.",
+   "tagline_en": "Professional email on your company's domain, with Drive, Meet and Google Docs.",
+   "description_ar": "نجهّز لشركتك Google Workspace كاملاً: ربط النطاق، وإنشاء حسابات الموظفين، ونقل البريد القديم إن وُجد. الإعداد مجاني مع كل اشتراك. السعر للمستخدم الواحد في الشهر.",
+   "description_fr": "Nous installons Google Workspace pour votre entreprise : configuration du domaine, création des comptes de vos employés et migration de l'ancienne messagerie si besoin. La mise en place est offerte avec chaque abonnement. Prix par utilisateur et par mois.",
+   "description_en": "We set up Google Workspace for your company: domain configuration, accounts for your staff, and migration of your old mailbox if you have one. Setup is free with every subscription. Prices are per user per month.",
+   "features_ar": [
+    "بريد مهني @شركتك.dz",
+    "إعداد مجاني للنطاق والحسابات",
+    "Gmail وDrive وMeet وDocs",
+    "فاتورة للشركات"
+   ],
+   "features_fr": [
+    "E-mail professionnel @votreentreprise.dz",
+    "Configuration du domaine et des comptes offerte",
+    "Gmail, Drive, Meet et Docs",
+    "Facture pour les entreprises"
+   ],
+   "features_en": [
+    "Professional email @yourcompany.dz",
+    "Free domain and account setup",
+    "Gmail, Drive, Meet and Docs",
+    "Invoice for companies"
+   ],
+   "requirements_ar": "اسم نطاق شركتك (أو نساعدك في حجزه)، وعدد المستخدمين.",
+   "requirements_fr": "Le nom de domaine de votre entreprise (ou nous vous aidons à le réserver) et le nombre d'utilisateurs.",
+   "requirements_en": "Your company's domain name (or we help you register one) and the number of users.",
+   "image_url": null,
+   "per_user": true,
+   "quote_only": false,
+   "featured": true,
+   "sort": 4,
+   "product_variants": [
+    {
+     "id": "17fdb8b1-c08b-4b22-b326-1e4cd949a80d",
+     "label_ar": "Business Starter · شهر",
+     "label_fr": "Business Starter · 1 mois",
+     "label_en": "Business Starter · 1 month",
+     "price_dzd": 1700,
+     "sort": 1
+    },
+    {
+     "id": "a22ddf6e-1a5c-4735-913c-c8cac3b12e16",
+     "label_ar": "Business Standard · شهر",
+     "label_fr": "Business Standard · 1 mois",
+     "label_en": "Business Standard · 1 month",
+     "price_dzd": 3100,
+     "sort": 2
+    },
+    {
+     "id": "e14c3c65-127f-4006-a126-e830255384fc",
+     "label_ar": "Business Plus · شهر",
+     "label_fr": "Business Plus · 1 mois",
+     "label_en": "Business Plus · 1 month",
+     "price_dzd": 4700,
+     "sort": 3
+    }
+   ]
+  },
+  {
+   "id": "fc38abb2-31ee-4765-a536-7d7f1dd49a09",
+   "slug": "zoom-workplace-pro",
+   "category_id": "collab",
+   "name": "Zoom Workplace Pro",
+   "tagline_ar": "اجتماعات طويلة بدون انقطاع الأربعين دقيقة، مع تسجيل سحابي.",
+   "tagline_fr": "Des réunions sans la coupure des 40 minutes, avec enregistrement dans le cloud.",
+   "tagline_en": "Meetings without the 40-minute cut-off, with cloud recording.",
+   "description_ar": "اشتراك Zoom Workplace Pro رسمي على حسابك، مثالي للدروس عن بعد والاجتماعات مع الزبائن. السعر للمستخدم الواحد.",
+   "description_fr": "Un abonnement Zoom Workplace Pro officiel sur votre compte, idéal pour les cours en ligne et les réunions avec vos clients. Prix par utilisateur.",
+   "description_en": "An official Zoom Workplace Pro subscription on your account, ideal for online classes and client meetings. Prices are per user.",
+   "features_ar": [
+    "اجتماعات تصل إلى 30 ساعة",
+    "حتى 100 مشارك",
+    "تسجيل سحابي",
+    "تفعيل خلال 24 ساعة بعد الدفع"
+   ],
+   "features_fr": [
+    "Réunions jusqu'à 30 heures",
+    "Jusqu'à 100 participants",
+    "Enregistrement dans le cloud",
+    "Activation sous 24 h après paiement"
+   ],
+   "features_en": [
+    "Meetings up to 30 hours",
+    "Up to 100 participants",
+    "Cloud recording",
+    "Activated within 24 hours of payment"
+   ],
+   "requirements_ar": "البريد الإلكتروني لحسابك في Zoom.",
+   "requirements_fr": "L'adresse e-mail de votre compte Zoom.",
+   "requirements_en": "The email address of your Zoom account.",
+   "image_url": null,
+   "per_user": true,
+   "quote_only": false,
+   "featured": false,
+   "sort": 5,
+   "product_variants": [
+    {
+     "id": "dac31d97-df17-4745-b28f-da4018a1b292",
+     "label_ar": "شهر واحد",
+     "label_fr": "1 mois",
+     "label_en": "1 month",
+     "price_dzd": 4500,
+     "sort": 1
+    },
+    {
+     "id": "922f4bf1-ca27-41d5-a5f4-3ed41d93ace2",
+     "label_ar": "12 شهراً",
+     "label_fr": "12 mois",
+     "label_en": "12 months",
+     "price_dzd": 44900,
+     "sort": 2
+    }
+   ]
+  },
+  {
+   "id": "f8904432-9507-4e21-9c46-c6da90e103ba",
+   "slug": "kaspersky",
+   "category_id": "security",
+   "name": "Kaspersky",
+   "tagline_ar": "حماية أصلية لحواسيبك وهواتفك من الفيروسات وبرامج الفدية.",
+   "tagline_fr": "Une protection officielle de vos PC et smartphones contre les virus et les rançongiciels.",
+   "tagline_en": "Genuine protection for your computers and phones against viruses and ransomware.",
+   "description_ar": "رخص Kaspersky أصلية لمدة سنة. نرسل لك مفتاح التفعيل ونساعدك في التثبيت على أجهزتك.",
+   "description_fr": "Des licences Kaspersky officielles valables un an. Nous vous envoyons la clé d'activation et vous aidons à l'installer sur vos appareils.",
+   "description_en": "Genuine one-year Kaspersky licences. We send you the activation key and help you install it on your devices.",
+   "features_ar": [
+    "رخصة أصلية لمدة سنة",
+    "Windows وmacOS وAndroid وiOS",
+    "مساعدة في التثبيت",
+    "فاتورة للشركات"
+   ],
+   "features_fr": [
+    "Licence officielle d'un an",
+    "Windows, macOS, Android et iOS",
+    "Aide à l'installation",
+    "Facture pour les entreprises"
+   ],
+   "features_en": [
+    "Genuine one-year licence",
+    "Windows, macOS, Android and iOS",
+    "Help with installation",
+    "Invoice for companies"
+   ],
+   "requirements_ar": "عدد الأجهزة التي تريد حمايتها.",
+   "requirements_fr": "Le nombre d'appareils à protéger.",
+   "requirements_en": "How many devices you want to protect.",
+   "image_url": null,
+   "per_user": false,
+   "quote_only": false,
+   "featured": true,
+   "sort": 6,
+   "product_variants": [
+    {
+     "id": "52b31a4b-c58f-48af-8f4b-6c7ddfdc9563",
+     "label_ar": "Standard · جهاز واحد · سنة",
+     "label_fr": "Standard · 1 appareil · 1 an",
+     "label_en": "Standard · 1 device · 1 year",
+     "price_dzd": 1990,
+     "sort": 1
+    },
+    {
+     "id": "da0faecb-b86f-4008-bf62-42f20450b0f0",
+     "label_ar": "Plus · 5 أجهزة · سنة",
+     "label_fr": "Plus · 5 appareils · 1 an",
+     "label_en": "Plus · 5 devices · 1 year",
+     "price_dzd": 6490,
+     "sort": 2
+    },
+    {
+     "id": "32dcba1a-f226-448b-a3cd-15d503ff7c41",
+     "label_ar": "Premium · 5 أجهزة · سنة",
+     "label_fr": "Premium · 5 appareils · 1 an",
+     "label_en": "Premium · 5 devices · 1 year",
+     "price_dzd": 6990,
+     "sort": 3
+    }
+   ]
+  }
+ ]
+}
