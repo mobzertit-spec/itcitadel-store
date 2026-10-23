@@ -21,5 +21,5 @@
     "noFallthroughCasesInSwitch": true
   },
   "include": ["src", "supabase/functions/_shared"],
-  "exclude": ["supabase/functions/_shared/*.test.ts"]
+  "exclude": ["supabase/functions/_shared/*.test.ts", "supabase/functions/_shared/deps.ts"]
 }
