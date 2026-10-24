@@ -6,8 +6,8 @@ export type SubmitResult =
   | { ok: false; kind: 'fields'; errors: FieldErrors }
   | { ok: false; kind: 'rate' | 'unavailable' | 'network' }
 
-/** Sends a form to one of the store's Edge Functions (place-order, request-quote). */
-export async function submit(fn: 'place-order' | 'request-quote', body: Record<string, unknown>): Promise<SubmitResult> {
+/** Sends a form to the store's Edge Function (place-order). */
+export async function submit(fn: 'place-order', body: Record<string, unknown>): Promise<SubmitResult> {
   try {
     const res = await fetch(`${SUPABASE_URL}/functions/v1/${fn}`, {
       method: 'POST',

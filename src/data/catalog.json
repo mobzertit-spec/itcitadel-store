@@ -16,9 +16,9 @@
   },
   {
    "id": "collab",
-   "name_ar": "العمل الجماعي",
-   "name_fr": "Travail collaboratif",
-   "name_en": "Collaboration",
+   "name_ar": "الإنتاجية والعمل",
+   "name_fr": "Productivité",
+   "name_en": "Productivity",
    "sort": 3
   },
   {
@@ -66,6 +66,7 @@
    "per_user": false,
    "quote_only": false,
    "featured": true,
+   "hero": true,
    "sort": 1,
    "product_variants": [
     {
@@ -122,6 +123,7 @@
    "per_user": false,
    "quote_only": false,
    "featured": true,
+   "hero": false,
    "sort": 2,
    "product_variants": [
     {
@@ -147,28 +149,28 @@
    "slug": "adobe-creative-cloud",
    "category_id": "design",
    "name": "Adobe Creative Cloud",
-   "tagline_ar": "Photoshop وIllustrator وPremiere Pro وباقي تطبيقات Adobe، بفاتورة جزائرية.",
-   "tagline_fr": "Photoshop, Illustrator, Premiere Pro et toutes les applications Adobe, avec facture algérienne.",
-   "tagline_en": "Photoshop, Illustrator, Premiere Pro and the rest of Adobe's apps, with an Algerian invoice.",
-   "description_ar": "نوفّر اشتراكات Adobe Creative Cloud للأفراد والشركات، مفعّلة على حسابك. تتغير الأسعار حسب الخطة وعدد المستخدمين، لذلك نرسل لك عرض سعر دقيقاً خلال يوم عمل.",
-   "description_fr": "Nous fournissons les abonnements Adobe Creative Cloud aux particuliers et aux entreprises, activés sur votre compte. Le prix dépend de la formule et du nombre d'utilisateurs : nous vous envoyons un devis précis sous un jour ouvré.",
-   "description_en": "We provide Adobe Creative Cloud subscriptions for individuals and companies, activated on your account. Prices depend on the plan and the number of users, so we send you an exact quote within one business day.",
+   "tagline_ar": "Photoshop وIllustrator وPremiere Pro وباقي تطبيقات Adobe، مفعّلة على حسابك.",
+   "tagline_fr": "Photoshop, Illustrator, Premiere Pro et toutes les applications Adobe, activés sur votre compte.",
+   "tagline_en": "Photoshop, Illustrator, Premiere Pro and the rest of Adobe's apps, activated on your account.",
+   "description_ar": "نوفّر اشتراكات Adobe Creative Cloud مفعّلة على حسابك. يتغير السعر حسب الخطة، لذلك راسلنا على واتساب بالخطة التي تريدها ونعطيك السعر الدقيق.",
+   "description_fr": "Nous fournissons les abonnements Adobe Creative Cloud, activés sur votre compte. Le prix dépend de la formule : écrivez-nous sur WhatsApp et nous vous donnons le prix exact.",
+   "description_en": "We provide Adobe Creative Cloud subscriptions, activated on your account. The price depends on the plan: message us on WhatsApp and we'll give you the exact price.",
    "features_ar": [
     "كل تطبيقات Adobe أو تطبيق واحد حسب حاجتك",
     "مساحة تخزين سحابية",
-    "فاتورة للشركات",
+    "الدفع بالدينار في مكتبنا",
     "مساعدة في التثبيت"
    ],
    "features_fr": [
     "Toutes les applications Adobe ou une seule, selon votre besoin",
     "Stockage cloud",
-    "Facture pour les entreprises",
+    "Paiement en dinars à notre bureau",
     "Aide à l'installation"
    ],
    "features_en": [
     "Every Adobe app, or just the one you need",
     "Cloud storage",
-    "Invoice for companies",
+    "Pay in dinars at our office",
     "Help with installation"
    ],
    "requirements_ar": "البريد الإلكتروني لحسابك في Adobe، والتطبيقات التي تحتاجها.",
@@ -178,6 +180,7 @@
    "per_user": false,
    "quote_only": true,
    "featured": true,
+   "hero": false,
    "sort": 3,
    "product_variants": [
     {
@@ -211,37 +214,38 @@
    "slug": "google-workspace",
    "category_id": "collab",
    "name": "Google Workspace",
-   "tagline_ar": "بريد مهني باسم شركتك، مع Drive وMeet ومستندات Google.",
+   "tagline_ar": "بريد مهني باسم نطاقك، مع Drive وMeet ومستندات Google.",
    "tagline_fr": "Une messagerie professionnelle à votre nom de domaine, avec Drive, Meet et Google Docs.",
-   "tagline_en": "Professional email on your company's domain, with Drive, Meet and Google Docs.",
-   "description_ar": "نجهّز لشركتك Google Workspace كاملاً: ربط النطاق، وإنشاء حسابات الموظفين، ونقل البريد القديم إن وُجد. الإعداد مجاني مع كل اشتراك. السعر للمستخدم الواحد في الشهر.",
-   "description_fr": "Nous installons Google Workspace pour votre entreprise : configuration du domaine, création des comptes de vos employés et migration de l'ancienne messagerie si besoin. La mise en place est offerte avec chaque abonnement. Prix par utilisateur et par mois.",
-   "description_en": "We set up Google Workspace for your company: domain configuration, accounts for your staff, and migration of your old mailbox if you have one. Setup is free with every subscription. Prices are per user per month.",
+   "tagline_en": "Professional email on your own domain, with Drive, Meet and Google Docs.",
+   "description_ar": "نجهّز لك Google Workspace كاملاً: ربط نطاقك، وإنشاء حسابك، ونقل بريدك القديم إن وُجد. الإعداد مجاني مع كل اشتراك. السعر للمستخدم الواحد في الشهر.",
+   "description_fr": "Nous installons Google Workspace pour vous : configuration de votre domaine, création de votre compte et migration de votre ancienne messagerie si besoin. La mise en place est offerte. Prix par utilisateur et par mois.",
+   "description_en": "We set up Google Workspace for you: your domain, your account, and migration of your old mailbox if you have one. Setup is free with every subscription. Prices are per user per month.",
    "features_ar": [
-    "بريد مهني @شركتك.dz",
-    "إعداد مجاني للنطاق والحسابات",
+    "بريد مهني @نطاقك.dz",
+    "إعداد مجاني للنطاق والحساب",
     "Gmail وDrive وMeet وDocs",
-    "فاتورة للشركات"
+    "الدفع بالدينار في مكتبنا"
    ],
    "features_fr": [
-    "E-mail professionnel @votreentreprise.dz",
-    "Configuration du domaine et des comptes offerte",
+    "E-mail professionnel @votredomaine.dz",
+    "Configuration du domaine et du compte offerte",
     "Gmail, Drive, Meet et Docs",
-    "Facture pour les entreprises"
+    "Paiement en dinars à notre bureau"
    ],
    "features_en": [
-    "Professional email @yourcompany.dz",
+    "Professional email @yourdomain.dz",
     "Free domain and account setup",
     "Gmail, Drive, Meet and Docs",
-    "Invoice for companies"
+    "Pay in dinars at our office"
    ],
-   "requirements_ar": "اسم نطاق شركتك (أو نساعدك في حجزه)، وعدد المستخدمين.",
-   "requirements_fr": "Le nom de domaine de votre entreprise (ou nous vous aidons à le réserver) et le nombre d'utilisateurs.",
-   "requirements_en": "Your company's domain name (or we help you register one) and the number of users.",
+   "requirements_ar": "اسم نطاقك (أو نساعدك في حجزه)، وعدد المستخدمين.",
+   "requirements_fr": "Votre nom de domaine (ou nous vous aidons à le réserver) et le nombre d'utilisateurs.",
+   "requirements_en": "Your domain name (or we help you register one) and the number of users.",
    "image_url": null,
    "per_user": true,
    "quote_only": false,
    "featured": true,
+   "hero": false,
    "sort": 4,
    "product_variants": [
     {
@@ -306,6 +310,7 @@
    "per_user": true,
    "quote_only": false,
    "featured": false,
+   "hero": false,
    "sort": 5,
    "product_variants": [
     {
@@ -341,19 +346,19 @@
     "رخصة أصلية لمدة سنة",
     "Windows وmacOS وAndroid وiOS",
     "مساعدة في التثبيت",
-    "فاتورة للشركات"
+    "الدفع بالدينار في مكتبنا"
    ],
    "features_fr": [
     "Licence officielle d'un an",
     "Windows, macOS, Android et iOS",
     "Aide à l'installation",
-    "Facture pour les entreprises"
+    "Paiement en dinars à notre bureau"
    ],
    "features_en": [
     "Genuine one-year licence",
     "Windows, macOS, Android and iOS",
     "Help with installation",
-    "Invoice for companies"
+    "Pay in dinars at our office"
    ],
    "requirements_ar": "عدد الأجهزة التي تريد حمايتها.",
    "requirements_fr": "Le nombre d'appareils à protéger.",
@@ -362,6 +367,7 @@
    "per_user": false,
    "quote_only": false,
    "featured": true,
+   "hero": false,
    "sort": 6,
    "product_variants": [
     {
@@ -390,5 +396,6 @@
     }
    ]
   }
- ]
+ ],
+ "reviews": []
 }

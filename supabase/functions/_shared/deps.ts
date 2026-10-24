@@ -33,11 +33,6 @@ export function productionDeps(limits: { perVisitor: number; perDay: number }): 
       if (error) throw error
       return (data as { error?: string }).error ? 'unavailable' : (data as CreatedOrder)
     },
-    createQuote: async (input) => {
-      const { data, error } = await db.from('quote_requests').insert(input).select('number').single()
-      if (error) throw error
-      return data.number as number
-    },
     notify: async (html) => {
       const token = env('TELEGRAM_BOT_TOKEN') // read per message: a secret saved later applies without a redeploy
       const chats = token ? await chatIds() : []

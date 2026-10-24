@@ -12,7 +12,7 @@ export function LangSwitch() {
   const { pathname, search } = useLocation()
   const rest = pathname.replace(/^\/(ar|fr|en)(?=\/|$)/, '')
   return (
-    <div className="flex items-center rounded-full border border-line bg-card p-0.5" role="group" aria-label={t.nav.language} dir="ltr">
+    <div className="flex items-center rounded-full bg-raised p-0.5" role="group" aria-label={t.nav.language} dir="ltr">
       {LANGS.map((l) => (
         <Link
           key={l}
@@ -22,9 +22,7 @@ export function LangSwitch() {
           lang={l}
           title={STRINGS[l].langName}
           aria-current={l === lang ? 'true' : undefined}
-          className={`min-w-9 rounded-full px-2.5 py-1.5 text-center text-sm font-semibold transition ${
-            l === lang ? 'bg-ink text-white' : 'text-ink-2 hover:bg-stone'
-          }`}
+          className={`min-w-9 rounded-full px-2.5 py-1.5 text-center text-sm font-semibold transition ${l === lang ? 'bg-fg text-bg' : 'text-muted hover:text-fg'}`}
         >
           {SHORT[l]}
         </Link>

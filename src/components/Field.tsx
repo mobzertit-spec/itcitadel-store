@@ -20,7 +20,7 @@ export function TextArea({ label, hint, error, name, ...input }: Common & Textar
       <label htmlFor={name} className="field-label">
         {label}
       </label>
-      <textarea id={name} name={name} rows={4} className="field-input resize-y" aria-invalid={!!error} aria-describedby={`${name}-note`} {...input} />
+      <textarea id={name} name={name} rows={4} className="field-input h-auto resize-y py-3" aria-invalid={!!error} aria-describedby={`${name}-note`} {...input} />
       <Note id={`${name}-note`} hint={hint} error={error} />
     </div>
   )

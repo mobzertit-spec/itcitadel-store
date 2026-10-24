@@ -1,6 +1,8 @@
-import { Menu, X } from 'lucide-react'
-import { useState } from 'react'
-import { Link, NavLink } from 'react-router-dom'
+import { Search, ShoppingBag } from 'lucide-react'
+import type { FormEvent } from 'react'
+import { Link, NavLink, useNavigate, useSearchParams } from 'react-router-dom'
+import { BUSINESS, telLink } from '@/config'
+import { useCart } from '@/lib/cart'
 import { href, useLang, useT } from '@/lib/lang'
 import { LangSwitch } from './LangSwitch'
 import { Logo } from './Logo'
@@ -8,58 +10,79 @@ import { Logo } from './Logo'
 export function Header() {
   const lang = useLang()
   const t = useT()
-  const [open, setOpen] = useState(false)
-
-  const links = [
-    { to: href(lang, 'products'), label: t.nav.products },
-    { to: href(lang, 'business'), label: t.nav.business },
-    { to: `${href(lang)}#how`, label: t.nav.how },
-    { to: `${href(lang)}#contact`, label: t.nav.contact },
-  ]
-  const linkClass = ({ isActive }: { isActive: boolean }) =>
-    `rounded-full px-3.5 py-2 text-[0.95rem] font-medium transition hover:bg-stone ${isActive ? 'text-ink' : 'text-ink-2'}`
+  const lines = useCart()
 
   return (
-    <header className="sticky top-0 z-40 border-b border-line/80 bg-paper/90 backdrop-blur-md">
-      <div className="container-x flex h-16 items-center justify-between gap-4">
-        <Link to={href(lang)} aria-label="ITCITADEL">
-          <Logo />
-        </Link>
-        <nav className="hidden items-center gap-1 lg:flex" aria-label={t.nav.menu}>
-          {links.map((l) => (
-            <NavLink key={l.to} to={l.to} className={linkClass} end>
-              {l.label}
-            </NavLink>
-          ))}
-        </nav>
-        <div className="flex items-center gap-2">
-          <LangSwitch />
-          <Link to={href(lang, 'products')} className="btn-primary hidden !px-4 !py-2.5 sm:inline-flex">
-            {t.cta.browse}
-          </Link>
-          <button
-            type="button"
-            className="inline-flex size-10 items-center justify-center rounded-full border border-line bg-card lg:hidden"
-            aria-expanded={open}
-            aria-controls="mobile-menu"
-            aria-label={t.nav.menu}
-            onClick={() => setOpen((o) => !o)}
-          >
-            {open ? <X className="size-5" /> : <Menu className="size-5" />}
-          </button>
-        </div>
+    <>
+      <div className="border-b border-line bg-surface px-4 py-2 text-center text-sm text-muted">
+        <span className="me-2.5 inline-block size-1.5 rounded-full bg-accent align-middle" aria-hidden="true" />
+        {t.topBar}
+        <span className="hidden sm:inline">
+          {' · '}
+          <a href={telLink(BUSINESS.phones[0])} className="ltr-iso hover:text-fg">
+            {BUSINESS.phones[0]}
+          </a>
+        </span>
       </div>
-      {open && (
-        <nav id="mobile-menu" className="border-t border-line bg-paper lg:hidden" aria-label={t.nav.menu}>
-          <div className="container-x flex flex-col py-3">
-            {links.map((l) => (
-              <Link key={l.to} to={l.to} onClick={() => setOpen(false)} className="rounded-xl px-3 py-3 text-base font-medium hover:bg-stone">
-                {l.label}
-              </Link>
-            ))}
+      <header className="sticky top-0 z-40 border-b border-line bg-bg/80 backdrop-blur-xl">
+        <div className="container-x flex h-[72px] items-center gap-4 lg:gap-8">
+          <Link to={href(lang)} aria-label="ITCITADEL" className="shrink-0">
+            <Logo />
+          </Link>
+          <nav className="hidden items-center gap-7 lg:flex" aria-label={t.nav.menu}>
+            <NavLink to={href(lang, 'products')} className={({ isActive }) => `text-[1.05rem] transition hover:text-fg ${isActive ? 'text-fg' : 'text-muted'}`}>
+              {t.nav.store}
+            </NavLink>
+            {/* sections of the home page: never "current", even on the home page */}
+            <Link to={`${href(lang)}#how`} className="text-[1.05rem] text-muted transition hover:text-fg">
+              {t.nav.how}
+            </Link>
+            <Link to={`${href(lang)}#office`} className="text-[1.05rem] text-muted transition hover:text-fg">
+              {t.nav.office}
+            </Link>
+          </nav>
+          <SearchBox className="hidden flex-1 md:flex" />
+          <div className="ms-auto flex items-center gap-2 md:ms-0">
+            <LangSwitch />
+            <Link to={href(lang, 'cart')} className="relative inline-flex size-11 items-center justify-center rounded-full bg-raised transition hover:bg-white/10" aria-label={`${t.nav.cart} (${lines.length})`}>
+              <ShoppingBag className="size-5" strokeWidth={1.8} aria-hidden="true" />
+              {lines.length > 0 && (
+                <span className="latin absolute -top-1 -end-1 inline-flex size-5 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-accent-ink">{lines.length}</span>
+              )}
+            </Link>
           </div>
-        </nav>
-      )}
-    </header>
+        </div>
+        <div className="container-x pb-3 md:hidden">
+          <SearchBox className="flex" />
+        </div>
+      </header>
+    </>
+  )
+}
+
+/** Searches the store: goes to the catalog with ?q=, which filters by name, description and category. */
+function SearchBox({ className = '' }: { className?: string }) {
+  const lang = useLang()
+  const t = useT()
+  const navigate = useNavigate()
+  const [params] = useSearchParams()
+  const onSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault()
+    const q = String(new FormData(e.currentTarget).get('q') ?? '').trim()
+    navigate(q ? `${href(lang, 'products')}?q=${encodeURIComponent(q)}` : href(lang, 'products'))
+  }
+  return (
+    <form role="search" onSubmit={onSubmit} className={`h-11 items-center gap-2.5 rounded-full border border-line bg-raised px-4 focus-within:border-line-strong ${className}`}>
+      <Search className="size-[18px] shrink-0 text-faint" aria-hidden="true" />
+      <input
+        key={params.get('q') ?? ''}
+        type="search"
+        name="q"
+        defaultValue={params.get('q') ?? ''}
+        placeholder={t.nav.search}
+        aria-label={t.nav.searchLabel}
+        className="min-w-0 flex-1 bg-transparent text-base text-fg outline-none placeholder:text-faint"
+      />
+    </form>
   )
 }

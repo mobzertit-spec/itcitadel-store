@@ -1,10 +1,11 @@
 /**
- * The store's two public endpoints (place-order, request-quote) as plain functions of a Request.
+ * The store's public endpoint (place-order) as a plain function of a Request.
  * Database and Telegram access come in through `Deps`, so the rules are tested without either (handler.test.ts).
  */
-import { isBot, validateOrder, validateQuote, type OrderInput, type QuoteInput } from './validate.ts'
+import { isBot, validateOrder, type OrderInput } from './validate.ts'
 
-export type CreatedOrder = { number: number; product_name: string; variant_label: string; total: number }
+export type OrderLine = { product_name: string; variant_label: string; quantity: number; line_total: number }
+export type CreatedOrder = { number: number; total: number; lines: OrderLine[] }
 
 export type Deps = {
   /** browser origins allowed to call (the storefront); empty = any */
@@ -15,7 +16,6 @@ export type Deps = {
   rateHit: (key: string) => Promise<boolean>
   /** prices the order from the database and stores it; 'unavailable' if the plan cannot be ordered */
   createOrder: (input: OrderInput) => Promise<CreatedOrder | 'unavailable'>
-  createQuote: (input: QuoteInput) => Promise<number>
   /** message to the owner (Telegram); failures never fail the request */
   notify: (html: string) => Promise<void>
 }
@@ -87,55 +87,21 @@ export async function handleOrder(req: Request, deps: Deps): Promise<Response> {
   }
 }
 
-export async function handleQuote(req: Request, deps: Deps): Promise<Response> {
-  const got = await intake(req, deps, 'quote')
-  if (got instanceof Response) return got
-  const { body, cors } = got
-  const check = validateQuote(body)
-  if (!check.ok) return reply(400, { errors: check.errors }, cors)
-  try {
-    const number = await deps.createQuote(check.value)
-    await safeNotify(deps, quoteMessage(check.value, number))
-    return reply(200, { ok: true, number }, cors)
-  } catch (err) {
-    console.error('quote failed', err)
-    return reply(500, { error: 'server' }, cors)
-  }
-}
-
 // ── Telegram messages (in Arabic, for the owner) ─────────────────────────────
 const esc = (s: string) => s.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;')
 const money = (n: number) => `${new Intl.NumberFormat('fr-FR').format(n).replace(/\s/g, ' ')} دج`
-const PAYMENT = { office_cash: 'نقداً في المكتب', bank_transfer: 'تحويل بنكي مع فاتورة' }
 const LANG = { ar: 'العربية', fr: 'الفرنسية', en: 'الإنجليزية' }
 
 export function orderMessage(o: OrderInput, c: CreatedOrder) {
-  const lines = [
+  return [
     `🛒 <b>طلب جديد #${c.number}</b>`,
-    `${esc(c.product_name)} — ${esc(c.variant_label)} × ${o.quantity}`,
-    `💰 <b>${money(c.total)}</b>`,
+    ...c.lines.map((l) => `• ${esc(l.product_name)} — ${esc(l.variant_label)} × ${l.quantity}: ${money(l.line_total)}`),
+    `💰 <b>${money(c.total)}</b> · نقداً في المكتب`,
     '',
     `👤 ${esc(o.customer_name)}`,
-    o.customer_type === 'company' ? `🏢 ${esc(o.company_name)}${o.nif ? ` · NIF ${esc(o.nif)}` : ''}` : '',
     `📞 ${o.phone}`,
     `✉️ ${esc(o.email)}`,
-    `💳 ${PAYMENT[o.payment_method]}`,
-    o.notes ? `📝 ${esc(o.notes)}` : '',
+    ...(o.notes ? [`📝 ${esc(o.notes)}`] : []),
     `🌐 ${LANG[o.lang]}`,
-  ]
-  return lines.filter((l, i) => l !== '' || i === 3).join('\n')
-}
-
-export function quoteMessage(q: QuoteInput, number: number) {
-  return [
-    `📋 <b>طلب عرض سعر #${number}</b>`,
-    `🏢 ${esc(q.company_name)}`,
-    `👤 ${esc(q.contact_name)}`,
-    `📞 ${q.phone}`,
-    `✉️ ${esc(q.email)}`,
-    '',
-    esc(q.message),
-    '',
-    `🌐 ${LANG[q.lang]}`,
   ].join('\n')
 }

@@ -4,7 +4,6 @@ import { dzd, prettyPhone } from '@/lib/format'
 import { customerWhatsApp, db, ORDER_STATUS, when, type Order, type OrderStatus } from './db'
 
 const FLOW: OrderStatus[] = ['new', 'confirmed', 'paid', 'activated']
-const PAYMENT = { office_cash: 'نقداً في المكتب', bank_transfer: 'تحويل بنكي مع فاتورة' }
 
 export default function Orders() {
   const [orders, setOrders] = useState<Order[]>([])
@@ -41,12 +40,12 @@ export default function Orders() {
     setOpenId(null)
   }
 
-  const chip = (on: boolean) => `rounded-full border px-3.5 py-1.5 text-sm font-semibold ${on ? 'border-ink bg-ink text-white' : 'border-line bg-card hover:border-ink/30'}`
+  const chip = (on: boolean) => `rounded-full border px-3.5 py-1.5 text-sm font-semibold ${on ? 'border-fg bg-fg text-bg' : 'border-line-strong/60 hover:border-fg/50'}`
   return (
     <div>
       <div className="flex flex-wrap items-center justify-between gap-3">
         <h1 className="text-2xl font-extrabold">الطلبات</h1>
-        <button className="btn-ghost !py-2" onClick={load}>
+        <button className="btn-outline h-10!" onClick={load}>
           <RefreshCw className="size-4" /> تحديث
         </button>
       </div>
@@ -60,7 +59,7 @@ export default function Orders() {
           </button>
         ))}
       </div>
-      {error && <p className="mt-4 rounded-xl bg-red-50 p-3 text-sm text-danger">{error}</p>}
+      {error && <p className="mt-4 rounded-xl border border-danger/40 p-3 text-sm text-danger">{error}</p>}
 
       <div className="mt-6 grid gap-6 lg:grid-cols-[1fr_26rem] lg:items-start">
         <ul className={`card divide-y divide-line ${open ? 'hidden lg:block' : ''}`}>
@@ -69,7 +68,7 @@ export default function Orders() {
             <li key={o.id}>
               <button
                 onClick={() => setOpenId(o.id)}
-                className={`flex w-full items-center justify-between gap-4 p-4 text-start transition hover:bg-stone/50 ${o.id === openId ? 'bg-brand-50' : ''}`}
+                className={`flex w-full items-center justify-between gap-4 p-4 text-start transition hover:bg-white/5 ${o.id === openId ? 'bg-white/5' : ''}`}
               >
                 <span className="min-w-0">
                   <span className="flex items-center gap-2">
@@ -91,7 +90,7 @@ export default function Orders() {
           <section className="card space-y-5 p-6 lg:sticky lg:top-20">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-extrabold">طلب #{open.number}</h2>
-              <button className="text-sm text-muted hover:text-ink lg:hidden" onClick={() => setOpenId(null)}>
+              <button className="text-sm text-muted hover:text-fg lg:hidden" onClick={() => setOpenId(null)}>
                 رجوع
               </button>
             </div>
@@ -120,8 +119,6 @@ export default function Orders() {
               <dd className="ltr-iso">{prettyPhone(open.phone)}</dd>
               <dt className="text-muted">البريد</dt>
               <dd className="break-all">{open.email}</dd>
-              <dt className="text-muted">الدفع</dt>
-              <dd>{PAYMENT[open.payment_method]}</dd>
               <dt className="text-muted">لغة الزبون</dt>
               <dd>{{ ar: 'العربية', fr: 'الفرنسية', en: 'الإنجليزية' }[open.lang]}</dd>
               {open.notes && (
@@ -132,11 +129,11 @@ export default function Orders() {
               )}
             </dl>
             <div className="flex gap-2">
-              <a className="btn-dark flex-1 !py-2.5" href={`tel:+213${open.phone.slice(1)}`}>
+              <a className="btn-outline flex-1 h-11!" href={`tel:+213${open.phone.slice(1)}`}>
                 <Phone className="size-4" /> اتصال
               </a>
               <a
-                className="btn-primary flex-1 !py-2.5"
+                className="btn-light flex-1 h-11!"
                 href={customerWhatsApp(open.phone, open.customer_name, open.lang, `#${open.number}`)}
                 target="_blank"
                 rel="noopener"
@@ -152,7 +149,7 @@ export default function Orders() {
                   <button
                     key={s}
                     onClick={() => update(open.id, { status: s })}
-                    className={`rounded-full px-3 py-1.5 text-sm font-semibold ring-1 ring-line ${open.status === s ? ORDER_STATUS[s].tone + ' ring-transparent' : 'bg-card'}`}
+                    className={`rounded-full px-3 py-1.5 text-sm font-semibold ring-1 ring-line ${open.status === s ? ORDER_STATUS[s].tone + ' ring-transparent' : 'bg-surface'}`}
                   >
                     {ORDER_STATUS[s].label}
                   </button>
@@ -187,14 +184,14 @@ export function NoteBox({ initial, onSave }: { initial: string; onSave: (v: stri
       <textarea
         id="admin-note"
         rows={3}
-        className="field-input"
+        className="field-input h-auto py-3"
         value={value}
         onChange={(e) => {
           setValue(e.target.value)
           setSaved(false)
         }}
       />
-      <button className="btn-ghost mt-2 !py-2 text-sm" disabled={saved} onClick={() => onSave(value).then(() => setSaved(true))}>
+      <button className="btn-outline mt-2 h-10! text-sm" disabled={saved} onClick={() => onSave(value).then(() => setSaved(true))}>
         {saved ? 'محفوظة' : 'حفظ الملاحظة'}
       </button>
     </div>

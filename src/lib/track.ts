@@ -44,10 +44,11 @@ export function initTracking() {
   }
 }
 
-type Event = 'PageView' | 'ViewContent' | 'InitiateCheckout' | 'Lead' | 'Contact'
+type Event = 'PageView' | 'ViewContent' | 'AddToCart' | 'InitiateCheckout' | 'Lead' | 'Contact'
 const GA_NAMES: Record<Event, string> = {
   PageView: 'page_view',
   ViewContent: 'view_item',
+  AddToCart: 'add_to_cart',
   InitiateCheckout: 'begin_checkout',
   Lead: 'generate_lead',
   Contact: 'contact',

@@ -34,6 +34,7 @@ const EMPTY: Draft = {
   per_user: false,
   quote_only: false,
   featured: false,
+  hero: false,
   active: true,
   sort: 100,
 }
@@ -132,7 +133,7 @@ export default function ProductEdit() {
   const current = LANGS.find((l) => l.id === lang)!
   return (
     <div className="mx-auto max-w-4xl space-y-6">
-      <Link to="/admin/products" className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-2 hover:text-brand">
+      <Link to="/admin/products" className="inline-flex items-center gap-1.5 text-sm font-semibold text-fg-2 hover:text-fg">
         <ArrowRight className="size-4" /> المنتجات
       </Link>
       <h1 className="text-2xl font-extrabold">{isNew ? 'منتج جديد' : draft.name}</h1>
@@ -171,16 +172,16 @@ export default function ProductEdit() {
           <Check label="السعر للمستخدم الواحد" checked={draft.per_user} onChange={(per_user) => set({ per_user })} />
           <Check label="بدون سعر معلن (اطلب السعر)" checked={draft.quote_only} onChange={(quote_only) => set({ quote_only })} />
         </div>
-        <div className="flex items-center gap-4 sm:col-span-2">
+        <div className="flex flex-wrap items-center gap-4 sm:col-span-2">
           {draft.image_url ? (
-            <img src={draft.image_url} alt="" className="size-16 rounded-2xl border border-line bg-white object-contain p-1" />
+            <img src={draft.image_url} alt="" className="size-16 rounded-2xl border border-line bg-raised object-contain p-1" />
           ) : (
             <span className="inline-flex size-16 items-center justify-center rounded-2xl border border-dashed border-line text-muted">
               <ImageUp className="size-6" />
             </span>
           )}
-          <label className="btn-ghost cursor-pointer !py-2 text-sm">
-            رفع صورة (PNG/JPG/WebP، أقل من 2 ميغا)
+          <label className="btn-outline cursor-pointer h-10! text-sm">
+            رفع صورة
             <input type="file" accept="image/png,image/jpeg,image/webp" className="sr-only" onChange={(e) => e.target.files?.[0] && upload(e.target.files[0])} />
           </label>
           {draft.image_url && (
@@ -188,13 +189,14 @@ export default function ProductEdit() {
               <X className="size-4" /> إزالة
             </button>
           )}
+          <p className="basis-full text-xs text-muted">PNG أو JPG أو WebP، أقل من 2 ميغا. فقط للمنتجات التي ليس لها شعار رسمي في المتجر.</p>
         </div>
       </section>
 
       <section className="card p-6">
-        <div className="flex gap-1 rounded-full border border-line bg-paper p-1" role="tablist">
+        <div className="flex gap-1 rounded-full border border-line bg-bg p-1" role="tablist">
           {LANGS.map((l) => (
-            <button key={l.id} role="tab" aria-selected={lang === l.id} onClick={() => setLang(l.id)} className={`flex-1 rounded-full px-3 py-1.5 text-sm font-semibold ${lang === l.id ? 'bg-ink text-white' : ''}`}>
+            <button key={l.id} role="tab" aria-selected={lang === l.id} onClick={() => setLang(l.id)} className={`flex-1 rounded-full px-3 py-1.5 text-sm font-semibold ${lang === l.id ? 'bg-fg text-bg' : ''}`}>
               {l.label}
             </button>
           ))}
@@ -206,13 +208,13 @@ export default function ProductEdit() {
           </label>
           <label className="block">
             <span className="field-label">الوصف</span>
-            <textarea rows={4} className="field-input" value={field('description', lang)} onChange={(e) => set({ [`description_${lang}`]: e.target.value } as Partial<Draft>)} />
+            <textarea rows={4} className="field-input h-auto py-3" value={field('description', lang)} onChange={(e) => set({ [`description_${lang}`]: e.target.value } as Partial<Draft>)} />
           </label>
           <label className="block">
             <span className="field-label">ما يحصل عليه الزبون (سطر لكل ميزة)</span>
             <textarea
               rows={4}
-              className="field-input"
+              className="field-input h-auto py-3"
               value={((draft as Record<string, unknown>)[`features_${lang}`] as string[]).join('\n')}
               onChange={(e) => set({ [`features_${lang}`]: e.target.value.split('\n') } as Partial<Draft>)}
               onBlur={(e) => set({ [`features_${lang}`]: e.target.value.split('\n').map((s) => s.trim()).filter(Boolean) } as Partial<Draft>)}
@@ -231,14 +233,14 @@ export default function ProductEdit() {
         <div className="mt-4 space-y-3">
           {variants.map((v) => (
             <div key={v.key} className={`grid gap-2 rounded-xl border border-line p-3 sm:grid-cols-[1fr_1fr_1fr_8rem_auto] sm:items-end ${v.active ? '' : 'opacity-60'}`}>
-              <input className="field-input !py-2" placeholder="الاسم بالعربية" value={v.label_ar} onChange={(e) => setVariant(v.key, { label_ar: e.target.value })} />
-              <input className="field-input !py-2" dir="ltr" placeholder="Nom en français" value={v.label_fr} onChange={(e) => setVariant(v.key, { label_fr: e.target.value })} />
-              <input className="field-input !py-2" dir="ltr" placeholder="Name in English" value={v.label_en} onChange={(e) => setVariant(v.key, { label_en: e.target.value })} />
+              <input className="field-input h-11!" placeholder="الاسم بالعربية" value={v.label_ar} onChange={(e) => setVariant(v.key, { label_ar: e.target.value })} />
+              <input className="field-input h-11!" dir="ltr" placeholder="Nom en français" value={v.label_fr} onChange={(e) => setVariant(v.key, { label_fr: e.target.value })} />
+              <input className="field-input h-11!" dir="ltr" placeholder="Name in English" value={v.label_en} onChange={(e) => setVariant(v.key, { label_en: e.target.value })} />
               <input
                 type="number"
                 min={0}
                 step={100}
-                className="field-input !py-2"
+                className="field-input h-11!"
                 dir="ltr"
                 aria-label="السعر"
                 value={v.price_dzd}
@@ -260,14 +262,14 @@ export default function ProductEdit() {
             </div>
           ))}
         </div>
-        <button className="btn-ghost mt-3 !py-2 text-sm" onClick={() => setVariants((vs) => [...vs, newVariant(vs.length + 1)])}>
+        <button className="btn-outline mt-3 h-10! text-sm" onClick={() => setVariants((vs) => [...vs, newVariant(vs.length + 1)])}>
           <Plus className="size-4" /> إضافة خطة
         </button>
       </section>
 
-      {error && <p className="rounded-xl bg-red-50 p-3 text-sm font-medium text-danger">{error}</p>}
+      {error && <p className="rounded-xl border border-danger/40 p-3 text-sm font-medium text-danger">{error}</p>}
       <div className="flex flex-wrap items-center justify-between gap-3">
-        <button className="btn-primary" disabled={busy} onClick={save}>
+        <button className="btn-light" disabled={busy} onClick={save}>
           {busy ? '…' : 'حفظ'}
         </button>
         {!isNew && (
@@ -283,7 +285,7 @@ export default function ProductEdit() {
 function Check({ label, checked, onChange }: { label: string; checked: boolean; onChange: (v: boolean) => void }) {
   return (
     <label className="inline-flex cursor-pointer items-center gap-2 text-sm font-medium">
-      <input type="checkbox" className="size-4 accent-brand" checked={checked} onChange={(e) => onChange(e.target.checked)} />
+      <input type="checkbox" className="size-4 accent-fg" checked={checked} onChange={(e) => onChange(e.target.checked)} />
       {label}
     </label>
   )

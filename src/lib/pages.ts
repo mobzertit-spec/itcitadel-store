@@ -22,16 +22,13 @@ export function pages(catalog: Catalog): Page[] {
     { path: '/', lang: 'ar', title: m('ar').homeTitle, description: m('ar').homeDescription, index: false },
     ...forEachLang((l) => ({ path: `/${l}/`, title: m(l).homeTitle, description: m(l).homeDescription, index: true })),
     ...forEachLang((l) => ({ path: `/${l}/products/`, title: m(l).catalogTitle, description: m(l).catalogDescription, index: true })),
-    ...forEachLang((l) => ({ path: `/${l}/business/`, title: m(l).businessTitle, description: m(l).businessDescription, index: true })),
     ...forEachLang((l) => ({ path: `/${l}/legal/`, title: m(l).legalTitle, description: m(l).legalDescription, index: true })),
     ...catalog.products.flatMap((p) =>
       forEachLang((l) => ({ path: `/${l}/p/${p.slug}/`, title: fill(m(l).productTitle, { name: p.name }), description: pick(p, 'tagline', l), index: true })),
     ),
-    // forms: real pages (HTTP 200) but kept out of search results
-    ...catalog.products
-      .filter((p) => !p.quote_only)
-      .flatMap((p) => forEachLang((l) => ({ path: `/${l}/order/${p.slug}/`, title: m(l).orderTitle, description: m(l).homeDescription, index: false }))),
-    ...forEachLang((l) => ({ path: `/${l}/order/done/`, title: m(l).orderTitle, description: m(l).homeDescription, index: false })),
+    // the cart and the thank-you page: real pages (HTTP 200) but kept out of search results
+    ...forEachLang((l) => ({ path: `/${l}/cart/`, title: m(l).cartTitle, description: m(l).homeDescription, index: false })),
+    ...forEachLang((l) => ({ path: `/${l}/order/done/`, title: m(l).doneTitle, description: m(l).homeDescription, index: false })),
   ]
 }
 
@@ -73,6 +70,7 @@ export function businessJsonLd(lang: Lang, url: string) {
       addressCountry: 'DZ',
     },
     currenciesAccepted: 'DZD',
-    paymentAccepted: 'Cash, Bank transfer',
+    paymentAccepted: 'Cash',
+    openingHours: BUSINESS.openingHours,
   })
 }

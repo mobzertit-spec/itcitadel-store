@@ -1,35 +1,47 @@
-import { ArrowLeft, ArrowRight, Check, Info, MessageCircle, Minus, Plus } from 'lucide-react'
+import { Check, Clock3, Mail, MapPin, MessageCircle, ShoppingBag } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
+import { addToCart } from '@/components/AddedToast'
+import { BrandLogo, ProductMark } from '@/components/BrandLogo'
+import { logoFor } from '@/components/brand-logos'
 import { Meta } from '@/components/Meta'
-import { ProductVisual } from '@/components/ProductVisual'
+import { Money } from '@/components/Price'
+import { ProductTile } from '@/components/ProductTile'
+import { Stepper } from '@/components/Stepper'
 import { waLink } from '@/config'
 import { fill } from '@/i18n/strings'
-import { useCatalog, type Product } from '@/lib/catalog'
-import { dzd } from '@/lib/format'
+import { useCatalog, type Catalog, type Product } from '@/lib/catalog'
 import { href, pick, pickList, useLang, useT } from '@/lib/lang'
 import { productJsonLd } from '@/lib/pages'
 import { track } from '@/lib/track'
 import NotFound from './NotFound'
+
+const INFO_ICONS = [Clock3, Mail, MapPin]
 
 export default function ProductPage() {
   const { slug } = useParams()
   const { catalog, settled } = useCatalog()
   const product = catalog.products.find((p) => p.slug === slug)
   if (!product) return settled ? <NotFound /> : <div className="container-x min-h-[60vh] pt-12" aria-busy="true" />
-  return <ProductView key={product.id} product={product} />
+  return <ProductView key={product.id} product={product} catalog={catalog} />
 }
 
-function ProductView({ product }: { product: Product }) {
+function ProductView({ product, catalog }: { product: Product; catalog: Catalog }) {
   const lang = useLang()
   const t = useT()
   const navigate = useNavigate()
-  const Back = t.dir === 'rtl' ? ArrowRight : ArrowLeft
   const variants = product.product_variants
   const [variantId, setVariantId] = useState(variants[0]?.id)
   const [qty, setQty] = useState(1)
   const variant = variants.find((v) => v.id === variantId) ?? variants[0]
+  const category = catalog.categories.find((c) => c.id === product.category_id)
+  const logo = logoFor(product.slug)
   const tagline = pick(product, 'tagline', lang)
+  const buyable = !product.quote_only && !!variant
+  const related = [
+    ...catalog.products.filter((p) => p.id !== product.id && p.category_id === product.category_id),
+    ...catalog.products.filter((p) => p.id !== product.id && p.category_id !== product.category_id),
+  ].slice(0, 3)
 
   useEffect(() => {
     track('ViewContent', { content_name: product.name, value: variant?.price_dzd })
@@ -37,130 +49,151 @@ function ProductView({ product }: { product: Product }) {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.id])
 
-  const order = () => {
-    if (!variant) return
-    if (product.quote_only) navigate(`${href(lang, 'business')}?p=${product.slug}&v=${variant.id}`)
-    else navigate(`${href(lang, `order/${product.slug}`)}?v=${variant.id}&q=${qty}`)
+  const buyNow = () => {
+    if (variant && addToCart(product, variant, qty, lang)) navigate(href(lang, 'cart'))
   }
   const waText = `${product.name}${variant ? ` — ${pick(variant, 'label', lang)}` : ''}`
 
   return (
-    <div className="container-x pt-8">
+    <div className="container-x pt-6">
       <Meta title={fill(t.meta.productTitle, { name: product.name })} description={tagline} />
-      {!product.quote_only && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: productJsonLd(product, lang) }} />}
+      {buyable && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: productJsonLd(product, lang) }} />}
 
-      <Link to={href(lang, 'products')} className="inline-flex items-center gap-1.5 text-sm font-semibold text-ink-2 hover:text-brand">
-        <Back className="size-4" aria-hidden="true" />
-        {t.product.back}
-      </Link>
+      <nav aria-label={t.nav.menu} className="flex flex-wrap gap-2.5 text-sm text-muted">
+        <Link to={href(lang, 'products')} className="hover:text-fg">
+          {t.nav.store}
+        </Link>
+        {category && (
+          <>
+            <span aria-hidden="true">/</span>
+            <Link to={`${href(lang, 'products')}?c=${category.id}`} className="hover:text-fg">
+              {pick(category, 'name', lang)}
+            </Link>
+          </>
+        )}
+        <span aria-hidden="true">/</span>
+        <span className="ltr-iso text-fg">{product.name}</span>
+      </nav>
 
-      <div className="mt-6 flex items-center gap-5">
-        <ProductVisual product={product} size="lg" />
-        <div>
-          <h1 className="text-3xl font-extrabold tracking-tight sm:text-4xl">
-<span className="ltr-iso">{product.name}</span>
-</h1>
-          <p className="mt-2 text-lg text-ink-2">{tagline}</p>
+      <section className="mt-6 grid items-start gap-8 lg:mt-8 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
+        <div className="spotlight flex aspect-[1.1] items-center justify-center rounded-[36px] border border-line bg-surface lg:sticky lg:top-28">
+          <div className="glass flex size-[58%] items-center justify-center rounded-[22%]">
+            <span className="scale-[0.6] sm:scale-100">
+              <ProductMark product={product} size={140} />
+            </span>
+          </div>
         </div>
-      </div>
 
-      <div className="mt-8 grid gap-10 lg:grid-cols-[1fr_24rem] lg:items-start">
-        <article>
-          <p className="text-lg leading-relaxed text-ink-2">{pick(product, 'description', lang)}</p>
+        <div className="flex flex-col gap-7">
+          <div className="flex flex-col gap-3">
+            <span className="eyebrow flex items-center gap-2.5">
+              {logo && <BrandLogo logo={logo} size={20} />}
+              {category && pick(category, 'name', lang)}
+            </span>
+            <h1 className="latin text-5xl leading-[1.02] font-extrabold tracking-[-0.03em] sm:text-6xl">
+              <span className="ltr-iso">{product.name}</span>
+            </h1>
+            <p className="text-xl text-muted">{tagline}</p>
+          </div>
 
-          <h2 className="mt-10 text-xl font-bold">{t.product.included}</h2>
-          <ul className="mt-4 grid gap-3 sm:grid-cols-2">
+          <fieldset className="flex flex-col gap-3">
+            <legend className="mb-3 font-bold">{t.product.plan}</legend>
+            {variants.map((v) => {
+              const on = v.id === variant?.id
+              return (
+                <label
+                  key={v.id}
+                  className={`flex cursor-pointer items-center justify-between gap-3 rounded-[20px] bg-surface px-5 py-4 transition ${on ? 'border-2 border-fg' : 'border border-line-strong/60 hover:border-fg/50'}`}
+                >
+                  <span className="flex items-center gap-3.5">
+                    <input type="radio" name="variant" value={v.id} checked={on} onChange={() => setVariantId(v.id)} className="size-5 accent-fg" />
+                    <span className="text-lg font-bold">{pick(v, 'label', lang)}</span>
+                  </span>
+                  {buyable && <Money value={v.price_dzd} className="text-xl" />}
+                </label>
+              )
+            })}
+          </fieldset>
+
+          {buyable && variant ? (
+            <div className="flex flex-col gap-3">
+              <div className="flex gap-3">
+                <Stepper value={qty} onChange={setQty} label={product.per_user ? t.product.users : t.product.quantity} />
+                <button type="button" className="btn-accent h-14 flex-1" onClick={() => addToCart(product, variant, qty, lang)}>
+                  <ShoppingBag className="size-5" aria-hidden="true" />
+                  {t.cta.addToCart}
+                </button>
+              </div>
+              <button type="button" className="btn-outline h-14" onClick={buyNow}>
+                {t.cta.buyNow}
+              </button>
+              <p className="text-end text-sm text-faint">{t.price.ttc}</p>
+            </div>
+          ) : (
+            <div className="flex flex-col gap-3">
+              <p className="text-muted">{t.product.quoteNote}</p>
+              <a href={waLink(waText)} target="_blank" rel="noopener" onClick={() => track('Contact')} className="btn-light h-14">
+                <MessageCircle className="size-5" aria-hidden="true" />
+                {t.cta.askPrice}
+              </a>
+            </div>
+          )}
+
+          <ul className="card px-6 py-1.5">
+            {t.product.info.map((info, i) => {
+              const Icon = INFO_ICONS[i]
+              return (
+                <li key={info.title} className="flex gap-4 border-b border-line py-4 last:border-0">
+                  <Icon className="mt-1 size-5 shrink-0" strokeWidth={1.6} aria-hidden="true" />
+                  <span>
+                    <b className="block">{info.title}</b>
+                    <span className="text-sm text-muted">{info.text}</span>
+                  </span>
+                </li>
+              )
+            })}
+          </ul>
+
+          {buyable && (
+            <a href={waLink(waText)} target="_blank" rel="noopener" onClick={() => track('Contact')} className="flex items-center gap-2.5 text-muted hover:text-fg">
+              <MessageCircle className="size-5" aria-hidden="true" />
+              {t.cta.whatsappAsk}
+            </a>
+          )}
+        </div>
+      </section>
+
+      <section className="mt-24 grid gap-12 lg:grid-cols-2 lg:gap-16">
+        <div className="flex flex-col gap-6">
+          <h2 className="text-3xl font-extrabold sm:text-4xl">{t.product.included}</h2>
+          <p className="text-lg text-muted">{pick(product, 'description', lang)}</p>
+          <ul className="grid gap-3 sm:grid-cols-2">
             {pickList(product, 'features', lang).map((f) => (
-              <li key={f} className="flex items-start gap-3 rounded-xl border border-line bg-card p-4">
-                <Check className="mt-0.5 size-5 shrink-0 text-brand" aria-hidden="true" />
+              <li key={f} className="card flex items-start gap-3 rounded-3xl p-5">
+                <Check className="mt-1 size-5 shrink-0" aria-hidden="true" />
                 <span>{f}</span>
               </li>
             ))}
           </ul>
+        </div>
+        {pick(product, 'requirements', lang) && (
+          <div className="flex flex-col gap-6">
+            <h2 className="text-3xl font-extrabold sm:text-4xl">{t.product.needs}</h2>
+            <p className="card p-6 text-lg text-fg-2">{pick(product, 'requirements', lang)}</p>
+          </div>
+        )}
+      </section>
 
-          {pick(product, 'requirements', lang) && (
-            <div className="mt-8 flex gap-3 rounded-xl bg-gold-50 p-5">
-              <Info className="mt-0.5 size-5 shrink-0 text-gold" aria-hidden="true" />
-              <div>
-                <h2 className="font-bold">{t.product.needs}</h2>
-                <p className="mt-1 text-ink-2">{pick(product, 'requirements', lang)}</p>
-              </div>
-            </div>
-          )}
-        </article>
-
-        {/* Buy box */}
-        <aside className="card order-first p-6 lg:sticky lg:top-24 lg:order-none">
-          <fieldset>
-            <legend className="font-bold">{t.product.choosePlan}</legend>
-            <div className="mt-3 space-y-2">
-              {variants.map((v) => (
-                <label
-                  key={v.id}
-                  className={`flex cursor-pointer items-center justify-between gap-3 rounded-xl border p-3.5 transition ${
-                    v.id === variant?.id ? 'border-brand bg-brand-50 ring-2 ring-brand/20' : 'border-line hover:border-ink/30'
-                  }`}
-                >
-                  <span className="flex items-center gap-3">
-                    <input type="radio" name="variant" value={v.id} checked={v.id === variant?.id} onChange={() => setVariantId(v.id)} className="size-4 accent-brand" />
-                    <span className="font-medium">{pick(v, 'label', lang)}</span>
-                  </span>
-                  {!product.quote_only && <span className="font-bold whitespace-nowrap">{dzd(v.price_dzd, lang)}</span>}
-                </label>
-              ))}
-            </div>
-          </fieldset>
-
-          {product.quote_only ? (
-            <p className="mt-5 text-sm text-muted">{t.product.quoteNote}</p>
-          ) : (
-            <>
-              <div className="mt-5 flex items-center justify-between gap-3">
-                <span className="font-semibold">{product.per_user ? t.order.users : t.order.quantity}</span>
-                <Stepper value={qty} onChange={setQty} />
-              </div>
-              <div className="mt-5 flex items-baseline justify-between border-t border-line pt-4">
-                <span className="text-muted">{t.order.total}</span>
-                <span className="text-2xl font-extrabold">{dzd((variant?.price_dzd ?? 0) * qty, lang)}</span>
-              </div>
-              <p className="mt-1 text-end text-xs text-muted">{t.price.ttc}</p>
-            </>
-          )}
-
-          <button type="button" onClick={order} className="btn-primary mt-5 w-full">
-            {product.quote_only ? t.cta.askPrice : t.cta.order}
-          </button>
-          <a href={waLink(waText)} target="_blank" rel="noopener" onClick={() => track('Contact')} className="btn-ghost mt-3 w-full">
-            <MessageCircle className="size-4" aria-hidden="true" />
-            {t.cta.whatsapp}
-          </a>
-          {!product.quote_only && <p className="mt-4 text-center text-sm text-muted">{t.product.payNote}</p>}
-        </aside>
-      </div>
-    </div>
-  )
-}
-
-export function Stepper({ value, onChange, max = 500 }: { value: number; onChange: (n: number) => void; max?: number }) {
-  const btn = 'inline-flex size-9 items-center justify-center rounded-full border border-line bg-card transition hover:border-ink/30 disabled:opacity-40'
-  return (
-    <div className="flex items-center gap-2" dir="ltr">
-      <button type="button" className={btn} onClick={() => onChange(Math.max(1, value - 1))} disabled={value <= 1} aria-label="−">
-        <Minus className="size-4" />
-      </button>
-      <input
-        type="number"
-        inputMode="numeric"
-        min={1}
-        max={max}
-        value={value}
-        onChange={(e) => onChange(Math.min(max, Math.max(1, Math.floor(Number(e.target.value) || 1))))}
-        className="w-14 rounded-lg border border-line bg-white py-1.5 text-center font-semibold [appearance:textfield] [&::-webkit-inner-spin-button]:appearance-none"
-        aria-label="#"
-      />
-      <button type="button" className={btn} onClick={() => onChange(Math.min(max, value + 1))} disabled={value >= max} aria-label="+">
-        <Plus className="size-4" />
-      </button>
+      {related.length > 0 && (
+        <section className="mt-24 flex flex-col gap-7">
+          <h2 className="text-3xl font-extrabold sm:text-4xl">{t.product.related}</h2>
+          <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3">
+            {related.map((p) => (
+              <ProductTile key={p.id} product={p} catalog={catalog} />
+            ))}
+          </div>
+        </section>
+      )}
     </div>
   )
 }

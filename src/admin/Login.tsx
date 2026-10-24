@@ -17,7 +17,7 @@ export default function Login() {
   }
 
   return (
-    <div lang="ar" dir="rtl" className="flex min-h-dvh items-center justify-center bg-paper p-4">
+    <div lang="ar" dir="rtl" className="flex min-h-dvh items-center justify-center bg-bg p-4">
       <form onSubmit={onSubmit} className="card w-full max-w-sm space-y-5 p-8">
         <div className="flex items-center gap-2 text-lg font-bold">
           <LogoMark /> لوحة تحكم ITCITADEL
@@ -35,7 +35,7 @@ export default function Login() {
             {error}
           </p>
         )}
-        <button className="btn-primary w-full" disabled={busy}>
+        <button className="btn-light w-full" disabled={busy}>
           {busy ? '…' : 'دخول'}
         </button>
       </form>

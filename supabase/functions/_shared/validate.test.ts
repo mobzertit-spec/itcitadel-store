@@ -15,21 +15,30 @@ describe('normalizePhone', () => {
 })
 
 describe('validateOrder', () => {
-  const base = { variant_id: '3fd82663-a81f-4c8b-a9eb-4e4b90788237', quantity: 1, customer_name: 'Sami', phone: '0661601838', email: 's@x.dz' }
-  it('requires a company name only from companies, and drops it for individuals', () => {
-    const company = validateOrder({ ...base, customer_type: 'company', company_name: '' })
-    assert.equal(company.ok, false)
-    const person = validateOrder({ ...base, customer_type: 'person', company_name: 'ignored', nif: '123' })
-    assert.ok(person.ok)
-    if (person.ok) assert.deepEqual([person.value.company_name, person.value.nif], ['', ''])
-  })
-  it('rejects quantities outside 1–500 and malformed plan ids', () => {
-    for (const quantity of [0, 501, 1.5, 'x']) assert.equal(validateOrder({ ...base, quantity }).ok, false, String(quantity))
-    assert.equal(validateOrder({ ...base, variant_id: "1' or 1=1" }).ok, false)
-  })
-  it('falls back to Arabic and cash for unknown language or payment values', () => {
-    const r = validateOrder({ ...base, lang: 'de', payment_method: 'crypto' })
+  const A = '3fd82663-a81f-4c8b-a9eb-4e4b90788237'
+  const B = '8a1c0e52-6b7d-4f3e-9c21-5d4b3a2f1e0d'
+  const base = { items: [{ variant_id: A, quantity: 1 }], customer_name: 'Sami', phone: '0661601838', email: 's@x.dz' }
+
+  it('merges two lines of the same plan into one', () => {
+    const r = validateOrder({ ...base, items: [{ variant_id: A, quantity: 1 }, { variant_id: B, quantity: 2 }, { variant_id: A.toUpperCase(), quantity: 3 }] })
     assert.ok(r.ok)
-    if (r.ok) assert.deepEqual([r.value.lang, r.value.payment_method], ['ar', 'office_cash'])
+    if (r.ok) assert.deepEqual(r.value.items, [{ variant_id: A, quantity: 4 }, { variant_id: B, quantity: 2 }])
+  })
+  it('needs at least one line, and refuses malformed or oversized carts', () => {
+    assert.deepEqual(validateOrder({ ...base, items: [] }), { ok: false, errors: { items: 'required' } })
+    for (const quantity of [0, 501, 1.5, 'x']) assert.equal(validateOrder({ ...base, items: [{ variant_id: A, quantity }] }).ok, false, String(quantity))
+    assert.equal(validateOrder({ ...base, items: [{ variant_id: "1' or 1=1", quantity: 1 }] }).ok, false)
+    const eleven = Array.from({ length: 11 }, (_, i) => ({ variant_id: A.slice(0, -2) + String(i).padStart(2, '0'), quantity: 1 }))
+    assert.equal(validateOrder({ ...base, items: eleven }).ok, false)
+  })
+  it('keeps no company or payment fields: individuals pay cash at the office', () => {
+    const r = validateOrder({ ...base, customer_type: 'company', company_name: 'SARL', nif: '123', payment_method: 'bank_transfer' })
+    assert.ok(r.ok)
+    if (r.ok) assert.deepEqual(Object.keys(r.value).sort(), ['customer_name', 'email', 'items', 'lang', 'notes', 'phone'])
+  })
+  it('falls back to Arabic for an unknown language', () => {
+    const r = validateOrder({ ...base, lang: 'de' })
+    assert.ok(r.ok)
+    if (r.ok) assert.equal(r.value.lang, 'ar')
   })
 })

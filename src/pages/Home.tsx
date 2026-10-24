@@ -1,251 +1,282 @@
-import { BadgeCheck, Building2, Check, ChevronDown, Clock3, FileText, MapPin, Phone, Mail, ShieldCheck, UserRound } from 'lucide-react'
+import { ChevronDown, Clock3, Headset, Mail, MapPin, Phone, ShieldCheck, Store } from 'lucide-react'
+import { useState } from 'react'
 import { Link } from 'react-router-dom'
-import { CategoryIcon } from '@/components/CategoryIcon'
+import { addToCart } from '@/components/AddedToast'
+import { BrandLogo, ProductMark } from '@/components/BrandLogo'
+import { logoFor } from '@/components/brand-logos'
 import { Meta } from '@/components/Meta'
-import { ProductCard } from '@/components/ProductCard'
+import { FromPrice, Money } from '@/components/Price'
+import { ProductTile, tileGrid } from '@/components/ProductTile'
 import { BUSINESS, telLink } from '@/config'
-import { useCatalog } from '@/lib/catalog'
+import { heroProducts, lowestPrice, useCatalog, type Catalog, type Product } from '@/lib/catalog'
 import { href, pick, useLang, useT } from '@/lib/lang'
 import { businessJsonLd } from '@/lib/pages'
 
-const TRUST_ICONS = [UserRound, FileText, Clock3, MapPin]
+const TRUST_ICONS = [ShieldCheck, Clock3, Store, Headset]
 
 export default function Home() {
   const lang = useLang()
   const t = useT()
   const { catalog } = useCatalog()
-  const featured = catalog.products.filter((p) => p.featured).slice(0, 6)
+  const { hero, side } = heroProducts(catalog)
+  const [category, setCategory] = useState<string | null>(null)
+  const shown = category ? catalog.products.filter((p) => p.category_id === category) : catalog.products
 
   return (
     <>
       <Meta title={t.meta.homeTitle} description={t.meta.homeDescription} />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: businessJsonLd(lang, (import.meta.env.VITE_SITE_URL as string) || '') }} />
+      <h1 className="sr-only">{t.brandTagline}</h1>
 
-      {/* Hero */}
-      <section className="relative overflow-hidden">
-        <div aria-hidden="true" className="pointer-events-none absolute inset-0 bg-[radial-gradient(60rem_30rem_at_85%_-10%,rgb(11_122_82/0.10),transparent_60%)]" />
-        <div className="container-x relative grid items-center gap-12 pt-12 pb-16 sm:pt-16 lg:grid-cols-[1.15fr_1fr] lg:pt-20 lg:pb-24">
-          <div>
-            <p className="eyebrow">{t.home.eyebrow}</p>
-            <h1 className="mt-4 text-4xl leading-[1.15] font-extrabold tracking-tight text-balance sm:text-5xl lg:text-[3.4rem]">{t.home.title}</h1>
-            <p className="mt-5 max-w-xl text-lg text-ink-2 text-pretty">{t.home.lead}</p>
-            <div className="mt-8 flex flex-wrap gap-3">
-              <Link to={href(lang, 'products')} className="btn-primary">
-                {t.cta.browse}
-              </Link>
-              <Link to={href(lang, 'business')} className="btn-ghost">
-                <Building2 className="size-4" aria-hidden="true" />
-                {t.cta.quote}
-              </Link>
-            </div>
-          </div>
-          <HeroCards />
-        </div>
-      </section>
+      <div className="container-x flex flex-col gap-24 pt-6 sm:gap-28 sm:pt-8">
+        {hero && (
+          <section className="flex flex-col gap-4">
+            <HeroPanel product={hero} catalog={catalog} />
+            {side.length > 0 && (
+              <div className="grid gap-4 md:grid-cols-2">
+                {side.map((p) => (
+                  <SideTile key={p.id} product={p} catalog={catalog} />
+                ))}
+              </div>
+            )}
+          </section>
+        )}
 
-      {/* Trust strip */}
-      <section className="border-y border-line bg-card">
-        <ul className="container-x grid grid-cols-2 gap-x-6 gap-y-6 py-7 lg:grid-cols-4">
+        <ul className="grid grid-cols-2 gap-x-6 border-y border-line lg:grid-cols-4">
           {t.home.trust.map((item, i) => {
             const Icon = TRUST_ICONS[i]
             return (
-              <li key={item.title} className="flex items-start gap-3">
-                <span className="inline-flex size-10 shrink-0 items-center justify-center rounded-xl bg-brand-50 text-brand">
-                  <Icon className="size-5" aria-hidden="true" />
-                </span>
+              <li key={item.title} className="flex items-center gap-4 py-6 sm:py-7">
+                <Icon className="size-7 shrink-0" strokeWidth={1.5} aria-hidden="true" />
                 <span>
-                  <span className="block font-bold">{item.title}</span>
+                  <b className="block">{item.title}</b>
                   <span className="block text-sm text-muted">{item.text}</span>
                 </span>
               </li>
             )
           })}
         </ul>
-      </section>
 
-      {/* Featured */}
-      <section className="container-x pt-20">
-        <div className="flex flex-wrap items-end justify-between gap-4">
-          <h2 className="h-section">{t.home.featuredTitle}</h2>
-          <Link to={href(lang, 'products')} className="text-sm font-semibold text-brand hover:underline">
-            {t.home.allProducts}
-          </Link>
-        </div>
-        <div className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
-          {featured.map((p) => (
-            <ProductCard key={p.id} product={p} />
-          ))}
-        </div>
-      </section>
-
-      {/* How it works */}
-      <section id="how" className="container-x pt-24">
-        <h2 className="h-section">{t.home.howTitle}</h2>
-        <ol className="mt-8 grid gap-5 sm:grid-cols-2 lg:grid-cols-4">
-          {t.home.how.map((step, i) => (
-            <li key={step.title} className="card relative p-6">
-              <span className="text-5xl leading-none font-extrabold text-brand/15" aria-hidden="true">
-                {i + 1}
-              </span>
-              <h3 className="mt-3 text-lg font-bold">{step.title}</h3>
-              <p className="mt-1.5 text-sm text-muted">{step.text}</p>
-            </li>
-          ))}
-        </ol>
-      </section>
-
-      {/* Categories */}
-      <section className="container-x pt-24">
-        <h2 className="h-section">{t.home.categoriesTitle}</h2>
-        <div className="mt-8 grid grid-cols-2 gap-4 lg:grid-cols-4">
-          {catalog.categories.map((c) => {
-            const names = catalog.products.filter((p) => p.category_id === c.id).map((p) => p.name)
-            return (
-              <Link
-                key={c.id}
-                to={`${href(lang, 'products')}?c=${c.id}`}
-                className="card flex flex-col gap-4 p-5 transition hover:-translate-y-0.5 hover:shadow-[var(--shadow-lift)]"
-              >
-                <CategoryIcon id={c.id} />
-                <span>
-                  <span className="block font-bold">{pick(c, 'name', lang)}</span>
-                  <span className="block text-sm text-muted">
-<span className="ltr-iso">{names.join(' · ')}</span>
-</span>
-                </span>
-              </Link>
-            )
-          })}
-        </div>
-      </section>
-
-      {/* Why us */}
-      <section className="container-x pt-24">
-        <div className="rounded-[1.75rem] bg-ink px-6 py-12 text-white sm:px-10 lg:px-14">
-          <h2 className="h-section">{t.home.whyTitle}</h2>
-          <div className="mt-8 grid gap-8 sm:grid-cols-2">
-            {t.home.why.map((w) => (
-              <div key={w.title} className="flex gap-4">
-                <BadgeCheck className="mt-0.5 size-6 shrink-0 text-[#3ccf8e]" aria-hidden="true" />
-                <div>
-                  <h3 className="text-lg font-bold">{w.title}</h3>
-                  <p className="mt-1 text-white/70">{w.text}</p>
-                </div>
-              </div>
+        <section id="store" className="flex flex-col gap-7">
+          <div className="flex flex-wrap items-end justify-between gap-5">
+            <h2 className="h-section">{t.home.allTitle}</h2>
+            <div className="-mx-4 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0" role="group" aria-label={t.footer.store}>
+              <button type="button" className="pill" aria-pressed={!category} onClick={() => setCategory(null)}>
+                {t.catalog.all}
+              </button>
+              {catalog.categories.map((c) => (
+                <button key={c.id} type="button" className="pill" aria-pressed={category === c.id} onClick={() => setCategory(c.id)}>
+                  {pick(c, 'name', lang)}
+                </button>
+              ))}
+            </div>
+          </div>
+          <div className={tileGrid(catalog.products.length)}>
+            {shown.map((p) => (
+              <ProductTile key={p.id} product={p} catalog={catalog} />
             ))}
           </div>
-        </div>
-      </section>
+        </section>
 
-      {/* Business */}
-      <section className="container-x pt-24">
-        <div className="grid items-center gap-10 lg:grid-cols-2">
-          <div>
-            <p className="eyebrow">{t.nav.business}</p>
-            <h2 className="h-section mt-3">{t.home.businessTitle}</h2>
-            <p className="mt-4 text-lg text-ink-2">{t.home.businessLead}</p>
-            <Link to={href(lang, 'business')} className="btn-dark mt-7">
-              {t.cta.quote}
-            </Link>
-          </div>
-          <div className="card p-7">
-            <div className="flex items-center gap-3">
-              <ShieldCheck className="size-6 text-brand" aria-hidden="true" />
-              <h3 className="text-xl font-bold">{t.home.packTitle}</h3>
+        <section id="how" className="flex flex-col gap-9">
+          <h2 className="h-section">{t.home.howTitle}</h2>
+          <ol className="grid gap-x-6 gap-y-8 sm:grid-cols-2 lg:grid-cols-4">
+            {t.home.how.map((step, i) => (
+              <li key={step.title} className="flex flex-col gap-2 border-t border-line pt-6">
+                <span className="latin text-4xl font-light text-faint" aria-hidden="true">
+                  0{i + 1}
+                </span>
+                <h3 className="text-xl font-bold">{step.title}</h3>
+                <p className="text-muted">{step.text}</p>
+              </li>
+            ))}
+          </ol>
+        </section>
+
+        <OfficeSection />
+
+        {catalog.reviews.length > 0 && (
+          <section className="flex flex-col gap-8">
+            <div className="flex flex-col gap-2">
+              <h2 className="h-section">{t.home.reviewsTitle}</h2>
+              <p className="text-lg text-muted">{t.home.reviewsLead}</p>
             </div>
-            <ul className="mt-5 space-y-3">
-              {t.home.pack.map((item) => (
-                <li key={item} className="flex items-start gap-3">
-                  <Check className="mt-1 size-4 shrink-0 text-brand" aria-hidden="true" />
-                  <span>{item}</span>
-                </li>
-              ))}
-            </ul>
-          </div>
-        </div>
-      </section>
+            <div className="grid gap-4 md:grid-cols-3">
+              {catalog.reviews.map((r) => {
+                const product = catalog.products.find((p) => p.id === r.product_id)
+                const logo = product && logoFor(product.slug)
+                return (
+                  <figure key={r.id} className="card flex flex-col gap-5 p-7">
+                    <blockquote className="text-lg leading-relaxed text-fg-2">«{r.body}»</blockquote>
+                    <figcaption className="mt-auto flex items-center justify-between gap-4 border-t border-line pt-4">
+                      <span>
+                        <b className="block">{r.author}</b>
+                        {r.detail && <span className="text-sm text-muted">{r.detail}</span>}
+                      </span>
+                      {logo && <BrandLogo logo={logo} size={24} label />}
+                    </figcaption>
+                  </figure>
+                )
+              })}
+            </div>
+          </section>
+        )}
 
-      {/* FAQ — <details> works without JavaScript */}
-      <section className="container-x pt-24">
-        <h2 className="h-section">{t.home.faqTitle}</h2>
-        <div className="mt-8 divide-y divide-line rounded-[var(--radius-card)] border border-line bg-card">
-          {t.home.faq.map((f) => (
-            <details key={f.q} className="group px-5 py-1 sm:px-6">
-              <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-4 font-semibold [&::-webkit-details-marker]:hidden">
-                {f.q}
-                <ChevronDown className="size-5 shrink-0 text-muted transition group-open:rotate-180" aria-hidden="true" />
-              </summary>
-              <p className="pb-5 text-ink-2">{f.a}</p>
-            </details>
-          ))}
-        </div>
-      </section>
-
-      {/* Contact */}
-      <section id="contact" className="container-x pt-24">
-        <h2 className="h-section">{t.home.contactTitle}</h2>
-        <div className="mt-8 grid gap-5 md:grid-cols-3">
-          <div className="card p-6">
-            <MapPin className="size-5 text-brand" aria-hidden="true" />
-            <h3 className="mt-3 font-bold">{t.contact.address}</h3>
-            <p className="mt-1 text-ink-2">{BUSINESS.address[lang]}</p>
-            <a href={BUSINESS.mapUrl} target="_blank" rel="noopener" className="mt-3 inline-block text-sm font-semibold text-brand hover:underline">
-              {t.contact.map}
-            </a>
+        <section className="flex flex-col gap-6">
+          <h2 className="h-section">{t.home.faqTitle}</h2>
+          <div className="divide-y divide-line border-y border-line">
+            {t.home.faq.map((f) => (
+              <details key={f.q} className="group">
+                <summary className="flex cursor-pointer list-none items-center justify-between gap-4 py-6 text-lg font-bold [&::-webkit-details-marker]:hidden">
+                  {f.q}
+                  <ChevronDown className="size-5 shrink-0 text-muted transition group-open:rotate-180" aria-hidden="true" />
+                </summary>
+                <p className="max-w-3xl pb-6 text-muted">{f.a}</p>
+              </details>
+            ))}
           </div>
-          <div className="card p-6">
-            <Phone className="size-5 text-brand" aria-hidden="true" />
-            <h3 className="mt-3 font-bold">{t.contact.phone}</h3>
-            <ul className="mt-1 space-y-1">
-              {BUSINESS.phones.map((p) => (
-                <li key={p}>
-                  <a href={telLink(p)} className="ltr-iso text-lg font-semibold hover:text-brand">
-                    {p}
-                  </a>
-                </li>
-              ))}
-            </ul>
-          </div>
-          <div className="card p-6">
-            <Mail className="size-5 text-brand" aria-hidden="true" />
-            <h3 className="mt-3 font-bold">{t.contact.email}</h3>
-            <a href={`mailto:${BUSINESS.email}`} className="mt-1 inline-block text-lg font-semibold hover:text-brand">
-              {BUSINESS.email}
-            </a>
-          </div>
-        </div>
-      </section>
+        </section>
+      </div>
     </>
   )
 }
 
-/** Three subscription "cards" fanned out: the service at a glance (official, on your account, active). */
-function HeroCards() {
+/** The product the owner puts first: huge name, price, and its logo on a lit glass tile. */
+function HeroPanel({ product, catalog }: { product: Product; catalog: Catalog }) {
+  const lang = useLang()
   const t = useT()
-  const cards = [
-    { name: 'ChatGPT Plus', cat: 'ai', tilt: 'lg:-rotate-3 lg:translate-x-6' },
-    { name: 'Google Workspace', cat: 'collab', tilt: 'lg:rotate-2 lg:-translate-x-4' },
-    { name: 'Kaspersky Premium', cat: 'security', tilt: 'lg:-rotate-1 lg:translate-x-10' },
-  ]
+  const category = catalog.categories.find((c) => c.id === product.category_id)
+  const plan = product.product_variants[0]
+  const buyable = !product.quote_only && plan
   return (
-    <div className="relative mx-auto hidden w-full max-w-md sm:block" aria-hidden="true">
-      <div className="flex flex-col gap-4">
-        {cards.map((c) => (
-          <div key={c.name} className={`card flex items-center gap-4 p-4 ${c.tilt}`}>
-            <CategoryIcon id={c.cat} />
-            <div className="min-w-0 flex-1">
-              <p className="font-bold">
-<span className="ltr-iso">{c.name}</span>
-</p>
-              <p className="mt-0.5 h-2 w-24 rounded-full bg-stone" />
-            </div>
-            <span className="inline-flex items-center gap-1 rounded-full bg-brand-50 px-3 py-1 text-sm font-semibold text-brand">
-              <Check className="size-4" />
-              {t.home.activated}
-            </span>
-          </div>
-        ))}
+    <div className="spotlight relative grid items-center gap-6 overflow-hidden rounded-[36px] border border-line bg-surface px-6 pt-8 pb-9 sm:px-12 sm:py-14 lg:grid-cols-[1.05fr_1fr] lg:gap-10 lg:px-[72px] lg:py-16">
+      <div className="relative flex h-56 items-center justify-center sm:h-80 lg:order-2 lg:h-[440px]">
+        <div className="glass flex size-40 items-center justify-center rounded-[44px] sm:size-64 sm:rounded-[66px] lg:size-[300px] lg:rounded-[78px]">
+          <span className="scale-[0.55] sm:scale-[0.85] lg:scale-100">
+            <ProductMark product={product} size={150} />
+          </span>
+        </div>
+        <span className="glass absolute start-0 top-10 hidden items-center gap-2 rounded-full px-4 py-2 text-sm sm:inline-flex lg:start-2">
+          <ShieldCheck className="size-4" aria-hidden="true" />
+          {t.home.onYourAccount}
+        </span>
+        <span className="glass absolute end-0 bottom-14 hidden items-center gap-2 rounded-full px-4 py-2 text-sm sm:inline-flex">
+          <Clock3 className="size-4" aria-hidden="true" />
+          {t.home.activation}
+        </span>
+      </div>
+      <div className="flex flex-col gap-5 lg:order-1">
+        {category && <span className="eyebrow">{pick(category, 'name', lang)}</span>}
+        <h2 className="latin text-[3.4rem] leading-[0.98] font-extrabold tracking-[-0.035em] text-balance sm:text-7xl lg:text-[5.75rem]">
+          <span className="ltr-iso">{product.name}</span>
+        </h2>
+        <p className="max-w-md text-xl text-fg-2 sm:text-2xl">{pick(product, 'tagline', lang)}</p>
+        {buyable && (
+          <p className="flex flex-wrap items-baseline gap-x-3 text-muted">
+            <Money value={lowestPrice(product)} className="text-4xl" />
+            <span>{product.product_variants.length > 1 ? `· ${pick(plan, 'label', lang)}` : ''}</span>
+          </p>
+        )}
+        <div className="mt-1 flex flex-wrap gap-3">
+          {buyable && (
+            <button type="button" className="btn-accent h-14 px-8" onClick={() => addToCart(product, plan, 1, lang)}>
+              {t.cta.addToCart}
+            </button>
+          )}
+          <Link to={href(lang, `p/${product.slug}`)} className="btn-outline h-14 px-7">
+            {t.cta.details}
+          </Link>
+        </div>
       </div>
     </div>
+  )
+}
+
+function SideTile({ product, catalog }: { product: Product; catalog: Catalog }) {
+  const lang = useLang()
+  const category = catalog.categories.find((c) => c.id === product.category_id)
+  return (
+    <Link
+      to={href(lang, `p/${product.slug}`)}
+      className="flex items-center justify-between gap-5 rounded-[30px] border border-line bg-surface p-6 transition hover:border-line-strong sm:p-8"
+    >
+      <span className="flex min-w-0 flex-col gap-1.5">
+        {category && <span className="eyebrow">{pick(category, 'name', lang)}</span>}
+        <b className="latin text-2xl font-bold sm:text-3xl">
+          <span className="ltr-iso">{product.name}</span>
+        </b>
+        <span className="line-clamp-1 text-muted">{pick(product, 'tagline', lang)}</span>
+        <span className="mt-2">
+          <FromPrice product={product} size="text-2xl" />
+        </span>
+      </span>
+      <span className="logo-stage size-24 shrink-0 rounded-[28px] sm:size-[120px]">
+        <ProductMark product={product} size={52} />
+      </span>
+    </Link>
+  )
+}
+
+/** Where the customer pays: the office, with its hours and the map. */
+export function OfficeSection() {
+  const lang = useLang()
+  const t = useT()
+  const row = 'flex gap-4 border-b border-line pb-5 last:border-0 last:pb-0'
+  return (
+    <section id="office" className="spotlight grid items-center gap-10 overflow-hidden rounded-[36px] border border-line bg-surface px-6 py-10 sm:px-12 sm:py-14 lg:grid-cols-[1.1fr_1fr] lg:px-[72px] lg:py-16">
+      <div className="flex flex-col gap-5">
+        <span className="eyebrow">{t.home.officeLabel}</span>
+        <h2 className="text-4xl leading-tight font-extrabold whitespace-pre-line sm:text-6xl">{t.home.officeTitle}</h2>
+        <p className="max-w-md text-lg text-muted">{t.home.officeLead}</p>
+        <div className="mt-1 flex flex-wrap gap-3">
+          <a href={BUSINESS.mapUrl} target="_blank" rel="noopener" className="btn-light h-14 px-7">
+            {t.cta.map}
+          </a>
+          <a href={telLink(BUSINESS.phones[0])} className="btn-outline latin h-14 px-7" dir="ltr">
+            {BUSINESS.phones[0]}
+          </a>
+        </div>
+      </div>
+      <dl className="glass flex flex-col gap-5 rounded-[28px] p-6 sm:p-8">
+        <div className={row}>
+          <MapPin className="mt-1 size-5 shrink-0" aria-hidden="true" />
+          <div>
+            <dt className="font-bold">{t.office.address}</dt>
+            <dd className="text-muted">{BUSINESS.address[lang]}</dd>
+          </div>
+        </div>
+        <div className={row}>
+          <Clock3 className="mt-1 size-5 shrink-0" aria-hidden="true" />
+          <div>
+            <dt className="font-bold">{t.office.hours}</dt>
+            <dd className="text-muted">{t.office.hoursValue}</dd>
+          </div>
+        </div>
+        <div className={row}>
+          <Phone className="mt-1 size-5 shrink-0" aria-hidden="true" />
+          <div>
+            <dt className="font-bold">{t.office.phone}</dt>
+            <dd className="flex flex-wrap gap-x-4 text-muted">
+              {BUSINESS.phones.map((p) => (
+                <a key={p} href={telLink(p)} className="ltr-iso hover:text-fg">
+                  {p}
+                </a>
+              ))}
+            </dd>
+          </div>
+        </div>
+        <div className={row}>
+          <Mail className="mt-1 size-5 shrink-0" aria-hidden="true" />
+          <div>
+            <dt className="font-bold">{t.office.email}</dt>
+            <dd>
+              <a href={`mailto:${BUSINESS.email}`} className="text-muted hover:text-fg">
+                {BUSINESS.email}
+              </a>
+            </dd>
+          </div>
+        </div>
+      </dl>
+    </section>
   )
 }

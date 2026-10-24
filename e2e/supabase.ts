@@ -11,17 +11,18 @@ export async function fakeSupabase(page: Page, opts: { orders?: unknown[]; admin
     const body = req.postData() ? JSON.parse(req.postData()!) : null
     sent.push({ url: url.pathname + url.search, method: req.method(), body })
     const p = url.pathname
+    // .single() asks PostgREST for one object
+    const one = (req.headers()['accept'] ?? '').includes('vnd.pgrst.object')
     if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*' } })
     if (p.endsWith('/rest/v1/categories')) return json(route, catalog.categories)
     if (p.endsWith('/rest/v1/products') && req.method() === 'GET') {
       const products = catalog.products.map((x) => ({ ...x, active: true, product_variants: x.product_variants.map((v) => ({ ...v, active: true })) }))
-      // .single() asks PostgREST for one object
-      if ((req.headers()['accept'] ?? '').includes('vnd.pgrst.object')) return json(route, products.find((x) => `eq.${x.id}` === url.searchParams.get('id')))
+      if (one) return json(route, products.find((x) => `eq.${x.id}` === url.searchParams.get('id')))
       return json(route, products)
     }
     if (/\/rest\/v1\/(products|product_variants)$/.test(p)) return json(route, req.method() === 'PATCH' ? { id: url.searchParams.get('id')?.slice(3) } : [])
+    if (p.endsWith('/rest/v1/reviews') && req.method() === 'POST') return json(route, { id: 'r1', created_at: '2026-10-24T09:00:00Z', sort: 0, ...body })
     if (p.endsWith('/functions/v1/place-order')) return json(route, { ok: true, number: 1007 })
-    if (p.endsWith('/functions/v1/request-quote')) return json(route, { ok: true, number: 512 })
     if (p.endsWith('/auth/v1/token'))
       return json(route, {
         access_token: 'fake.jwt.token',

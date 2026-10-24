@@ -11,6 +11,8 @@ export const BUSINESS = {
     en: 'Cité Ali Khodja, Lot 46, Oued Smar, Algiers',
   },
   mapUrl: 'https://www.google.com/maps/search/?api=1&query=Cit%C3%A9%20Ali%20Khodja%20Oued%20Smar%20Alger',
+  /** opening hours, for structured data (the words are in strings.ts: office.hoursValue) */
+  openingHours: 'Su-Th 08:00-17:00',
   /** legal identifiers for the legal page and invoices — shown only once filled in */
   legal: { rc: '', nif: '', nis: '', ai: '' },
   social: { facebook: '', instagram: '', linkedin: '', tiktok: '' },
