@@ -22,10 +22,10 @@ export function BrandLogo({ logo, size, label = false }: { logo: LogoKey; size: 
   )
 }
 
-/** What stands for a product: its official logo, else the image uploaded in the dashboard, else its category icon. */
+/** What stands for a product: the image uploaded in the dashboard (it can replace any logo), else its official logo, else its category icon. */
 export function ProductMark({ product, size }: { product: Product; size: number }) {
+  if (product.image_url) return <img src={product.image_url} alt="" width={size} height={size} className="rounded-xl object-contain" loading="lazy" />
   const logo = logoFor(product.slug)
   if (logo) return <BrandLogo logo={logo} size={size} />
-  if (product.image_url) return <img src={product.image_url} alt="" width={size} height={size} className="rounded-xl object-contain" loading="lazy" />
   return <CategoryIcon id={product.category_id} style={{ width: size, height: size }} />
 }

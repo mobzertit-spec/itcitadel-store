@@ -155,3 +155,23 @@ test('the owner adds a real customer review', async ({ page }) => {
   const insert = sent.find((r) => r.url.includes('/rest/v1/reviews') && r.method === 'POST')!.body
   expect(insert).toMatchObject({ author: 'سارة', body: 'تفعيل سريع وخدمة محترمة.', published: true })
 })
+
+test('the owner raises the margin and reprices every plan with a purchase price by the rule', async ({ page }) => {
+  const claude = catalog.products.find((p) => p.slug === 'claude-pro') ?? priced
+  const month = claude.product_variants[0]
+  const sent = await fakeSupabase(page, { costs: [{ variant_id: month.id, amount: 20, currency: 'USD' }] })
+  await page.goto('/admin/pricing')
+  await page.getByLabel('البريد الإلكتروني').fill('owner@itcitadel.dz')
+  await page.getByLabel('كلمة المرور').fill('secret-password')
+  await page.getByRole('button', { name: 'دخول' }).click()
+  await expect(page.getByRole('heading', { name: 'التسعير والأرباح' })).toBeVisible()
+  // 20 $ × 245 × 1.4 = 6 860 → 7 000
+  await page.getByLabel('هامش الربح (%)').fill('40')
+  await page.getByRole('button', { name: 'طبّق القاعدة على كل الأسعار' }).click()
+  await expect(page.getByLabel(`سعر البيع: ${claude.name} ${month.label_ar}`)).toHaveValue('7000')
+  await page.getByRole('button', { name: 'حفظ' }).click()
+  await expect(page.getByText('حُفظت التغييرات')).toBeVisible()
+  expect(sent.find((r) => r.url.includes('pricing_rules') && r.method === 'PATCH')?.body).toMatchObject({ margin_percent: 40 })
+  const repriced = sent.find((r) => r.url.includes(`product_variants?id=eq.${month.id}`) && r.method === 'PATCH')
+  expect(repriced?.body).toEqual({ price_dzd: 7000 })
+})

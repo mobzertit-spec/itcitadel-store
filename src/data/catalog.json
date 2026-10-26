@@ -31,6 +31,63 @@
  ],
  "products": [
   {
+   "id": "0eff2c35-e0e5-4a5c-bcdb-9e680d22b16e",
+   "slug": "claude-pro",
+   "category_id": "ai",
+   "name": "Claude Pro",
+   "tagline_ar": "مساعد Anthropic الذكي للكتابة والتحليل والبرمجة، مفعّل على حسابك أنت.",
+   "tagline_fr": "L’assistant IA d’Anthropic pour écrire, analyser et coder, activé sur votre propre compte.",
+   "tagline_en": "Anthropic’s AI assistant for writing, analysis and coding, activated on your own account.",
+   "description_ar": "نفعّل اشتراك Claude Pro الرسمي على حسابك الشخصي في Claude، وتدفع بالدينار نقداً في مكتبنا. لا حسابات مشتركة: حسابك يبقى ملكك، ومحادثاتك تبقى خاصة بك.",
+   "description_fr": "Nous activons l’abonnement officiel Claude Pro sur votre propre compte Claude, et vous payez en dinars, en espèces à notre bureau. Aucun compte partagé : votre compte reste à vous et vos conversations restent privées.",
+   "description_en": "We activate the official Claude Pro subscription on your own Claude account, and you pay in dinars, cash at our office. No shared accounts: your account stays yours and your chats stay private.",
+   "features_ar": [
+    "استعمال أكبر بكثير من النسخة المجانية",
+    "المشاريع والملفات الطويلة",
+    "Claude Code للمبرمجين",
+    "تفعيل خلال 24 ساعة بعد الدفع"
+   ],
+   "features_fr": [
+    "Bien plus d’utilisation que la version gratuite",
+    "Projets et longs documents",
+    "Claude Code pour les développeurs",
+    "Activation sous 24 h après paiement"
+   ],
+   "features_en": [
+    "Far more usage than the free plan",
+    "Projects and long documents",
+    "Claude Code for developers",
+    "Activated within 24 hours of payment"
+   ],
+   "requirements_ar": "البريد الإلكتروني لحسابك في Claude. نشرح لك طريقة التفعيل عندما نتصل بك.",
+   "requirements_fr": "L’adresse e-mail de votre compte Claude. Nous vous expliquons l’activation lors de notre appel.",
+   "requirements_en": "The email address of your Claude account. We explain how activation works when we call you.",
+   "image_url": null,
+   "per_user": false,
+   "quote_only": false,
+   "featured": true,
+   "hero": true,
+   "sort": 1,
+   "product_variants": [
+    {
+     "id": "233aba7d-d432-4eb6-bda4-34c386e53264",
+     "label_ar": "شهر واحد",
+     "label_fr": "1 mois",
+     "label_en": "1 month",
+     "price_dzd": 6500,
+     "sort": 1
+    },
+    {
+     "id": "3cfd4df1-f879-4341-a526-29f71cba80b7",
+     "label_ar": "12 شهراً",
+     "label_fr": "12 mois",
+     "label_en": "12 months",
+     "price_dzd": 63500,
+     "sort": 2
+    }
+   ]
+  },
+  {
    "id": "fbdf95fd-bfd7-4aee-8134-e0dc5f070dc6",
    "slug": "chatgpt-plus",
    "category_id": "ai",
@@ -66,15 +123,15 @@
    "per_user": false,
    "quote_only": false,
    "featured": true,
-   "hero": true,
-   "sort": 1,
+   "hero": false,
+   "sort": 2,
    "product_variants": [
     {
      "id": "38cac467-2e4f-4813-90b8-77c64cab8492",
      "label_ar": "شهر واحد",
      "label_fr": "1 mois",
      "label_en": "1 month",
-     "price_dzd": 5500,
+     "price_dzd": 6500,
      "sort": 1
     },
     {
@@ -82,65 +139,146 @@
      "label_ar": "3 أشهر",
      "label_fr": "3 mois",
      "label_en": "3 months",
-     "price_dzd": 15900,
+     "price_dzd": 19000,
      "sort": 2
     }
    ]
   },
   {
+   "id": "4c758b07-6890-47a2-878e-759c21a8f97a",
+   "slug": "gemini-google-ai-pro",
+   "category_id": "ai",
+   "name": "Gemini · Google AI Pro",
+   "tagline_ar": "Gemini المتقدّم من Google، مع 2 تيرابايت تخزين، مفعّل على حسابك.",
+   "tagline_fr": "Le Gemini avancé de Google, avec 2 To de stockage, activé sur votre compte.",
+   "tagline_en": "Google’s advanced Gemini, with 2 TB of storage, activated on your account.",
+   "description_ar": "نفعّل اشتراك Google AI Pro الرسمي على حساب Google الخاص بك: نماذج Gemini الأقوى داخل التطبيق وفي Gmail ومستندات Google، مع 2 تيرابايت على Google Drive.",
+   "description_fr": "Nous activons l’abonnement officiel Google AI Pro sur votre propre compte Google : les modèles Gemini les plus puissants dans l’application, dans Gmail et Google Docs, avec 2 To sur Google Drive.",
+   "description_en": "We activate the official Google AI Pro subscription on your own Google account: the most capable Gemini models in the app, in Gmail and Google Docs, with 2 TB on Google Drive.",
+   "features_ar": [
+    "نماذج Gemini الأقوى",
+    "Gemini داخل Gmail وDocs",
+    "2 تيرابايت على Google Drive",
+    "تفعيل خلال 24 ساعة بعد الدفع"
+   ],
+   "features_fr": [
+    "Les modèles Gemini les plus puissants",
+    "Gemini dans Gmail et Docs",
+    "2 To sur Google Drive",
+    "Activation sous 24 h après paiement"
+   ],
+   "features_en": [
+    "The most capable Gemini models",
+    "Gemini in Gmail and Docs",
+    "2 TB on Google Drive",
+    "Activated within 24 hours of payment"
+   ],
+   "requirements_ar": "حساب Gmail الذي تريد تفعيل الاشتراك عليه.",
+   "requirements_fr": "Le compte Gmail sur lequel activer l’abonnement.",
+   "requirements_en": "The Gmail account to activate the subscription on.",
+   "image_url": null,
+   "per_user": false,
+   "quote_only": false,
+   "featured": false,
+   "hero": false,
+   "sort": 3,
+   "product_variants": [
+    {
+     "id": "052faf38-21bc-4325-a3f0-76b46c363a35",
+     "label_ar": "شهر واحد",
+     "label_fr": "1 mois",
+     "label_en": "1 month",
+     "price_dzd": 6500,
+     "sort": 1
+    }
+   ]
+  },
+  {
    "id": "336961d7-f7e9-422d-ad07-6027972b1fa8",
-   "slug": "freepik-premium",
+   "slug": "magnific",
    "category_id": "design",
-   "name": "Freepik Premium",
-   "tagline_ar": "ملايين الصور والفيكتور والقوالب لمشاريعك، برخصة استعمال تجاري.",
-   "tagline_fr": "Des millions de photos, vecteurs et modèles pour vos projets, avec licence commerciale.",
-   "tagline_en": "Millions of photos, vectors and templates for your projects, with a commercial licence.",
-   "description_ar": "اشتراك Freepik Premium رسمي على حسابك أنت، وليس حساباً مشتركاً بين عشرات الأشخاص. تحمّل المحتوى المميز بدون ذكر المصدر، وتستعمل أدوات Freepik للذكاء الاصطناعي حسب ما تتيحه الخطة.",
-   "description_fr": "Un abonnement Freepik Premium officiel sur votre propre compte, pas un compte partagé entre des dizaines de personnes. Téléchargez le contenu premium sans attribution et utilisez les outils IA de Freepik selon votre formule.",
-   "description_en": "An official Freepik Premium subscription on your own account, not an account shared by dozens of people. Download premium content without attribution and use the Freepik AI tools your plan includes.",
+   "name": "Magnific",
+   "tagline_ar": "Freepik أصبح Magnific: ملايين الصور والفيكتور وأدوات الذكاء الاصطناعي، برخصة استعمال تجاري.",
+   "tagline_fr": "Freepik devient Magnific : des millions de photos, vecteurs et outils d’IA, avec licence commerciale.",
+   "tagline_en": "Freepik is now Magnific: millions of photos, vectors and AI tools, with a commercial licence.",
+   "description_ar": "اشتراك Magnific (Freepik سابقاً) رسمي على حسابك أنت، وليس حساباً مشتركاً بين عشرات الأشخاص. اختر Premium أو Premium+ أو Pro، شهرياً أو سنوياً، حسب ما تحتاجه من محتوى وأدوات ذكاء اصطناعي.",
+   "description_fr": "Un abonnement Magnific (anciennement Freepik) officiel sur votre propre compte, pas un compte partagé entre des dizaines de personnes. Choisissez Premium, Premium+ ou Pro, au mois ou à l’année, selon le contenu et les outils d’IA dont vous avez besoin.",
+   "description_en": "An official Magnific (formerly Freepik) subscription on your own account, not an account shared by dozens of people. Choose Premium, Premium+ or Pro, monthly or yearly, depending on the content and AI tools you need.",
    "features_ar": [
     "المحتوى المميز بدون ذكر المصدر",
     "رخصة استعمال تجاري لأعمال زبائنك",
-    "أدوات الذكاء الاصطناعي من Freepik",
-    "تفعيل خلال 24 ساعة بعد الدفع"
+    "أدوات الذكاء الاصطناعي حسب الخطة",
+    "Premium وPremium+ وPro"
    ],
    "features_fr": [
     "Contenu premium sans attribution",
     "Licence commerciale pour les projets de vos clients",
-    "Outils IA de Freepik",
-    "Activation sous 24 h après paiement"
+    "Outils IA selon la formule",
+    "Premium, Premium+ et Pro"
    ],
    "features_en": [
     "Premium content without attribution",
     "Commercial licence for client work",
-    "Freepik AI tools",
-    "Activated within 24 hours of payment"
+    "AI tools depending on the plan",
+    "Premium, Premium+ and Pro"
    ],
-   "requirements_ar": "البريد الإلكتروني لحسابك في Freepik، أو ننشئ لك حساباً جديداً باسمك.",
-   "requirements_fr": "L'adresse e-mail de votre compte Freepik, ou nous créons un compte à votre nom.",
-   "requirements_en": "The email address of your Freepik account, or we create a new account in your name.",
+   "requirements_ar": "البريد الإلكتروني لحسابك في Freepik أو Magnific، أو ننشئ لك حساباً جديداً باسمك.",
+   "requirements_fr": "L’adresse e-mail de votre compte Freepik ou Magnific, ou nous créons un compte à votre nom.",
+   "requirements_en": "The email address of your Freepik or Magnific account, or we create a new account in your name.",
    "image_url": null,
    "per_user": false,
    "quote_only": false,
    "featured": true,
    "hero": false,
-   "sort": 2,
+   "sort": 4,
    "product_variants": [
     {
      "id": "b84e2c00-06fd-431c-967f-e3a827eb8836",
-     "label_ar": "شهر واحد",
-     "label_fr": "1 mois",
-     "label_en": "1 month",
+     "label_ar": "Premium · شهر",
+     "label_fr": "Premium · 1 mois",
+     "label_en": "Premium · 1 month",
      "price_dzd": 5500,
      "sort": 1
     },
     {
      "id": "aa2c036a-70be-493f-a2ea-05f394d23862",
-     "label_ar": "12 شهراً",
-     "label_fr": "12 mois",
-     "label_en": "12 months",
-     "price_dzd": 49000,
+     "label_ar": "Premium · سنة",
+     "label_fr": "Premium · 1 an",
+     "label_en": "Premium · 1 year",
+     "price_dzd": 23500,
      "sort": 2
+    },
+    {
+     "id": "2dd26a86-130c-4855-838f-846a30f86fbb",
+     "label_ar": "Premium+ · شهر",
+     "label_fr": "Premium+ · 1 mois",
+     "label_en": "Premium+ · 1 month",
+     "price_dzd": 12500,
+     "sort": 3
+    },
+    {
+     "id": "cecdb7c9-ec92-4243-b621-836797479041",
+     "label_ar": "Premium+ · سنة",
+     "label_fr": "Premium+ · 1 an",
+     "label_en": "Premium+ · 1 year",
+     "price_dzd": 113000,
+     "sort": 4
+    },
+    {
+     "id": "7678b368-8965-4469-992a-4f1ce59effc5",
+     "label_ar": "Pro · شهر",
+     "label_fr": "Pro · 1 mois",
+     "label_en": "Pro · 1 month",
+     "price_dzd": 31000,
+     "sort": 5
+    },
+    {
+     "id": "356f635a-85c6-435f-a1f5-02d35a89c5fb",
+     "label_ar": "Pro · سنة",
+     "label_fr": "Pro · 1 an",
+     "label_en": "Pro · 1 year",
+     "price_dzd": 287000,
+     "sort": 6
     }
    ]
   },
@@ -152,9 +290,9 @@
    "tagline_ar": "Photoshop وIllustrator وPremiere Pro وباقي تطبيقات Adobe، مفعّلة على حسابك.",
    "tagline_fr": "Photoshop, Illustrator, Premiere Pro et toutes les applications Adobe, activés sur votre compte.",
    "tagline_en": "Photoshop, Illustrator, Premiere Pro and the rest of Adobe's apps, activated on your account.",
-   "description_ar": "نوفّر اشتراكات Adobe Creative Cloud مفعّلة على حسابك. يتغير السعر حسب الخطة، لذلك راسلنا على واتساب بالخطة التي تريدها ونعطيك السعر الدقيق.",
-   "description_fr": "Nous fournissons les abonnements Adobe Creative Cloud, activés sur votre compte. Le prix dépend de la formule : écrivez-nous sur WhatsApp et nous vous donnons le prix exact.",
-   "description_en": "We provide Adobe Creative Cloud subscriptions, activated on your account. The price depends on the plan: message us on WhatsApp and we'll give you the exact price.",
+   "description_ar": "نوفّر اشتراكات Adobe Creative Cloud الرسمية مفعّلة على حسابك: كل التطبيقات (Creative Cloud Pro) أو تطبيق واحد مثل Photoshop أو Illustrator، لمدة سنة.",
+   "description_fr": "Nous fournissons les abonnements Adobe Creative Cloud officiels, activés sur votre compte : toutes les applications (Creative Cloud Pro) ou une seule, comme Photoshop ou Illustrator, pour un an.",
+   "description_en": "We provide official Adobe Creative Cloud subscriptions, activated on your account: every app (Creative Cloud Pro) or a single one such as Photoshop or Illustrator, for one year.",
    "features_ar": [
     "كل تطبيقات Adobe أو تطبيق واحد حسب حاجتك",
     "مساحة تخزين سحابية",
@@ -178,17 +316,17 @@
    "requirements_en": "The email address of your Adobe account and the apps you need.",
    "image_url": null,
    "per_user": false,
-   "quote_only": true,
+   "quote_only": false,
    "featured": true,
    "hero": false,
-   "sort": 3,
+   "sort": 5,
    "product_variants": [
     {
      "id": "17d8c88a-7dd3-4794-922f-038eb86daba0",
-     "label_ar": "كل التطبيقات · 12 شهراً",
-     "label_fr": "Toutes les applications · 12 mois",
-     "label_en": "All apps · 12 months",
-     "price_dzd": 0,
+     "label_ar": "كل التطبيقات (Creative Cloud Pro) · 12 شهراً",
+     "label_fr": "Toutes les applications (Creative Cloud Pro) · 12 mois",
+     "label_en": "All apps (Creative Cloud Pro) · 12 months",
+     "price_dzd": 248000,
      "sort": 1
     },
     {
@@ -196,7 +334,7 @@
      "label_ar": "Photoshop · 12 شهراً",
      "label_fr": "Photoshop · 12 mois",
      "label_en": "Photoshop · 12 months",
-     "price_dzd": 0,
+     "price_dzd": 84000,
      "sort": 2
     },
     {
@@ -204,8 +342,65 @@
      "label_ar": "Illustrator · 12 شهراً",
      "label_fr": "Illustrator · 12 mois",
      "label_en": "Illustrator · 12 months",
-     "price_dzd": 0,
+     "price_dzd": 84000,
      "sort": 3
+    }
+   ]
+  },
+  {
+   "id": "ea103e04-750c-40eb-9f5e-82a9ca487ae2",
+   "slug": "canva-pro",
+   "category_id": "design",
+   "name": "Canva Pro",
+   "tagline_ar": "قوالب وصور وأدوات ذكاء اصطناعي لتصاميم السوشيال ميديا والإعلانات، على حسابك.",
+   "tagline_fr": "Modèles, images et outils d’IA pour vos visuels réseaux sociaux et publicités, sur votre compte.",
+   "tagline_en": "Templates, images and AI tools for social media and ad designs, on your account.",
+   "description_ar": "نفعّل اشتراك Canva Pro الرسمي على حسابك أنت: كل القوالب والعناصر المميزة، وإزالة الخلفية، وتغيير مقاس التصاميم بنقرة، وأدوات Canva للذكاء الاصطناعي.",
+   "description_fr": "Nous activons l’abonnement officiel Canva Pro sur votre propre compte : tous les modèles et éléments premium, la suppression d’arrière-plan, le redimensionnement en un clic et les outils d’IA de Canva.",
+   "description_en": "We activate the official Canva Pro subscription on your own account: every premium template and element, background removal, one-click resizing and Canva’s AI tools.",
+   "features_ar": [
+    "ملايين القوالب والعناصر المميزة",
+    "إزالة الخلفية وتغيير المقاس بنقرة",
+    "أدوات Canva للذكاء الاصطناعي",
+    "تفعيل خلال 24 ساعة بعد الدفع"
+   ],
+   "features_fr": [
+    "Des millions de modèles et d’éléments premium",
+    "Suppression d’arrière-plan et redimensionnement en un clic",
+    "Outils IA de Canva",
+    "Activation sous 24 h après paiement"
+   ],
+   "features_en": [
+    "Millions of premium templates and elements",
+    "One-click background removal and resizing",
+    "Canva AI tools",
+    "Activated within 24 hours of payment"
+   ],
+   "requirements_ar": "البريد الإلكتروني لحسابك في Canva.",
+   "requirements_fr": "L’adresse e-mail de votre compte Canva.",
+   "requirements_en": "The email address of your Canva account.",
+   "image_url": null,
+   "per_user": false,
+   "quote_only": false,
+   "featured": false,
+   "hero": false,
+   "sort": 6,
+   "product_variants": [
+    {
+     "id": "71f1ab2a-6dc9-4b13-ba40-d1bef91e95e8",
+     "label_ar": "شهر واحد",
+     "label_fr": "1 mois",
+     "label_en": "1 month",
+     "price_dzd": 5500,
+     "sort": 1
+    },
+    {
+     "id": "14870fae-27cb-4965-9d50-ec2cfa6c5591",
+     "label_ar": "12 شهراً",
+     "label_fr": "12 mois",
+     "label_en": "12 months",
+     "price_dzd": 46000,
+     "sort": 2
     }
    ]
   },
@@ -246,14 +441,14 @@
    "quote_only": false,
    "featured": true,
    "hero": false,
-   "sort": 4,
+   "sort": 7,
    "product_variants": [
     {
      "id": "17fdb8b1-c08b-4b22-b326-1e4cd949a80d",
      "label_ar": "Business Starter · شهر",
      "label_fr": "Business Starter · 1 mois",
      "label_en": "Business Starter · 1 month",
-     "price_dzd": 1700,
+     "price_dzd": 2500,
      "sort": 1
     },
     {
@@ -261,7 +456,7 @@
      "label_ar": "Business Standard · شهر",
      "label_fr": "Business Standard · 1 mois",
      "label_en": "Business Standard · 1 month",
-     "price_dzd": 3100,
+     "price_dzd": 5500,
      "sort": 2
     },
     {
@@ -269,37 +464,110 @@
      "label_ar": "Business Plus · شهر",
      "label_fr": "Business Plus · 1 mois",
      "label_en": "Business Plus · 1 month",
-     "price_dzd": 4700,
+     "price_dzd": 8500,
      "sort": 3
     }
    ]
   },
   {
-   "id": "fc38abb2-31ee-4765-a536-7d7f1dd49a09",
-   "slug": "zoom-workplace-pro",
+   "id": "a8fcfb49-660f-4b94-8ca9-8e9a8cbad7bd",
+   "slug": "microsoft-365",
    "category_id": "collab",
-   "name": "Zoom Workplace Pro",
+   "name": "Microsoft 365",
+   "tagline_ar": "Word وExcel وPowerPoint وOutlook مع 1 تيرابايت OneDrive، رسمياً على حسابك.",
+   "tagline_fr": "Word, Excel, PowerPoint et Outlook avec 1 To OneDrive, officiellement sur votre compte.",
+   "tagline_en": "Word, Excel, PowerPoint and Outlook with 1 TB of OneDrive, officially on your account.",
+   "description_ar": "نفعّل اشتراك Microsoft 365 الرسمي على حساب Microsoft الخاص بك: Personal لشخص واحد، أو Family لعائلة حتى 6 أشخاص، مع 1 تيرابايت OneDrive لكل شخص.",
+   "description_fr": "Nous activons l’abonnement officiel Microsoft 365 sur votre propre compte Microsoft : Personnel pour une personne, ou Famille jusqu’à 6 personnes, avec 1 To OneDrive chacun.",
+   "description_en": "We activate the official Microsoft 365 subscription on your own Microsoft account: Personal for one person, or Family for up to 6 people, with 1 TB of OneDrive each.",
+   "features_ar": [
+    "Word وExcel وPowerPoint وOutlook",
+    "1 تيرابايت OneDrive لكل شخص",
+    "Windows وMac والهاتف",
+    "Family: حتى 6 أشخاص"
+   ],
+   "features_fr": [
+    "Word, Excel, PowerPoint et Outlook",
+    "1 To OneDrive par personne",
+    "Windows, Mac et mobile",
+    "Famille : jusqu’à 6 personnes"
+   ],
+   "features_en": [
+    "Word, Excel, PowerPoint and Outlook",
+    "1 TB of OneDrive per person",
+    "Windows, Mac and mobile",
+    "Family: up to 6 people"
+   ],
+   "requirements_ar": "حساب Microsoft (Outlook أو Hotmail) الذي نفعّل عليه الاشتراك.",
+   "requirements_fr": "Le compte Microsoft (Outlook ou Hotmail) sur lequel activer l’abonnement.",
+   "requirements_en": "The Microsoft account (Outlook or Hotmail) to activate the subscription on.",
+   "image_url": null,
+   "per_user": false,
+   "quote_only": false,
+   "featured": false,
+   "hero": false,
+   "sort": 8,
+   "product_variants": [
+    {
+     "id": "f412e56c-8272-46dd-8367-81cafcc7561d",
+     "label_ar": "Personal · شهر",
+     "label_fr": "Personal · 1 mois",
+     "label_en": "Personal · 1 month",
+     "price_dzd": 3000,
+     "sort": 1
+    },
+    {
+     "id": "e33baa03-ee5d-41cc-a4ee-e55b6ccb22a5",
+     "label_ar": "Personal · سنة",
+     "label_fr": "Personal · 1 an",
+     "label_en": "Personal · 1 year",
+     "price_dzd": 32000,
+     "sort": 2
+    },
+    {
+     "id": "a695ad86-dd06-4612-b3f3-65f8e835b7c5",
+     "label_ar": "Family · شهر",
+     "label_fr": "Family · 1 mois",
+     "label_en": "Family · 1 month",
+     "price_dzd": 4000,
+     "sort": 3
+    },
+    {
+     "id": "2f6ad48a-5c3c-4a67-8d09-2c15c1bbe327",
+     "label_ar": "Family · سنة",
+     "label_fr": "Family · 1 an",
+     "label_en": "Family · 1 year",
+     "price_dzd": 41500,
+     "sort": 4
+    }
+   ]
+  },
+  {
+   "id": "fc38abb2-31ee-4765-a536-7d7f1dd49a09",
+   "slug": "zoom-workplace",
+   "category_id": "collab",
+   "name": "Zoom Workplace",
    "tagline_ar": "اجتماعات طويلة بدون انقطاع الأربعين دقيقة، مع تسجيل سحابي.",
    "tagline_fr": "Des réunions sans la coupure des 40 minutes, avec enregistrement dans le cloud.",
    "tagline_en": "Meetings without the 40-minute cut-off, with cloud recording.",
-   "description_ar": "اشتراك Zoom Workplace Pro رسمي على حسابك، مثالي للدروس عن بعد والاجتماعات مع الزبائن. السعر للمستخدم الواحد.",
-   "description_fr": "Un abonnement Zoom Workplace Pro officiel sur votre compte, idéal pour les cours en ligne et les réunions avec vos clients. Prix par utilisateur.",
-   "description_en": "An official Zoom Workplace Pro subscription on your account, ideal for online classes and client meetings. Prices are per user.",
+   "description_ar": "اشتراك Zoom Workplace رسمي على حسابك، مثالي للدروس عن بعد والاجتماعات مع الزبائن: Pro حتى 100 مشارك، وBusiness حتى 300. السعر للمستخدم الواحد.",
+   "description_fr": "Un abonnement Zoom Workplace officiel sur votre compte, idéal pour les cours en ligne et les réunions avec vos clients : Pro jusqu’à 100 participants, Business jusqu’à 300. Prix par utilisateur.",
+   "description_en": "An official Zoom Workplace subscription on your account, ideal for online classes and client meetings: Pro for up to 100 participants, Business for up to 300. Prices are per user.",
    "features_ar": [
     "اجتماعات تصل إلى 30 ساعة",
-    "حتى 100 مشارك",
+    "Pro: حتى 100 مشارك · Business: حتى 300",
     "تسجيل سحابي",
     "تفعيل خلال 24 ساعة بعد الدفع"
    ],
    "features_fr": [
-    "Réunions jusqu'à 30 heures",
-    "Jusqu'à 100 participants",
+    "Réunions jusqu’à 30 heures",
+    "Pro : jusqu’à 100 participants · Business : jusqu’à 300",
     "Enregistrement dans le cloud",
     "Activation sous 24 h après paiement"
    ],
    "features_en": [
     "Meetings up to 30 hours",
-    "Up to 100 participants",
+    "Pro: up to 100 participants · Business: up to 300",
     "Cloud recording",
     "Activated within 24 hours of payment"
    ],
@@ -311,23 +579,39 @@
    "quote_only": false,
    "featured": false,
    "hero": false,
-   "sort": 5,
+   "sort": 9,
    "product_variants": [
     {
      "id": "dac31d97-df17-4745-b28f-da4018a1b292",
-     "label_ar": "شهر واحد",
-     "label_fr": "1 mois",
-     "label_en": "1 month",
-     "price_dzd": 4500,
+     "label_ar": "Pro · شهر",
+     "label_fr": "Pro · 1 mois",
+     "label_en": "Pro · 1 month",
+     "price_dzd": 5500,
      "sort": 1
     },
     {
      "id": "922f4bf1-ca27-41d5-a5f4-3ed41d93ace2",
-     "label_ar": "12 شهراً",
-     "label_fr": "12 mois",
-     "label_en": "12 months",
-     "price_dzd": 44900,
+     "label_ar": "Pro · سنة",
+     "label_fr": "Pro · 1 an",
+     "label_en": "Pro · 1 year",
+     "price_dzd": 54000,
      "sort": 2
+    },
+    {
+     "id": "ab8309fc-bad4-4aa8-aa79-5fac1fa516fd",
+     "label_ar": "Business · شهر",
+     "label_fr": "Business · 1 mois",
+     "label_en": "Business · 1 month",
+     "price_dzd": 7000,
+     "sort": 3
+    },
+    {
+     "id": "7e8ee2b9-ddc0-4ed2-a992-10fc119d905a",
+     "label_ar": "Business · سنة",
+     "label_fr": "Business · 1 an",
+     "label_en": "Business · 1 year",
+     "price_dzd": 70000,
+     "sort": 4
     }
    ]
   },
@@ -368,7 +652,7 @@
    "quote_only": false,
    "featured": true,
    "hero": false,
-   "sort": 6,
+   "sort": 10,
    "product_variants": [
     {
      "id": "52b31a4b-c58f-48af-8f4b-6c7ddfdc9563",

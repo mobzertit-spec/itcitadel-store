@@ -1,5 +1,5 @@
 import type { Session } from '@supabase/supabase-js'
-import { LogOut, MessageSquareQuote, Package, ShoppingBag } from 'lucide-react'
+import { Calculator, LogOut, MessageSquareQuote, Package, ShoppingBag } from 'lucide-react'
 import { useEffect, useState, type ReactNode } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { LogoMark } from '@/components/Logo'
@@ -7,6 +7,7 @@ import { db } from './db'
 import Login from './Login'
 
 export { default as Orders } from './Orders'
+export { default as Pricing } from './Pricing'
 export { default as ProductEdit } from './ProductEdit'
 export { default as Products } from './Products'
 export { default as Reviews } from './Reviews'
@@ -62,6 +63,9 @@ export default function AdminApp() {
             </NavLink>
             <NavLink to="/admin/products" className={tab}>
               <Package className="size-4" /> المنتجات
+            </NavLink>
+            <NavLink to="/admin/pricing" className={tab}>
+              <Calculator className="size-4" /> التسعير
             </NavLink>
             <NavLink to="/admin/reviews" className={tab}>
               <MessageSquareQuote className="size-4" /> آراء الزبائن

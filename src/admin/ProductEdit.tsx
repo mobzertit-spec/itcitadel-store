@@ -189,7 +189,7 @@ export default function ProductEdit() {
               <X className="size-4" /> إزالة
             </button>
           )}
-          <p className="basis-full text-xs text-muted">PNG أو JPG أو WebP، أقل من 2 ميغا. فقط للمنتجات التي ليس لها شعار رسمي في المتجر.</p>
+          <p className="basis-full text-xs text-muted">PNG أو JPG أو WebP، أقل من 2 ميغا. الصورة المرفوعة تحلّ محل الشعار الرسمي في المتجر (مثلاً شعار Magnific الجديد).</p>
         </div>
       </section>
 

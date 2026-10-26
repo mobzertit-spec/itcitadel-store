@@ -160,11 +160,11 @@ const ar = {
   },
   notFound: { title: 'الصفحة غير موجودة', back: 'العودة إلى الرئيسية' },
   meta: {
-    homeTitle: 'ITCITADEL | اشتراكات ChatGPT وAdobe والذكاء الاصطناعي بالدينار في الجزائر',
+    homeTitle: 'ITCITADEL | اشتراكات Claude وChatGPT وAdobe والذكاء الاصطناعي بالدينار في الجزائر',
     homeDescription:
-      'اشتراكات رقمية أصلية مفعّلة على حسابك: ChatGPT Plus وAdobe وFreepik وGoogle Workspace وZoom وKaspersky. اطلب أونلاين وادفع نقداً في مكتبنا بأولاد سمار، الجزائر العاصمة.',
+      'اشتراكات رقمية أصلية مفعّلة على حسابك: Claude وChatGPT وGemini وAdobe وCanva وMagnific وMicrosoft 365 وZoom وKaspersky. اطلب أونلاين وادفع نقداً في مكتبنا بأولاد سمار، الجزائر العاصمة.',
     catalogTitle: 'كل الاشتراكات وأسعارها بالدينار | ITCITADEL',
-    catalogDescription: 'أسعار ChatGPT Plus وFreepik وAdobe وGoogle Workspace وZoom وKaspersky بالدينار الجزائري، مع التفعيل على حسابك والدفع نقداً في مكتبنا.',
+    catalogDescription: 'أسعار Claude وChatGPT وGemini وAdobe وCanva وMagnific وMicrosoft 365 وGoogle Workspace وZoom وKaspersky بالدينار الجزائري، مع التفعيل على حسابك والدفع نقداً في مكتبنا.',
     productTitle: '{name} في الجزائر بالدينار | ITCITADEL',
     legalTitle: 'الشروط والمعلومات القانونية | ITCITADEL',
     legalDescription: 'شروط البيع والمعلومات القانونية وحماية المعطيات الشخصية لمتجر ITCITADEL.',
@@ -330,11 +330,11 @@ const fr: Dict = {
   },
   notFound: { title: 'Page introuvable', back: 'Retour à l’accueil' },
   meta: {
-    homeTitle: 'ITCITADEL | Abonnements ChatGPT, Adobe et IA en dinars – Algérie',
+    homeTitle: 'ITCITADEL | Abonnements Claude, ChatGPT, Adobe et IA en dinars – Algérie',
     homeDescription:
-      'Abonnements logiciels officiels activés sur votre compte : ChatGPT Plus, Adobe, Freepik, Google Workspace, Zoom, Kaspersky. Commandez en ligne, payez en espèces à notre bureau d’Oued Smar, Alger.',
+      'Abonnements logiciels officiels activés sur votre compte : Claude, ChatGPT, Gemini, Adobe, Canva, Magnific, Microsoft 365, Zoom, Kaspersky. Commandez en ligne, payez en espèces à notre bureau d’Oued Smar, Alger.',
     catalogTitle: 'Tous les abonnements et leurs prix en dinars | ITCITADEL',
-    catalogDescription: 'Prix de ChatGPT Plus, Freepik, Adobe, Google Workspace, Zoom et Kaspersky en dinars algériens, activés sur votre compte, payés en espèces au bureau.',
+    catalogDescription: 'Prix de Claude, ChatGPT, Gemini, Adobe, Canva, Magnific, Microsoft 365, Google Workspace, Zoom et Kaspersky en dinars algériens, activés sur votre compte, payés en espèces au bureau.',
     productTitle: '{name} en Algérie, payé en dinars | ITCITADEL',
     legalTitle: 'Conditions et mentions légales | ITCITADEL',
     legalDescription: 'Conditions générales de vente, mentions légales et protection des données personnelles de la boutique ITCITADEL.',
@@ -498,11 +498,11 @@ const en: Dict = {
   },
   notFound: { title: 'Page not found', back: 'Back to the home page' },
   meta: {
-    homeTitle: 'ITCITADEL | ChatGPT, Adobe & AI subscriptions in dinars – Algeria',
+    homeTitle: 'ITCITADEL | Claude, ChatGPT, Adobe & AI subscriptions in dinars – Algeria',
     homeDescription:
-      'Official software subscriptions activated on your own account: ChatGPT Plus, Adobe, Freepik, Google Workspace, Zoom, Kaspersky. Order online, pay cash at our office in Oued Smar, Algiers.',
+      'Official software subscriptions activated on your own account: Claude, ChatGPT, Gemini, Adobe, Canva, Magnific, Microsoft 365, Zoom, Kaspersky. Order online, pay cash at our office in Oued Smar, Algiers.',
     catalogTitle: 'All subscriptions and their prices in dinars | ITCITADEL',
-    catalogDescription: 'ChatGPT Plus, Freepik, Adobe, Google Workspace, Zoom and Kaspersky prices in Algerian dinars, activated on your account, paid cash at our office.',
+    catalogDescription: 'Claude, ChatGPT, Gemini, Adobe, Canva, Magnific, Microsoft 365, Google Workspace, Zoom and Kaspersky prices in Algerian dinars, activated on your account, paid cash at our office.',
     productTitle: '{name} in Algeria, paid in dinars | ITCITADEL',
     legalTitle: 'Terms and legal information | ITCITADEL',
     legalDescription: 'Terms of sale, legal information and personal data protection for the ITCITADEL store.',

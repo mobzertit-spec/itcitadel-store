@@ -26,7 +26,7 @@ const BY_SLUG: [RegExp, LogoKey][] = [
   [/gemini/, 'gemini'],
   [/adobe|photoshop|illustrator/, 'adobe'],
   [/canva/, 'canva'],
-  [/freepik/, 'freepik'],
+  [/freepik|magnific/, 'freepik'], // Magnific is Freepik's new name; upload its own logo in the dashboard
   [/microsoft|office|m365/, 'microsoft'],
   [/google|workspace/, 'google'],
   [/zoom/, 'zoom'],

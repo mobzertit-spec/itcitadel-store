@@ -31,7 +31,7 @@ export const TERMS: Record<Lang, Section[]> = {
     },
     {
       title: 'العلامات التجارية',
-      paragraphs: ['أسماء المنتجات وشعاراتها (ChatGPT وAdobe وFreepik وGoogle Workspace وZoom وKaspersky وغيرها) علامات تجارية لأصحابها. ITCITADEL موزّع مستقل، وتخضع كل خدمة أيضاً لشروط استخدام ناشرها.'],
+      paragraphs: ['أسماء المنتجات وشعاراتها (Claude وChatGPT وGemini وAdobe وCanva وMagnific وMicrosoft 365 وGoogle Workspace وZoom وKaspersky وغيرها) علامات تجارية لأصحابها. ITCITADEL موزّع مستقل، وتخضع كل خدمة أيضاً لشروط استخدام ناشرها.'],
     },
   ],
   fr: [
@@ -61,7 +61,7 @@ export const TERMS: Record<Lang, Section[]> = {
     {
       title: 'Marques',
       paragraphs: [
-        'Les noms et logos des produits (ChatGPT, Adobe, Freepik, Google Workspace, Zoom, Kaspersky et autres) sont des marques de leurs propriétaires respectifs. ITCITADEL est un revendeur indépendant ; chaque service reste soumis aux conditions d’utilisation de son éditeur.',
+        'Les noms et logos des produits (Claude, ChatGPT, Gemini, Adobe, Canva, Magnific, Microsoft 365, Google Workspace, Zoom, Kaspersky et autres) sont des marques de leurs propriétaires respectifs. ITCITADEL est un revendeur indépendant ; chaque service reste soumis aux conditions d’utilisation de son éditeur.',
       ],
     },
   ],
@@ -92,7 +92,7 @@ export const TERMS: Record<Lang, Section[]> = {
     {
       title: 'Trademarks',
       paragraphs: [
-        'Product names and logos (ChatGPT, Adobe, Freepik, Google Workspace, Zoom, Kaspersky and others) are trademarks of their respective owners. ITCITADEL is an independent reseller, and each service is also governed by its publisher’s terms of use.',
+        'Product names and logos (Claude, ChatGPT, Gemini, Adobe, Canva, Magnific, Microsoft 365, Google Workspace, Zoom, Kaspersky and others) are trademarks of their respective owners. ITCITADEL is an independent reseller, and each service is also governed by its publisher’s terms of use.',
       ],
     },
   ],
