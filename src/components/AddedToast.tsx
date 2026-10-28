@@ -5,15 +5,22 @@ import type { Lang } from '@shared/validate'
 import { cart } from '@/lib/cart'
 import type { Product, Variant } from '@/lib/catalog'
 import { href, pick, useLang, useT } from '@/lib/lang'
+import { flyToCart } from '@/lib/motion'
 import { track } from '@/lib/track'
 
 type Added = { ok: boolean; name: string; plan: string; key: number }
 const EVENT = 'itc:added'
 
-/** Puts a plan in the cart and tells the page (the notice below shows it). False when the cart is full. */
-export function addToCart(product: Product, variant: Variant, qty: number, lang: Lang): boolean {
+/**
+ * Puts a plan in the cart and tells the page (the notice below shows it). False when the cart is full.
+ * `from`, the button pressed, sends the product's logo flying into the cart icon.
+ */
+export function addToCart(product: Product, variant: Variant, qty: number, lang: Lang, from?: Element): boolean {
   const ok = cart.add(variant.id, qty)
-  if (ok) track('AddToCart', { content_name: product.name, value: variant.price_dzd * qty })
+  if (ok) {
+    track('AddToCart', { content_name: product.name, value: variant.price_dzd * qty })
+    if (from) flyToCart(from)
+  }
   const detail: Added = { ok, name: product.name, plan: pick(variant, 'label', lang), key: Date.now() }
   window.dispatchEvent(new CustomEvent(EVENT, { detail }))
   return ok
@@ -39,7 +46,7 @@ export function AddedToast() {
   return (
     <div aria-live="polite" className="pointer-events-none fixed inset-x-4 bottom-28 z-50 flex justify-center lg:bottom-8">
       {added && (
-        <div key={added.key} className="glass pointer-events-auto flex max-w-lg items-center gap-4 rounded-full py-2.5 ps-5 pe-2.5">
+        <div key={added.key} className="glass pointer-events-auto flex max-w-lg animate-rise items-center gap-4 rounded-full py-2.5 ps-5 pe-2.5">
           {added.ok ? <Check className="size-5 shrink-0" aria-hidden="true" /> : <TriangleAlert className="size-5 shrink-0 text-accent" aria-hidden="true" />}
           <span className="min-w-0 text-sm">
             {added.ok ? (

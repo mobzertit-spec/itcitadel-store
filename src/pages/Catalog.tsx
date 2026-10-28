@@ -28,11 +28,11 @@ export default function Catalog() {
       <p className="mt-3 text-lg text-muted">{t.catalog.lead}</p>
 
       <nav className="-mx-4 mt-8 flex gap-2 overflow-x-auto px-4 [scrollbar-width:none] sm:mx-0 sm:flex-wrap sm:px-0" aria-label={t.footer.store}>
-        <Link to={href(lang, 'products')} className="pill" aria-current={!active && !q ? 'page' : undefined}>
+        <Link to={href(lang, 'products')} viewTransition className="pill" aria-current={!active && !q ? 'page' : undefined}>
           {t.catalog.all}
         </Link>
         {catalog.categories.map((c) => (
-          <Link key={c.id} to={`${href(lang, 'products')}?c=${c.id}`} className="pill" aria-current={active === c.id ? 'page' : undefined}>
+          <Link key={c.id} to={`${href(lang, 'products')}?c=${c.id}`} viewTransition className="pill" aria-current={active === c.id ? 'page' : undefined}>
             {pick(c, 'name', lang)}
           </Link>
         ))}
@@ -40,8 +40,8 @@ export default function Catalog() {
 
       {products.length ? (
         <div className={`mt-8 ${tileGrid(catalog.products.length)}`}>
-          {products.map((p) => (
-            <ProductTile key={p.id} product={p} catalog={catalog} />
+          {products.map((p, i) => (
+            <ProductTile key={p.id} product={p} catalog={catalog} i={i} />
           ))}
         </div>
       ) : (

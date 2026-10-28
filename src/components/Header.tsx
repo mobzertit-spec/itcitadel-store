@@ -24,13 +24,13 @@ export function Header() {
           </a>
         </span>
       </div>
-      <header className="sticky top-0 z-40 border-b border-line bg-bg/80 backdrop-blur-xl">
+      <header className="header-scroll sticky top-0 z-40 border-b border-line bg-bg/80 backdrop-blur-xl [view-transition-name:header]">
         <div className="container-x flex h-[72px] items-center gap-4 lg:gap-8">
-          <Link to={href(lang)} aria-label="ITCITADEL" className="shrink-0">
+          <Link to={href(lang)} viewTransition aria-label="ITCITADEL" className="shrink-0">
             <Logo />
           </Link>
           <nav className="hidden items-center gap-7 lg:flex" aria-label={t.nav.menu}>
-            <NavLink to={href(lang, 'products')} className={({ isActive }) => `text-[1.05rem] transition hover:text-fg ${isActive ? 'text-fg' : 'text-muted'}`}>
+            <NavLink to={href(lang, 'products')} viewTransition className={({ isActive }) => `text-[1.05rem] transition hover:text-fg ${isActive ? 'text-fg' : 'text-muted'}`}>
               {t.nav.store}
             </NavLink>
             {/* sections of the home page: never "current", even on the home page */}
@@ -44,10 +44,18 @@ export function Header() {
           <SearchBox className="hidden flex-1 md:flex" />
           <div className="ms-auto flex items-center gap-2 md:ms-0">
             <LangSwitch />
-            <Link to={href(lang, 'cart')} className="relative inline-flex size-11 items-center justify-center rounded-full bg-raised transition hover:bg-white/10" aria-label={`${t.nav.cart} (${lines.length})`}>
+            <Link
+              to={href(lang, 'cart')}
+              viewTransition
+              data-cart-target
+              className="relative inline-flex size-11 items-center justify-center rounded-full bg-raised transition hover:bg-white/10 active:scale-95"
+              aria-label={`${t.nav.cart} (${lines.length})`}
+            >
               <ShoppingBag className="size-5" strokeWidth={1.8} aria-hidden="true" />
               {lines.length > 0 && (
-                <span className="latin absolute -top-1 -end-1 inline-flex size-5 items-center justify-center rounded-full bg-accent text-[11px] font-bold text-accent-ink">{lines.length}</span>
+                <span key={lines.length} className="latin absolute -top-1 -end-1 inline-flex size-5 animate-pop items-center justify-center rounded-full bg-accent text-[11px] font-bold text-accent-ink">
+                  {lines.length}
+                </span>
               )}
             </Link>
           </div>

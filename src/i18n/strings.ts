@@ -38,6 +38,11 @@ const ar = {
   home: {
     onYourAccount: 'على حسابك أنت',
     activation: 'تفعيل خلال 24 ساعة',
+    carousel: 'اشتراكات مختارة',
+    slide: '{n} من {total}',
+    pick: 'اختر الاشتراك المعروض',
+    pause: 'أوقف التبديل التلقائي',
+    play: 'شغّل التبديل التلقائي',
     trust: [
       { title: 'اشتراك رسمي', text: 'على حسابك، لا حسابات مشتركة' },
       { title: 'تفعيل خلال 24 ساعة', text: 'بعد الدفع' },
@@ -208,6 +213,11 @@ const fr: Dict = {
   home: {
     onYourAccount: 'Sur votre propre compte',
     activation: 'Activation sous 24 h',
+    carousel: 'Abonnements à la une',
+    slide: '{n} sur {total}',
+    pick: 'Choisir l’abonnement affiché',
+    pause: 'Arrêter le défilement automatique',
+    play: 'Relancer le défilement automatique',
     trust: [
       { title: 'Abonnement officiel', text: 'Sur votre compte, jamais partagé' },
       { title: 'Activation sous 24 h', text: 'Après le paiement' },
@@ -376,6 +386,11 @@ const en: Dict = {
   home: {
     onYourAccount: 'On your own account',
     activation: 'Activated within 24 h',
+    carousel: 'Featured subscriptions',
+    slide: '{n} of {total}',
+    pick: 'Choose the subscription shown',
+    pause: 'Stop automatic rotation',
+    play: 'Start automatic rotation',
     trust: [
       { title: 'Official subscription', text: 'On your account, never shared' },
       { title: 'Activated within 24 h', text: 'Once you have paid' },

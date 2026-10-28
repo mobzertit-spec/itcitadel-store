@@ -90,6 +90,66 @@ test('a product without a public price asks for it on WhatsApp, and cannot be ad
   await expect(page.getByRole('button', { name: 'Ajouter au panier' })).toHaveCount(0)
 })
 
+// the products at the top of the home page: the owner's pick, then two more (as heroProducts() picks them)
+const hero = catalog.products.find((p) => p.hero) ?? catalog.products[0]
+const others = catalog.products.filter((p) => p !== hero && !p.quote_only)
+const featured = [hero, ...[...others.filter((p) => p.featured), ...others.filter((p) => !p.featured)].slice(0, 2)]
+
+test('the top of the home page shows the featured products one at a time, and the visitor picks one', async ({ page, request }) => {
+  // prerendered: the first one is in the page before any script runs
+  const html = await (await request.get('/fr/')).text()
+  expect(html).toContain('aria-roledescription="carousel"')
+  expect(html).toContain(hero.name)
+
+  await fakeSupabase(page)
+  await page.goto('/fr/')
+  const tabs = page.getByRole('tab')
+  await expect(tabs).toHaveCount(featured.length)
+  await expect(page.getByRole('tab', { selected: true })).toHaveAccessibleName(hero.name)
+  // only the product in front is offered to screen readers
+  await expect(page.getByRole('tabpanel')).toHaveCount(1)
+  await expect(page.getByRole('tabpanel').getByRole('heading', { level: 2 })).toHaveText(hero.name)
+
+  await tabs.nth(1).click()
+  await expect(tabs.nth(1)).toHaveAttribute('aria-selected', 'true')
+  await expect(page.getByRole('tabpanel').getByRole('heading', { level: 2 })).toHaveText(featured[1].name)
+  // asked for less motion (the tests' default): nothing turns, so there is nothing to pause
+  await expect(page.getByRole('button', { name: /défilement automatique/ })).toHaveCount(0)
+})
+
+test.describe('with motion', () => {
+  test.use({ contextOptions: { reducedMotion: 'no-preference' } })
+
+  test('the top of the home page turns by itself until paused', async ({ page }) => {
+    await fakeSupabase(page)
+    await page.goto('/fr/')
+    await expect(page.getByRole('tab', { selected: true })).toHaveAccessibleName(hero.name)
+    await expect(page.getByRole('tab', { selected: true })).toHaveAccessibleName(featured[1].name, { timeout: 10_000 })
+    await page.getByRole('button', { name: 'Arrêter le défilement automatique' }).click()
+    await expect(page.getByRole('button', { name: 'Relancer le défilement automatique' })).toBeVisible()
+    await expect(page.locator('[role="tab"][aria-selected="true"] [style*="progress"]')).toHaveCount(0)
+  })
+
+  test('adding a product sends its logo flying into the cart', async ({ page }) => {
+    await fakeSupabase(page)
+    await page.goto('/fr/')
+    await page.getByRole('button', { name: `Ajouter ${priced.name} au panier` }).click()
+    await expect(page.locator('[data-flying]')).toHaveCount(1)
+    await expect(page.locator('[data-flying]')).toHaveCount(0)
+    await expect(page.getByRole('link', { name: 'Panier (1)' })).toBeVisible()
+    await expect(page.getByText('Ajouté au panier')).toBeVisible()
+  })
+})
+
+test('asked for less motion, adding a product just updates the cart', async ({ page }) => {
+  await fakeSupabase(page)
+  await page.goto('/fr/')
+  await page.getByRole('button', { name: `Ajouter ${priced.name} au panier` }).click()
+  await expect(page.getByText('Ajouté au panier')).toBeVisible()
+  await expect(page.getByRole('link', { name: 'Panier (1)' })).toBeVisible()
+  await expect(page.locator('[data-flying]')).toHaveCount(0)
+})
+
 test('the owner signs in, sees a new order with all its lines and confirms it', async ({ page }) => {
   const sent = await fakeSupabase(page, {
     orders: [

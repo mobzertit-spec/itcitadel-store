@@ -1,5 +1,5 @@
 import { Check, Clock3, Mail, MapPin, MessageCircle, ShoppingBag } from 'lucide-react'
-import { useEffect, useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { addToCart } from '@/components/AddedToast'
 import { BrandLogo, ProductMark } from '@/components/BrandLogo'
@@ -12,6 +12,7 @@ import { waLink } from '@/config'
 import { fill } from '@/i18n/strings'
 import { useCatalog, type Catalog, type Product } from '@/lib/catalog'
 import { href, pick, pickList, useLang, useT } from '@/lib/lang'
+import { stagger, useMorphTarget, useTilt } from '@/lib/motion'
 import { productJsonLd } from '@/lib/pages'
 import { track } from '@/lib/track'
 import NotFound from './NotFound'
@@ -33,6 +34,9 @@ function ProductView({ product, catalog }: { product: Product; catalog: Catalog 
   const variants = product.product_variants
   const [variantId, setVariantId] = useState(variants[0]?.id)
   const [qty, setQty] = useState(1)
+  const logoTile = useRef<HTMLDivElement>(null)
+  const tilt = useTilt<HTMLDivElement>(10)
+  useMorphTarget(logoTile, product.slug)
   const variant = variants.find((v) => v.id === variantId) ?? variants[0]
   const category = catalog.categories.find((c) => c.id === product.category_id)
   const logo = logoFor(product.slug)
@@ -50,7 +54,7 @@ function ProductView({ product, catalog }: { product: Product; catalog: Catalog 
   }, [product.id])
 
   const buyNow = () => {
-    if (variant && addToCart(product, variant, qty, lang)) navigate(href(lang, 'cart'))
+    if (variant && addToCart(product, variant, qty, lang)) navigate(href(lang, 'cart'), { viewTransition: true })
   }
   const waText = `${product.name}${variant ? ` — ${pick(variant, 'label', lang)}` : ''}`
 
@@ -60,13 +64,13 @@ function ProductView({ product, catalog }: { product: Product; catalog: Catalog 
       {buyable && <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: productJsonLd(product, lang) }} />}
 
       <nav aria-label={t.nav.menu} className="flex flex-wrap gap-2.5 text-sm text-muted">
-        <Link to={href(lang, 'products')} className="hover:text-fg">
+        <Link to={href(lang, 'products')} viewTransition className="hover:text-fg">
           {t.nav.store}
         </Link>
         {category && (
           <>
             <span aria-hidden="true">/</span>
-            <Link to={`${href(lang, 'products')}?c=${category.id}`} className="hover:text-fg">
+            <Link to={`${href(lang, 'products')}?c=${category.id}`} viewTransition className="hover:text-fg">
               {pick(category, 'name', lang)}
             </Link>
           </>
@@ -76,11 +80,15 @@ function ProductView({ product, catalog }: { product: Product; catalog: Catalog 
       </nav>
 
       <section className="mt-6 grid items-start gap-8 lg:mt-8 lg:grid-cols-[1.2fr_1fr] lg:gap-16">
-        <div className="spotlight flex aspect-[1.1] items-center justify-center rounded-[36px] border border-line bg-surface lg:sticky lg:top-28">
-          <div className="glass flex size-[58%] items-center justify-center rounded-[22%]">
-            <span className="scale-[0.6] sm:scale-100">
-              <ProductMark product={product} size={140} />
-            </span>
+        <div data-fly-scope className="spotlight flex aspect-[1.1] items-center justify-center rounded-[36px] border border-line bg-surface lg:sticky lg:top-28">
+          <div className="flex size-[58%] animate-float items-center justify-center">
+            <div ref={tilt} className="size-full">
+              <div ref={logoTile} data-fly className="glass flex size-full items-center justify-center rounded-[22%]">
+                <span className="scale-[0.6] sm:scale-100">
+                  <ProductMark product={product} size={140} />
+                </span>
+              </div>
+            </div>
           </div>
         </div>
 
@@ -103,7 +111,7 @@ function ProductView({ product, catalog }: { product: Product; catalog: Catalog 
               return (
                 <label
                   key={v.id}
-                  className={`flex cursor-pointer items-center justify-between gap-3 rounded-[20px] bg-surface px-5 py-4 transition ${on ? 'border-2 border-fg' : 'border border-line-strong/60 hover:border-fg/50'}`}
+                  className={`flex cursor-pointer items-center justify-between gap-3 rounded-[20px] bg-surface px-5 py-4 transition active:scale-[0.99] ${on ? 'border-2 border-fg' : 'border border-line-strong/60 hover:border-fg/50'}`}
                 >
                   <span className="flex items-center gap-3.5">
                     <input type="radio" name="variant" value={v.id} checked={on} onChange={() => setVariantId(v.id)} className="size-5 accent-fg" />
@@ -119,7 +127,7 @@ function ProductView({ product, catalog }: { product: Product; catalog: Catalog 
             <div className="flex flex-col gap-3">
               <div className="flex gap-3">
                 <Stepper value={qty} onChange={setQty} label={product.per_user ? t.product.users : t.product.quantity} />
-                <button type="button" className="btn-accent h-14 flex-1" onClick={() => addToCart(product, variant, qty, lang)}>
+                <button type="button" className="btn-accent h-14 flex-1" onClick={(e) => addToCart(product, variant, qty, lang, e.currentTarget)}>
                   <ShoppingBag className="size-5" aria-hidden="true" />
                   {t.cta.addToCart}
                 </button>
@@ -139,7 +147,7 @@ function ProductView({ product, catalog }: { product: Product; catalog: Catalog 
             </div>
           )}
 
-          <ul className="card px-6 py-1.5">
+          <ul className="card reveal px-6 py-1.5">
             {t.product.info.map((info, i) => {
               const Icon = INFO_ICONS[i]
               return (
@@ -165,11 +173,11 @@ function ProductView({ product, catalog }: { product: Product; catalog: Catalog 
 
       <section className="mt-24 grid gap-12 lg:grid-cols-2 lg:gap-16">
         <div className="flex flex-col gap-6">
-          <h2 className="text-3xl font-extrabold sm:text-4xl">{t.product.included}</h2>
-          <p className="text-lg text-muted">{pick(product, 'description', lang)}</p>
+          <h2 className="reveal text-3xl font-extrabold sm:text-4xl">{t.product.included}</h2>
+          <p className="reveal text-lg text-muted">{pick(product, 'description', lang)}</p>
           <ul className="grid gap-3 sm:grid-cols-2">
-            {pickList(product, 'features', lang).map((f) => (
-              <li key={f} className="card flex items-start gap-3 rounded-3xl p-5">
+            {pickList(product, 'features', lang).map((f, i) => (
+              <li key={f} className="card reveal flex items-start gap-3 rounded-3xl p-5" style={stagger(i % 2)}>
                 <Check className="mt-1 size-5 shrink-0" aria-hidden="true" />
                 <span>{f}</span>
               </li>
@@ -178,18 +186,18 @@ function ProductView({ product, catalog }: { product: Product; catalog: Catalog 
         </div>
         {pick(product, 'requirements', lang) && (
           <div className="flex flex-col gap-6">
-            <h2 className="text-3xl font-extrabold sm:text-4xl">{t.product.needs}</h2>
-            <p className="card p-6 text-lg text-fg-2">{pick(product, 'requirements', lang)}</p>
+            <h2 className="reveal text-3xl font-extrabold sm:text-4xl">{t.product.needs}</h2>
+            <p className="card reveal p-6 text-lg text-fg-2">{pick(product, 'requirements', lang)}</p>
           </div>
         )}
       </section>
 
       {related.length > 0 && (
         <section className="mt-24 flex flex-col gap-7">
-          <h2 className="text-3xl font-extrabold sm:text-4xl">{t.product.related}</h2>
+          <h2 className="reveal text-3xl font-extrabold sm:text-4xl">{t.product.related}</h2>
           <div className="grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3">
-            {related.map((p) => (
-              <ProductTile key={p.id} product={p} catalog={catalog} />
+            {related.map((p, i) => (
+              <ProductTile key={p.id} product={p} catalog={catalog} i={i} />
             ))}
           </div>
         </section>

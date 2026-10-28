@@ -12,6 +12,7 @@ import { submit } from '@/lib/api'
 import { cart, resolve, useCart } from '@/lib/cart'
 import { useCatalog } from '@/lib/catalog'
 import { href, pick, useLang, useT } from '@/lib/lang'
+import { withViewTransition } from '@/lib/motion'
 import { track } from '@/lib/track'
 
 export const DONE_KEY = 'itc:last-order'
@@ -85,7 +86,7 @@ export default function CartPage() {
         </span>
         <h1 className="mt-6 text-3xl font-extrabold">{t.cart.empty}</h1>
         <p className="mt-2 max-w-md text-lg text-muted">{t.cart.emptyLead}</p>
-        <Link to={href(lang, 'products')} className="btn-light mt-8 h-14 px-8">
+        <Link to={href(lang, 'products')} viewTransition className="btn-light mt-8 h-14 px-8">
           {t.cta.browse}
         </Link>
       </div>
@@ -103,7 +104,11 @@ export default function CartPage() {
           </div>
           <ul className="mt-4">
             {lines.map((l) => (
-              <li key={l.v} className="grid grid-cols-[4.5rem_1fr_auto] items-center gap-4 border-b border-line py-5 sm:grid-cols-[6rem_1fr_auto] sm:gap-6">
+              <li
+                key={l.v}
+                className="grid grid-cols-[4.5rem_1fr_auto] items-center gap-4 border-b border-line py-5 sm:grid-cols-[6rem_1fr_auto] sm:gap-6"
+                style={{ viewTransitionName: `line-${l.v}` }}
+              >
                 <span className="logo-stage size-[4.5rem] rounded-[22px] sm:size-24">{l.product && <ProductMark product={l.product} size={40} />}</span>
                 <div className="flex min-w-0 flex-col gap-2.5">
                   {l.product && l.variant ? (
@@ -120,12 +125,16 @@ export default function CartPage() {
                   )}
                   <span className="flex items-center gap-4">
                     {l.product && <Stepper size="sm" value={l.q} onChange={(q) => cart.set(l.v, q)} label={l.product.per_user ? t.product.users : t.product.quantity} />}
-                    <button type="button" onClick={() => cart.remove(l.v)} className="text-sm text-muted underline underline-offset-4 hover:text-fg">
+                    <button type="button" onClick={() => withViewTransition(() => cart.remove(l.v))} className="text-sm text-muted underline underline-offset-4 hover:text-fg">
                       {t.cart.remove}
                     </button>
                   </span>
                 </div>
-                {l.variant && <Money value={l.variant.price_dzd * l.q} className="text-xl" />}
+                {l.variant && (
+                  <span key={l.q} className="animate-rise-fast">
+                    <Money value={l.variant.price_dzd * l.q} className="text-xl" />
+                  </span>
+                )}
               </li>
             ))}
           </ul>
@@ -189,7 +198,9 @@ export default function CartPage() {
         </ul>
         <div className="flex items-baseline justify-between gap-4 border-t border-line pt-5">
           <b className="text-xl">{t.cart.total}</b>
-          <Money value={total} className="text-4xl" />
+          <span key={total} className="animate-rise-fast">
+            <Money value={total} className="text-4xl" />
+          </span>
         </div>
         <span className="-mt-3 text-sm text-faint">{t.price.ttc}</span>
         {problem && (

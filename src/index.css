@@ -21,6 +21,53 @@
 
   --font-sans: 'Inter Variable', 'Zain', ui-sans-serif, system-ui, sans-serif;
   --font-latin: 'Inter Variable', ui-sans-serif, system-ui, sans-serif;
+
+  /* motion: calm and short, like the rest of the identity. "translate"/"scale" here, "transform" for tilt and hover */
+  --ease-smooth: cubic-bezier(0.22, 1, 0.36, 1);
+  --ease-spring: cubic-bezier(0.34, 1.56, 0.64, 1);
+  --animate-float: float 6s ease-in-out infinite;
+  --animate-pop: pop 380ms var(--ease-spring);
+  --animate-rise: rise 600ms var(--ease-smooth) both;
+  --animate-rise-fast: rise 280ms var(--ease-smooth) both;
+  @keyframes float {
+    50% {
+      translate: 0 -8px;
+    }
+  }
+  @keyframes pop {
+    0% {
+      scale: 0.6;
+    }
+    60% {
+      scale: 1.2;
+    }
+  }
+  @keyframes rise {
+    from {
+      opacity: 0;
+      translate: 0 16px;
+    }
+  }
+}
+
+/* entering the screen: from slightly lower and transparent, driven by the scroll itself (no script, nothing hidden without it) */
+@keyframes reveal {
+  from {
+    opacity: 0;
+    translate: 0 24px;
+    scale: 0.98;
+  }
+}
+@keyframes header-solid {
+  to {
+    background-color: rgb(0 0 0 / 0.92);
+    border-color: rgb(255 255 255 / 0.14);
+  }
+}
+@keyframes progress {
+  from {
+    scale: 0 1;
+  }
 }
 
 @layer base {
@@ -56,6 +103,29 @@
   :focus-visible {
     @apply outline-2 outline-offset-2 outline-fg;
   }
+  /* FAQ answers open smoothly where the browser can animate to "auto" */
+  :root {
+    interpolate-size: allow-keywords;
+  }
+  details::details-content {
+    block-size: 0;
+    overflow: hidden;
+    transition:
+      block-size 280ms var(--ease-smooth),
+      content-visibility 280ms allow-discrete;
+  }
+  details[open]::details-content {
+    block-size: auto;
+  }
+  /* page changes: a short crossfade; the header and the tab bar stay put; a product's logo grows into its page */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 220ms;
+  }
+  ::view-transition-group(*) {
+    animation-duration: 420ms;
+    animation-timing-function: var(--ease-smooth);
+  }
   @media (prefers-reduced-motion: reduce) {
     html {
       scroll-behavior: auto;
@@ -64,7 +134,13 @@
     ::before,
     ::after {
       animation-duration: 0.01ms !important;
+      animation-iteration-count: 1 !important;
       transition-duration: 0.01ms !important;
+    }
+    ::view-transition-group(*),
+    ::view-transition-old(*),
+    ::view-transition-new(*) {
+      animation: none !important;
     }
   }
 }
@@ -75,11 +151,26 @@
 }
 @utility btn {
   @apply inline-flex h-12 items-center justify-center gap-2 rounded-full px-6 text-base font-bold whitespace-nowrap transition
-    disabled:cursor-not-allowed disabled:opacity-60;
+    active:scale-[0.97] disabled:cursor-not-allowed disabled:opacity-60;
 }
-/* buying: the only orange button */
+/* buying: the only orange button; a white sheen crosses it under the mouse */
 @utility btn-accent {
-  @apply btn bg-accent text-accent-ink hover:brightness-110;
+  @apply btn relative isolate overflow-hidden bg-accent text-accent-ink hover:brightness-110;
+  &::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    pointer-events: none;
+    background: linear-gradient(105deg, transparent 30%, rgb(255 255 255 / 0.45) 50%, transparent 70%);
+    translate: -110% 0;
+  }
+  @media (hover: hover) and (pointer: fine) {
+    &:hover:not(:disabled)::after {
+      translate: 110% 0;
+      transition: translate 750ms var(--ease-smooth);
+    }
+  }
 }
 @utility btn-light {
   @apply btn bg-fg text-bg hover:bg-white;
@@ -149,4 +240,69 @@
 @utility latin {
   font-family: var(--font-latin);
   letter-spacing: -0.01em;
+}
+
+/* appears as it enters the screen; --i staggers neighbours (0, 1, 2…). Already-visible elements start in place. */
+@utility reveal {
+  @media (prefers-reduced-motion: no-preference) {
+    @supports (animation-timeline: view()) {
+      animation: reveal var(--ease-smooth) both;
+      animation-timeline: view();
+      animation-range: entry calc(var(--i, 0) * 6%) cover calc(24% + var(--i, 0) * 6%);
+    }
+  }
+}
+/* a soft white light that follows the mouse over a card: a wash on its surface and a brighter edge (see useSpotlight) */
+@utility glow {
+  &::before,
+  &::after {
+    content: '';
+    position: absolute;
+    inset: -1px;
+    border-radius: inherit;
+    pointer-events: none;
+    opacity: 0;
+    transition: opacity 280ms;
+  }
+  &::before {
+    background: radial-gradient(420px circle at var(--mx, 50%) var(--my, 0%), rgb(255 255 255 / 0.06), transparent 55%);
+  }
+  &::after {
+    padding: 1px;
+    background: radial-gradient(260px circle at var(--mx, 50%) var(--my, 0%), rgb(255 255 255 / 0.55), transparent 60%);
+    mask:
+      linear-gradient(#000 0 0) content-box exclude,
+      linear-gradient(#000 0 0);
+  }
+  @media (hover: hover) and (pointer: fine) {
+    &:hover::before,
+    &:hover::after {
+      opacity: 1;
+    }
+  }
+}
+/* rises a little under the mouse, gives a little under the finger (not when a button inside is pressed) */
+@utility lift {
+  transition:
+    transform 280ms var(--ease-smooth),
+    border-color 280ms,
+    box-shadow 280ms;
+  @media (hover: hover) and (pointer: fine) {
+    &:hover {
+      transform: translateY(-4px);
+      border-color: var(--color-line-strong);
+      box-shadow: 0 28px 50px -28px rgb(0 0 0);
+    }
+  }
+  &:active:not(:has(button:active, a[target]:active)) {
+    transform: scale(0.98);
+  }
+}
+/* the sticky header turns solid once the page has scrolled */
+@utility header-scroll {
+  @supports (animation-timeline: scroll()) {
+    animation: header-solid linear both;
+    animation-timeline: scroll(root);
+    animation-range: 0 80px;
+  }
 }
