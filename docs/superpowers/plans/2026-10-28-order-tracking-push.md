@@ -5,7 +5,7 @@
 **Goal:** After ordering, customers follow their order on a live page and get Web Push notifications at each status change and 3 days before each subscription ends.
 
 **Architecture:**
-- **Tracking:** each order gets a secret `track_token`. A security-definer RPC `order_track(token)` returns the public view of the order (no name, phone or email). A status trigger broadcasts on the Realtime topic `order:<token>`.
+- **Tracking:** each order gets a secret `track_token`. A security-definer RPC `order_track(token)` returns the public view of the order (no name, phone or email). The page polls it every 10 s while visible. The status trigger also broadcasts on the Realtime topic `order:<token>`, which is unused for now: Realtime's message partitions are not set up in this project.
 - **Notifications:**
   - Status changes and daily renewal checks (pg_cron) write rows to an outbox table, then wake the `notify` Edge Function through pg_net.
   - `notify` claims the rows, encrypts and sends Web Push (RFC 8291 / VAPID RFC 8292, WebCrypto only), and tells the owner on Telegram about renewals.

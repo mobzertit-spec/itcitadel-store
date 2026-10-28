@@ -11,6 +11,7 @@ import { BUSINESS } from '@/config'
 import { submit } from '@/lib/api'
 import { cart, resolve, useCart } from '@/lib/cart'
 import { useCatalog } from '@/lib/catalog'
+import { rememberOrder } from '@/lib/orders'
 import { href, pick, useLang, useT } from '@/lib/lang'
 import { withViewTransition } from '@/lib/motion'
 import { track } from '@/lib/track'
@@ -72,7 +73,11 @@ export default function CartPage() {
         /* private mode: the navigation state below is enough */
       }
       cart.clear()
-      navigate(href(lang, 'order/done'), { state: done })
+      if (res.track && res.number) {
+        // the order's own page, kept on this device for "My orders"
+        rememberOrder({ token: res.track, number: res.number, at: new Date().toISOString() })
+        navigate(href(lang, `order/${res.track}`), { state: { fresh: true, phone: check.value.phone } })
+      } else navigate(href(lang, 'order/done'), { state: done })
     } else if (res.kind === 'fields') setErrors(res.errors)
     else setProblem(t.errors[res.kind])
   }

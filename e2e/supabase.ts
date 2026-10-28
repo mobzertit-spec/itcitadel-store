@@ -2,7 +2,9 @@ import type { Page, Route } from '@playwright/test'
 import catalog from '../src/data/catalog.json' with { type: 'json' }
 
 /** Answers every Supabase request the page makes, and records what was sent. */
-export async function fakeSupabase(page: Page, opts: { orders?: unknown[]; admin?: boolean; costs?: unknown[] } = {}) {
+export const TRACK = '6f1d2c3b-4a5e-4f60-8a7b-9c0d1e2f3a4b'
+
+export async function fakeSupabase(page: Page, opts: { orders?: unknown[]; admin?: boolean; costs?: unknown[]; tracking?: unknown } = {}) {
   const sent: { url: string; method: string; body: unknown }[] = []
   const json = (route: Route, body: unknown, status = 200) => route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) })
   await page.route(/supabase\.co\//, async (route) => {
@@ -24,7 +26,10 @@ export async function fakeSupabase(page: Page, opts: { orders?: unknown[]; admin
     if (p.endsWith('/rest/v1/pricing_rules')) return req.method() === 'GET' ? json(route, { usd_rate: 245, eur_rate: 285, margin_percent: 30 }) : route.fulfill({ status: 204 })
     if (p.endsWith('/rest/v1/variant_costs') && req.method() === 'GET') return json(route, opts.costs ?? [])
     if (p.endsWith('/rest/v1/reviews') && req.method() === 'POST') return json(route, { id: 'r1', created_at: '2026-10-24T09:00:00Z', sort: 0, ...body })
-    if (p.endsWith('/functions/v1/place-order')) return json(route, { ok: true, number: 1007 })
+    if (p.endsWith('/functions/v1/place-order')) return json(route, { ok: true, number: 1007, track: TRACK })
+    // an order's tracking page: the order given by the test, for its own code only
+    if (p.endsWith('/rest/v1/rpc/order_track')) return json(route, (body as { p_token?: string })?.p_token === TRACK ? (opts.tracking ?? null) : null)
+    if (p.endsWith('/functions/v1/push')) return json(route, req.method() === 'GET' ? { key: 'BGwgweIbrGq_CTQ_8rd_r2kp91axylwg0X5nVyyZgUn9qXBAz6ju2vl3fPZ2_eT7g81KR2_t0mIMi1QKN_a0bRc' } : { ok: true })
     if (p.endsWith('/auth/v1/token'))
       return json(route, {
         access_token: 'fake.jwt.token',

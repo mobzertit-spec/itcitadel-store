@@ -58,6 +58,11 @@ export function Footer() {
               </a>
             </li>
             <li>
+              <Link to={href(lang, 'orders')} className={link}>
+                {t.track.mine}
+              </Link>
+            </li>
+            <li>
               <Link to={href(lang, 'legal')} className={link}>
                 {t.footer.legal}
               </Link>

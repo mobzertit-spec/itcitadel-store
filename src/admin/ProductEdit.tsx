@@ -45,7 +45,7 @@ const slugify = (s: string) =>
     .normalize('NFKD')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
-const newVariant = (sort: number): VariantDraft => ({ key: crypto.randomUUID(), label_ar: '', label_fr: '', label_en: '', price_dzd: 0, active: true, sort })
+const newVariant = (sort: number): VariantDraft => ({ key: crypto.randomUUID(), label_ar: '', label_fr: '', label_en: '', price_dzd: 0, months: null, active: true, sort })
 
 export default function ProductEdit() {
   const { id } = useParams()
@@ -109,7 +109,7 @@ export default function ProductEdit() {
       return setError(saved.error.code === '23505' ? 'هذا الرابط مستعمل لمنتج آخر.' : saved.error.message)
     }
     const pid = saved.data.id as string
-    const rows = variants.map((v, i) => ({ label_ar: v.label_ar, label_fr: v.label_fr, label_en: v.label_en, price_dzd: v.price_dzd, active: v.active, sort: i + 1, product_id: pid }))
+    const rows = variants.map((v, i) => ({ label_ar: v.label_ar, label_fr: v.label_fr, label_en: v.label_en, price_dzd: v.price_dzd, months: v.months, active: v.active, sort: i + 1, product_id: pid }))
     const existing = variants.flatMap((v, i) => (v.id ? [{ ...rows[i], id: v.id }] : []))
     const added = variants.flatMap((v, i) => (v.id ? [] : [rows[i]]))
     const results = await Promise.all([
@@ -229,10 +229,10 @@ export default function ProductEdit() {
 
       <section className="card p-6">
         <h2 className="font-bold">الخطط والأسعار</h2>
-        <p className="mt-1 text-sm text-muted">السعر بالدينار ويشمل الرسوم. الخطة المخفية لا تظهر ولا يمكن طلبها.</p>
+        <p className="mt-1 text-sm text-muted">السعر بالدينار ويشمل الرسوم. «الأشهر»: مدة الخطة، ومنها تذكير التجديد قبل انتهائها بـ 3 أيام (فارغ = بلا تذكير). الخطة المخفية لا تظهر ولا يمكن طلبها.</p>
         <div className="mt-4 space-y-3">
           {variants.map((v) => (
-            <div key={v.key} className={`grid gap-2 rounded-xl border border-line p-3 sm:grid-cols-[1fr_1fr_1fr_8rem_auto] sm:items-end ${v.active ? '' : 'opacity-60'}`}>
+            <div key={v.key} className={`grid gap-2 rounded-xl border border-line p-3 sm:grid-cols-[1fr_1fr_1fr_8rem_5.5rem_auto] sm:items-end ${v.active ? '' : 'opacity-60'}`}>
               <input className="field-input h-11!" placeholder="الاسم بالعربية" value={v.label_ar} onChange={(e) => setVariant(v.key, { label_ar: e.target.value })} />
               <input className="field-input h-11!" dir="ltr" placeholder="Nom en français" value={v.label_fr} onChange={(e) => setVariant(v.key, { label_fr: e.target.value })} />
               <input className="field-input h-11!" dir="ltr" placeholder="Name in English" value={v.label_en} onChange={(e) => setVariant(v.key, { label_en: e.target.value })} />
@@ -245,6 +245,20 @@ export default function ProductEdit() {
                 aria-label="السعر"
                 value={v.price_dzd}
                 onChange={(e) => setVariant(v.key, { price_dzd: Math.max(0, Math.round(Number(e.target.value) || 0)) })}
+              />
+              <input
+                type="number"
+                min={1}
+                max={60}
+                className="field-input h-11!"
+                dir="ltr"
+                aria-label="الأشهر"
+                placeholder="أشهر"
+                value={v.months ?? ''}
+                onChange={(e) => {
+                  const n = Math.round(Number(e.target.value))
+                  setVariant(v.key, { months: e.target.value === '' || !n ? null : Math.min(60, Math.max(1, n)) })
+                }}
               />
               <div className="flex items-center gap-3">
                 <Check label="ظاهرة" checked={v.active} onChange={(active) => setVariant(v.key, { active })} />

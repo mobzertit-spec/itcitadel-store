@@ -1,7 +1,7 @@
-import { MessageCircle, Phone, RefreshCw, Trash2 } from 'lucide-react'
+import { Copy, MessageCircle, Phone, RefreshCw, Trash2 } from 'lucide-react'
 import { useCallback, useEffect, useState } from 'react'
 import { dzd, prettyPhone } from '@/lib/format'
-import { customerWhatsApp, db, ORDER_STATUS, when, type Order, type OrderStatus } from './db'
+import { customerWhatsApp, db, ORDER_STATUS, trackingUrl, trackingWhatsApp, when, type Order, type OrderStatus } from './db'
 
 const FLOW: OrderStatus[] = ['new', 'confirmed', 'paid', 'activated']
 
@@ -87,7 +87,7 @@ export default function Orders() {
         </ul>
 
         {open && (
-          <section className="card space-y-5 p-6 lg:sticky lg:top-20">
+          <section className="card min-w-0 space-y-5 p-6 lg:sticky lg:top-20">
             <div className="flex items-center justify-between">
               <h2 className="text-xl font-extrabold">طلب #{open.number}</h2>
               <button className="text-sm text-muted hover:text-fg lg:hidden" onClick={() => setOpenId(null)}>
@@ -142,6 +142,8 @@ export default function Orders() {
               </a>
             </div>
 
+            {open.track_token && <TrackingLink order={open} />}
+
             <div>
               <p className="field-label">الحالة</p>
               <div className="flex flex-wrap gap-2">
@@ -194,6 +196,32 @@ export function NoteBox({ initial, onSave }: { initial: string; onSave: (v: stri
       <button className="btn-outline mt-2 h-10! text-sm" disabled={saved} onClick={() => onSave(value).then(() => setSaved(true))}>
         {saved ? 'محفوظة' : 'حفظ الملاحظة'}
       </button>
+    </div>
+  )
+}
+
+/** The customer's tracking page: copy it, or send it on WhatsApp in their language. */
+function TrackingLink({ order }: { order: Order }) {
+  const [copied, setCopied] = useState(false)
+  const url = trackingUrl(order)
+  return (
+    <div className="rounded-xl border border-line p-3">
+      <p className="field-label">صفحة تتبع الطلب</p>
+      <p className="mt-1 text-xs text-muted">يتابع منها الزبون حالة طلبه ويفعّل الإشعارات. كل تغيير في الحالة يصله فوراً.</p>
+      <div className="mt-2 flex items-center gap-2">
+        <a href={url} target="_blank" rel="noopener" dir="ltr" className="min-w-0 flex-1 truncate text-sm underline underline-offset-4">
+          {url}
+        </a>
+        <button
+          className="inline-flex items-center gap-1 text-sm text-muted hover:text-fg"
+          onClick={() => navigator.clipboard.writeText(url).then(() => setCopied(true))}
+        >
+          <Copy className="size-4" /> {copied ? 'نُسخ' : 'نسخ'}
+        </button>
+      </div>
+      <a className="btn-outline mt-3 h-10! w-full text-sm" href={trackingWhatsApp(order)} target="_blank" rel="noopener">
+        <MessageCircle className="size-4" /> أرسل رابط التتبع على واتساب
+      </a>
     </div>
   )
 }

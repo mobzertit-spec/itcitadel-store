@@ -4,8 +4,10 @@ import CartPage from '@/pages/Cart'
 import Catalog from '@/pages/Catalog'
 import Home from '@/pages/Home'
 import Legal from '@/pages/Legal'
+import MyOrders from '@/pages/MyOrders'
 import NotFound from '@/pages/NotFound'
 import OrderDone from '@/pages/OrderDone'
+import OrderTrack from '@/pages/OrderTrack'
 import ProductPage from '@/pages/Product'
 import RootRedirect from '@/pages/RootRedirect'
 
@@ -38,6 +40,8 @@ export const routes: RouteObject[] = [
       { path: 'products', element: <Catalog /> },
       { path: 'p/:slug', element: <ProductPage /> },
       { path: 'order/done', element: <OrderDone /> },
+      { path: 'order/:token', element: <OrderTrack /> },
+      { path: 'orders', element: <MyOrders /> },
       { path: 'cart', element: <CartPage /> },
       { path: 'legal', element: <Legal /> },
       { path: '*', element: <NotFound /> },

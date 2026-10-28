@@ -1,6 +1,6 @@
 import { expect, test } from '@playwright/test'
 import catalog from '../src/data/catalog.json' with { type: 'json' }
-import { fakeSupabase } from './supabase.ts'
+import { fakeSupabase, TRACK } from './supabase.ts'
 
 // the catalog changes from the dashboard (and CI refreshes it before testing): read products and prices from it
 const buyable = catalog.products.filter((p) => !p.quote_only && p.product_variants.length > 0)
@@ -10,6 +10,17 @@ const second = buyable[1]
 const quoteOnly = catalog.products.find((p) => p.quote_only)
 const grouped = (n: number) => new Intl.NumberFormat('fr-FR').format(n).replace(/\s/g, ' ')
 const escape = (s: string) => s.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')
+/** What public.order_track() returns for the order the tests place. */
+const tracking = (status: string) => ({
+  number: 1007,
+  status,
+  lang: 'ar',
+  created_at: '2026-10-28T09:00:00Z',
+  updated_at: '2026-10-28T09:00:00Z',
+  activated_at: null,
+  total: plan.price_dzd * 2,
+  lines: [{ product_name: priced.name, slug: priced.slug, labels: { ar: plan.label_ar, fr: plan.label_fr, en: plan.label_en }, quantity: 2, line_total: plan.price_dzd * 2, months: 1, ends_at: null }],
+})
 
 test('the Arabic home page reads right to left and lists the products with their logos', async ({ page }) => {
   await fakeSupabase(page)
@@ -33,8 +44,8 @@ test('the language switch keeps the visitor on the same page', async ({ page }) 
   await expect(page.getByRole('button', { name: 'Ajouter au panier' })).toBeVisible()
 })
 
-test('buying sends the chosen plans and quantities, never a price, and shows the order number', async ({ page }) => {
-  const sent = await fakeSupabase(page)
+test('buying sends the chosen plans and quantities, never a price, and opens the order’s own page', async ({ page }) => {
+  const sent = await fakeSupabase(page, { tracking: tracking('new') })
   await page.goto(`/ar/p/${priced.slug}/`)
   // the radio's name is "<plan> <price>"
   await page.getByRole('radio', { name: new RegExp(`^${escape(plan.label_ar)}`) }).check()
@@ -51,8 +62,12 @@ test('buying sends the chosen plans and quantities, never a price, and shows the
   await page.getByLabel('البريد الإلكتروني').fill('amine@example.dz')
   await page.getByRole('button', { name: 'أرسل الطلب' }).click()
 
+  await expect(page).toHaveURL(new RegExp(`/ar/order/${TRACK}/$`))
   await expect(page.getByText('شكراً! وصلنا طلبك')).toBeVisible()
   await expect(page.getByText('#1007')).toBeVisible()
+  // where it stands: just sent
+  await expect(page.locator('[aria-current="step"]')).toContainText('جديد')
+  await expect(page.getByRole('main').getByText(priced.name, { exact: true })).toBeVisible()
   const order = sent.find((r) => r.url.includes('place-order') && r.method === 'POST')!.body as Record<string, unknown>
   expect(order).toMatchObject({ items: [{ variant_id: plan.id, quantity: 2 }], lang: 'ar', phone: '0661 23 45 67' })
   expect(JSON.stringify(order)).not.toMatch(/price|total|company|payment/)
@@ -60,6 +75,49 @@ test('buying sends the chosen plans and quantities, never a price, and shows the
   // the cart is emptied once the order is sent
   await page.goto('/ar/cart/')
   await expect(page.getByText('سلتك فارغة')).toBeVisible()
+  // and the order stays on this device
+  await page.goto('/ar/orders/')
+  await expect(page.getByRole('link', { name: /#1007/ })).toBeVisible()
+  await page.getByRole('link', { name: /#1007/ }).click()
+  await expect(page).toHaveURL(new RegExp(`/ar/order/${TRACK}/$`))
+})
+
+test('an order’s page shows the status the owner set, and offers phone notifications', async ({ page }) => {
+  // a visitor who has not been asked yet (headless Chromium always answers "denied")
+  await page.addInitScript(() => Object.defineProperty(Notification, 'permission', { get: () => 'default' }))
+  await fakeSupabase(page, { tracking: tracking('confirmed') })
+  await page.goto(`/ar/order/${TRACK}/`)
+  await expect(page.locator('[aria-current="step"]')).toContainText('مؤكَّد')
+  await expect(page.getByRole('heading', { level: 1 })).toContainText('#1007')
+  await expect(page.getByRole('button', { name: 'أعلمني بحالة طلبي' })).toBeVisible()
+})
+
+test('a tracking link that matches no order says so', async ({ page }) => {
+  await fakeSupabase(page, { tracking: tracking('new') })
+  await page.goto('/ar/order/00000000-0000-4000-8000-000000000000/')
+  await expect(page.getByRole('heading', { name: 'لم نجد هذا الطلب' })).toBeVisible()
+  await expect(page.getByRole('link', { name: 'طلباتي' }).first()).toBeVisible()
+})
+
+test('notifications blocked in the browser: the page says how to allow them, with no button', async ({ page }) => {
+  await page.addInitScript(() => Object.defineProperty(Notification, 'permission', { get: () => 'denied' }))
+  await fakeSupabase(page, { tracking: tracking('paid') })
+  await page.goto(`/ar/order/${TRACK}/`)
+  await expect(page.getByText('الإشعارات محظورة')).toBeVisible()
+  await expect(page.getByRole('button', { name: 'أعلمني بحالة طلبي' })).toHaveCount(0)
+})
+
+test.describe('on an iPhone', () => {
+  test.use({ userAgent: 'Mozilla/5.0 (iPhone; CPU iPhone OS 18_0 like Mac OS X) AppleWebKit/605.1.15 (KHTML, like Gecko) Version/18.0 Mobile/15E148 Safari/604.1' })
+
+  test('outside the home screen, the page explains how to add the store there for notifications', async ({ page }) => {
+    // Safari offers push only to sites added to the home screen
+    await page.addInitScript(() => delete (window as { PushManager?: unknown }).PushManager)
+    await fakeSupabase(page, { tracking: tracking('new') })
+    await page.goto(`/ar/order/${TRACK}/`)
+    await expect(page.getByText('إضافة إلى الشاشة الرئيسية')).toBeVisible()
+    await expect(page.getByRole('button', { name: 'أعلمني بحالة طلبي' })).toHaveCount(0)
+  })
 })
 
 test('two products added from the store end up in one cart, kept across visits', async ({ page }) => {
@@ -168,6 +226,7 @@ test('the owner signs in, sees a new order with all its lines and confirms it', 
         notes: '',
         total_dzd: 17990,
         admin_note: '',
+        track_token: TRACK,
         order_items: [
           { id: 1, product_name: 'ChatGPT Plus', variant_label: 'شهر واحد', unit_price_dzd: 5500, quantity: 2 },
           { id: 2, product_name: 'Kaspersky', variant_label: 'Premium · 5 أجهزة · سنة', unit_price_dzd: 6990, quantity: 1 },
@@ -182,6 +241,8 @@ test('the owner signs in, sees a new order with all its lines and confirms it', 
   await page.getByRole('button', { name: /#1001/ }).click()
   await expect(page.getByText('Nadia Benali').last()).toBeVisible()
   await expect(page.getByText('Kaspersky', { exact: true }).last()).toBeVisible()
+  // the customer's tracking page, in their language, to send on WhatsApp
+  await expect(page.getByRole('link', { name: 'أرسل رابط التتبع على واتساب' })).toHaveAttribute('href', new RegExp(`fr%2Forder%2F${TRACK}`))
   await page.getByRole('button', { name: 'مؤكَّد', exact: true }).click()
   await expect.poll(() => sent.find((r) => r.method === 'PATCH')?.body).toEqual({ status: 'confirmed' })
 })
