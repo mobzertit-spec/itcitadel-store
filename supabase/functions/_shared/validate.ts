@@ -82,3 +82,30 @@ export function validateOrder(body: Record<string, unknown>): { ok: true; value:
 
 /** A filled-in hidden "website" field means a bot filled the form. */
 export const isBot = (body: Record<string, unknown>) => str(body.website).length > 0
+
+export type PushSubscriptionInput = { token: string; endpoint: string; p256dh: string; auth: string }
+
+// the push services of Chrome/Android/Edge-on-Android, Firefox, Safari and Windows: the only addresses the notify
+// function will ever post to
+const PUSH_HOSTS = [/^fcm\.googleapis\.com$/, /\.push\.services\.mozilla\.com$/, /\.push\.apple\.com$/, /\.notify\.windows\.com$/]
+// base64url: a P-256 public key (65 bytes, starting 0x04) and a 16-byte secret
+const P256DH = /^B[A-Za-z0-9_-]{86}$/
+const AUTH = /^[A-Za-z0-9_-]{22}$/
+
+/** A browser's push subscription for the order with this tracking code (body: {token, subscription}). */
+export function validatePushSubscription(body: unknown): { ok: true; value: PushSubscriptionInput } | { ok: false } {
+  const b = (body ?? {}) as { token?: unknown; subscription?: { endpoint?: unknown; keys?: { p256dh?: unknown; auth?: unknown } } }
+  const token = str(b.token).toLowerCase()
+  const endpoint = str(b.subscription?.endpoint)
+  const p256dh = str(b.subscription?.keys?.p256dh).replace(/=+$/, '')
+  const auth = str(b.subscription?.keys?.auth).replace(/=+$/, '')
+  let host = ''
+  try {
+    const url = new URL(endpoint)
+    if (url.protocol === 'https:') host = url.hostname
+  } catch {
+    /* not a URL */
+  }
+  if (!UUID.test(token) || !PUSH_HOSTS.some((h) => h.test(host)) || endpoint.length > 1000 || !P256DH.test(p256dh) || !AUTH.test(auth)) return { ok: false }
+  return { ok: true, value: { token, endpoint, p256dh, auth } }
+}

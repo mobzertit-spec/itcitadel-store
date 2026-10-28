@@ -1,6 +1,6 @@
 import assert from 'node:assert/strict'
 import { describe, it } from 'node:test'
-import { normalizePhone, validateOrder } from './validate.ts'
+import { normalizePhone, validateOrder, validatePushSubscription } from './validate.ts'
 
 describe('normalizePhone', () => {
   it('accepts the ways Algerians write a mobile number', () => {
@@ -40,5 +40,35 @@ describe('validateOrder', () => {
     const r = validateOrder({ ...base, lang: 'de' })
     assert.ok(r.ok)
     if (r.ok) assert.equal(r.value.lang, 'ar')
+  })
+})
+
+describe('validatePushSubscription', () => {
+  const sub = {
+    token: '6f1d2c3b-4a5e-4f60-8a7b-9c0d1e2f3a4b',
+    subscription: {
+      endpoint: 'https://fcm.googleapis.com/fcm/send/dXk:APA91bH',
+      keys: { p256dh: 'BGwgweIbrGq_CTQ_8rd_r2kp91axylwg0X5nVyyZgUn9qXBAz6ju2vl3fPZ2_eT7g81KR2_t0mIMi1QKN_a0bRc', auth: 'QfJjxt3kamWv_W5p45ji4w' },
+    },
+  }
+  const withSub = (over: Record<string, unknown>) => ({ ...sub, subscription: { ...sub.subscription, ...over } })
+
+  it('accepts a browser subscription from a known push service', () => {
+    assert.deepEqual(validatePushSubscription(sub), {
+      ok: true,
+      value: { token: sub.token, endpoint: sub.subscription.endpoint, p256dh: sub.subscription.keys.p256dh, auth: sub.subscription.keys.auth },
+    })
+    for (const endpoint of ['https://updates.push.services.mozilla.com/wpush/v2/gAAA', 'https://web.push.apple.com/QGx', 'https://wns2-par02p.notify.windows.com/w/?token=AwY'])
+      assert.equal(validatePushSubscription(withSub({ endpoint })).ok, true, endpoint)
+  })
+  it('refuses any other address: the function would send requests there', () => {
+    for (const endpoint of ['http://fcm.googleapis.com/fcm/send/x', 'https://evil.example/fcm.googleapis.com', 'https://fcm.googleapis.com.evil.example/x', 'not a url'])
+      assert.equal(validatePushSubscription(withSub({ endpoint })).ok, false, endpoint)
+  })
+  it('refuses malformed keys and tracking codes', () => {
+    assert.equal(validatePushSubscription(withSub({ keys: { ...sub.subscription.keys, p256dh: sub.subscription.keys.p256dh.slice(0, -1) } })).ok, false)
+    assert.equal(validatePushSubscription(withSub({ keys: { ...sub.subscription.keys, auth: 'short' } })).ok, false)
+    assert.equal(validatePushSubscription({ ...sub, token: '1' }).ok, false)
+    assert.equal(validatePushSubscription({ token: sub.token }).ok, false)
   })
 })
