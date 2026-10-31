@@ -45,7 +45,25 @@ const slugify = (s: string) =>
     .normalize('NFKD')
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-|-$/g, '')
-const newVariant = (sort: number): VariantDraft => ({ key: crypto.randomUUID(), label_ar: '', label_fr: '', label_en: '', price_dzd: 0, months: null, active: true, sort })
+const newVariant = (sort: number): VariantDraft => ({
+  key: crypto.randomUUID(),
+  label_ar: '',
+  label_fr: '',
+  label_en: '',
+  price_dzd: 0,
+  months: null,
+  promo_price_dzd: null,
+  promo_ends_at: null,
+  active: true,
+  sort,
+})
+
+/** An ISO date as the value of a datetime-local input, in the owner's time zone. */
+function localInput(iso?: string | null) {
+  if (!iso) return ''
+  const d = new Date(iso)
+  return new Date(d.getTime() - d.getTimezoneOffset() * 60_000).toISOString().slice(0, 16)
+}
 
 export default function ProductEdit() {
   const { id } = useParams()
@@ -98,6 +116,8 @@ export default function ProductEdit() {
     if (!/^[a-z0-9-]+$/.test(d.slug)) return setError('الرابط: حروف إنجليزية صغيرة وأرقام وشرطات فقط.')
     if (!variants.length) return setError('أضف خطة واحدة على الأقل.')
     if (variants.some((v) => !v.label_ar.trim() || !v.label_fr.trim() || !v.label_en.trim())) return setError('اكتب اسم كل خطة باللغات الثلاث.')
+    if (variants.some((v) => (v.promo_price_dzd == null) !== !v.promo_ends_at)) return setError('العرض يحتاج سعراً وتاريخ نهاية معاً.')
+    if (variants.some((v) => v.promo_price_dzd != null && v.promo_price_dzd >= v.price_dzd)) return setError('سعر العرض يجب أن يكون أقل من السعر العادي.')
     setBusy(true)
     setError('')
     const { id: productId, ...fields } = d
@@ -109,7 +129,18 @@ export default function ProductEdit() {
       return setError(saved.error.code === '23505' ? 'هذا الرابط مستعمل لمنتج آخر.' : saved.error.message)
     }
     const pid = saved.data.id as string
-    const rows = variants.map((v, i) => ({ label_ar: v.label_ar, label_fr: v.label_fr, label_en: v.label_en, price_dzd: v.price_dzd, months: v.months, active: v.active, sort: i + 1, product_id: pid }))
+    const rows = variants.map((v, i) => ({
+      label_ar: v.label_ar,
+      label_fr: v.label_fr,
+      label_en: v.label_en,
+      price_dzd: v.price_dzd,
+      months: v.months,
+      promo_price_dzd: v.promo_price_dzd ?? null,
+      promo_ends_at: v.promo_ends_at ?? null,
+      active: v.active,
+      sort: i + 1,
+      product_id: pid,
+    }))
     const existing = variants.flatMap((v, i) => (v.id ? [{ ...rows[i], id: v.id }] : []))
     const added = variants.flatMap((v, i) => (v.id ? [] : [rows[i]]))
     const results = await Promise.all([
@@ -272,6 +303,35 @@ export default function ProductEdit() {
                 >
                   <Trash2 className="size-4" />
                 </button>
+              </div>
+              {/* a limited offer: the store shows the old price struck through and a countdown until it ends */}
+              <div className="flex flex-wrap items-center gap-2 text-sm sm:col-span-full">
+                <span className="text-muted">عرض محدود:</span>
+                <input
+                  type="number"
+                  min={0}
+                  step={100}
+                  className="field-input h-10! w-32"
+                  dir="ltr"
+                  aria-label="سعر العرض"
+                  placeholder="سعر العرض"
+                  value={v.promo_price_dzd ?? ''}
+                  onChange={(e) => setVariant(v.key, { promo_price_dzd: e.target.value === '' ? null : Math.max(0, Math.round(Number(e.target.value) || 0)) })}
+                />
+                <span className="text-muted">حتى</span>
+                <input
+                  type="datetime-local"
+                  className="field-input h-10! w-auto"
+                  dir="ltr"
+                  aria-label="نهاية العرض"
+                  value={localInput(v.promo_ends_at)}
+                  onChange={(e) => setVariant(v.key, { promo_ends_at: e.target.value ? new Date(e.target.value).toISOString() : null })}
+                />
+                {(v.promo_price_dzd != null || v.promo_ends_at) && (
+                  <button className="text-muted underline underline-offset-4 hover:text-fg" onClick={() => setVariant(v.key, { promo_price_dzd: null, promo_ends_at: null })}>
+                    إلغاء العرض
+                  </button>
+                )}
               </div>
             </div>
           ))}

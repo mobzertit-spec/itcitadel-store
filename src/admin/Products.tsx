@@ -3,11 +3,28 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ProductMark } from '@/components/BrandLogo'
 import { dzd } from '@/lib/format'
+import { onOffer, priceOf } from '@/lib/offers'
 import { db, type AdminProduct } from './db'
 
 export default function Products() {
   const [products, setProducts] = useState<AdminProduct[]>([])
   const [error, setError] = useState('')
+  const [recent, setRecent] = useState<boolean | null>(null)
+
+  useEffect(() => {
+    db.from('store_settings')
+      .select('recent_orders')
+      .single()
+      .then(({ data }) => data && setRecent(data.recent_orders as boolean))
+  }, [])
+
+  /** The store's small notices of recent orders: on or off for everyone. */
+  async function toggleRecent() {
+    const next = !recent
+    const { error } = await db.from('store_settings').update({ recent_orders: next, updated_at: new Date().toISOString() }).eq('id', true)
+    if (error) return setError(error.message)
+    setRecent(next)
+  }
 
   useEffect(() => {
     db.from('products')
@@ -40,6 +57,18 @@ export default function Products() {
       </div>
       <p className="mt-2 text-sm text-muted">التغييرات تظهر في المتجر فوراً. الأسعار بالدينار وتشمل الرسوم.</p>
       {error && <p className="mt-4 rounded-xl border border-danger/40 p-3 text-sm text-danger">{error}</p>}
+      {recent !== null && (
+        <div className="card mt-6 flex flex-wrap items-center justify-between gap-4 p-4">
+          <span>
+            <b className="block">إشعارات الطلبات الأخيرة في المتجر</b>
+            <span className="text-sm text-muted">إشعار صغير للزوار: «طُلب Claude Pro قبل 20 دقيقة». من الطلبات الحقيقية في آخر 72 ساعة فقط، بلا أسماء ولا أرقام.</span>
+          </span>
+          <button className="btn-outline !px-4 h-9! text-sm" onClick={toggleRecent} aria-pressed={recent}>
+            {recent ? <Eye className="size-4" /> : <EyeOff className="size-4" />}
+            {recent ? 'مفعّلة' : 'متوقفة'}
+          </button>
+        </div>
+      )}
       <ul className="card mt-6 divide-y divide-line">
         {products.map((p) => (
           <li key={p.id} className={`flex flex-wrap items-center gap-4 p-4 ${p.active ? '' : 'opacity-55'}`}>
@@ -54,7 +83,7 @@ export default function Products() {
                   : p.product_variants
                       .filter((v) => v.active)
                       .sort((a, b) => a.sort - b.sort)
-                      .map((v) => `${v.label_ar}: ${dzd(v.price_dzd, 'ar')}`)
+                      .map((v) => `${v.label_ar}: ${dzd(priceOf(v), 'ar')}${onOffer(v) ? ' (عرض)' : ''}`)
                       .join(' · ')}
               </span>
             </Link>
