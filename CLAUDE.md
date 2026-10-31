@@ -9,15 +9,16 @@
   from a cart kept in the browser (`src/lib/cart.ts`); `create_order` takes `items: [{variant_id, quantity}]`.
 - Logo: the C of the initials as an arched gate, the I an orange light in its doorway. One drawing in
   `src/components/logo-mark.ts` (Logo.tsx); `npm run brand` regenerates the favicon, app icons, og.png and docs/brand/.
+  In the header (`LogoLoop`, CSS `.lg` in index.css) the gate opens every 10 s into the word ITCITADEL and folds back.
 - Look: black and white, Zain (Arabic) + Inter (Latin), orange only for buying. Official product logos live in
   `src/components/brand-logos.ts` (picked by slug). Never invent reviews or "best seller" claims.
 - Motion (no library): CSS utilities in `index.css` (`reveal` is scroll-driven, `glow`, `lift`, view transitions) and
   `src/lib/motion.ts`. Calm, white light only; never hide content until a script runs; everything stops under
   prefers-reduced-motion. Browser tests run with reduced motion; `test.describe('with motion')` switches it on.
 - Shopping extras: the quick view and the cart drawer are native `<dialog>`s (`Sheet.tsx`) opened from anywhere through
-  `src/lib/overlays.ts`; cart links keep working without JavaScript. Every shown price goes through `priceOf` (offers,
-  `src/lib/offers.ts`, charged the same by `create_order`) and follows the shared clock `src/lib/now.ts` while a plan has an
-  offer. Search ranking (`src/lib/search.ts`) and monthly/yearly pairs (`src/lib/billing.ts`) are tested with `npm test`.
+  `src/lib/overlays.ts`; cart links keep working without JavaScript. Prices are fixed (no offers or countdowns: the owner
+  sells at the plan's price). Search ranking (`src/lib/search.ts`) and monthly/yearly pairs (`src/lib/billing.ts`) are
+  tested with `npm test`.
 - Pricing rule (`_shared/pricing.ts`, tested): purchase price × rate (USD/EUR, set in the dashboard) × (1 + margin), nearest
   500 DZD (1 000 from 100 000). Costs live in `variant_costs` (admins only); the owner may override a final price.
 - Supabase project: `gkrbvpncamkcuxhvzjax`. Schema changes go in a new numbered file in `supabase/migrations/`.

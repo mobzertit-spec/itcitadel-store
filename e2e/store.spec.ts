@@ -1,4 +1,4 @@
-import { expect, test } from '@playwright/test'
+import { expect, test, type Locator } from '@playwright/test'
 import catalog from '../src/data/catalog.json' with { type: 'json' }
 import { fakeSupabase, TRACK } from './supabase.ts'
 
@@ -22,6 +22,14 @@ const tracking = (status: string) => ({
   lines: [{ product_name: priced.name, slug: priced.slug, labels: { ar: plan.label_ar, fr: plan.label_fr, en: plan.label_en }, quantity: 2, line_total: plan.price_dzd * 2, months: 1, ends_at: null }],
 })
 
+/** Taps a button on a floating card: brought to the middle of the screen, without waiting for the card to stand still. */
+async function tapFloating(button: Locator) {
+  // once the app runs (it replaces the prerendered page)
+  await button.page().waitForFunction(() => Object.keys(document.querySelector('main') ?? {}).some((k) => k.startsWith('__react')))
+  await button.evaluate((el) => el.scrollIntoView({ block: 'center', behavior: 'instant' }))
+  await button.click({ force: true })
+}
+
 test('the Arabic home page reads right to left and lists the products with their logos', async ({ page }) => {
   await fakeSupabase(page)
   await page.goto('/ar/')
@@ -33,6 +41,23 @@ test('the Arabic home page reads right to left and lists the products with their
   await expect(page.locator('body')).not.toContainText(/للشركات|تحويل بنكي|فاتورة/)
   // no sideways scrolling, in either direction
   expect(await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth)).toBe(true)
+})
+
+test('a visitor who scrolls before the app runs stays where they are when it takes over', async ({ page }) => {
+  await fakeSupabase(page)
+  // the prerendered page is there at once; the app's script arrives later (a slow connection)
+  let release!: () => void
+  const held = new Promise<void>((resolve) => (release = resolve))
+  await page.route(/\/assets\/index-[^/]*\.js$/, async (route) => {
+    await held
+    await route.continue()
+  })
+  await page.goto('/fr/', { waitUntil: 'commit' })
+  await page.locator('footer').waitFor()
+  await page.evaluate(() => window.scrollTo(0, 900))
+  release()
+  await page.waitForFunction(() => Object.keys(document.querySelector('main') ?? {}).some((k) => k.startsWith('__react')))
+  expect(Math.abs((await page.evaluate(() => window.scrollY)) - 900)).toBeLessThan(5)
 })
 
 test('the language switch keeps the visitor on the same page', async ({ page }) => {
@@ -193,7 +218,7 @@ test.describe('with motion', () => {
   test('adding a product sends its logo flying into the cart', async ({ page }) => {
     await fakeSupabase(page)
     await page.goto('/fr/')
-    await page.getByRole('button', { name: `Ajouter ${priced.name} au panier` }).click()
+    await tapFloating(page.getByRole('button', { name: `Ajouter ${priced.name} au panier` }))
     await expect(page.locator('[data-flying]')).toHaveCount(1)
     await expect(page.locator('[data-flying]')).toHaveCount(0)
     await expect(page.getByRole('link', { name: 'Panier (1)' })).toBeVisible()

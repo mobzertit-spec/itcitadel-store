@@ -4,20 +4,16 @@ import { billing, savings } from '@/lib/billing'
 import type { Product } from '@/lib/catalog'
 import { dzd } from '@/lib/format'
 import { pick, useLang, useT } from '@/lib/lang'
-import { useNow } from '@/lib/now'
-import { hasOffer, onOffer, priceOf } from '@/lib/offers'
-import { Countdown } from './Countdown'
-import { PlanPrice } from './Price'
+import { Money } from './Price'
 
 /**
  * A product's plans, for its page and its quick view: the monthly/yearly switch when both exist for a tier, then
- * each plan with its price in force (offers struck through), what a year saves, and the offer's countdown.
+ * each plan with its price and what a year saves on twelve months.
  */
 export function PlanPicker({ product, value, onChange, name, legend }: { product: Product; value?: string; onChange: (id: string) => void; name: string; legend: string }) {
   const lang = useLang()
   const t = useT()
   const variants = product.product_variants
-  const now = useNow(hasOffer(variants))
   const periods = useMemo(() => billing(variants), [variants])
   const selected = variants.find((v) => v.id === value) ?? variants[0]
   const buyable = !product.quote_only
@@ -29,7 +25,7 @@ export function PlanPicker({ product, value, onChange, name, legend }: { product
         0,
         ...periods.yearly.map((y) => {
           const m = periods.other.get(y.id)
-          return m && priceOf(m, now) > 0 ? Math.round((savings(y, m, now) / (priceOf(m, now) * 12)) * 100) : 0
+          return m && m.price_dzd > 0 ? Math.round((savings(y, m) / (m.price_dzd * 12)) * 100) : 0
         }),
       )
     : 0
@@ -62,7 +58,7 @@ export function PlanPicker({ product, value, onChange, name, legend }: { product
       {shown.map((v) => {
         const on = v.id === selected?.id
         const monthly = periods && v.months === 12 ? periods.other.get(v.id) : undefined
-        const saved = monthly ? savings(v, monthly, now) : 0
+        const saved = monthly ? savings(v, monthly) : 0
         return (
           <label
             key={v.id}
@@ -77,13 +73,12 @@ export function PlanPicker({ product, value, onChange, name, legend }: { product
             </span>
             {buyable && (
               <span key={period} className="animate-rise-fast">
-                <PlanPrice variant={v} />
+                <Money value={v.price_dzd} className="text-xl" />
               </span>
             )}
           </label>
         )
       })}
-      {buyable && selected && onOffer(selected, now) && <Countdown endsAt={selected.promo_ends_at as string} />}
     </fieldset>
   )
 }

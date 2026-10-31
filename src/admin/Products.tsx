@@ -3,7 +3,6 @@ import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { ProductMark } from '@/components/BrandLogo'
 import { dzd } from '@/lib/format'
-import { onOffer, priceOf } from '@/lib/offers'
 import { db, type AdminProduct } from './db'
 
 export default function Products() {
@@ -83,7 +82,7 @@ export default function Products() {
                   : p.product_variants
                       .filter((v) => v.active)
                       .sort((a, b) => a.sort - b.sort)
-                      .map((v) => `${v.label_ar}: ${dzd(priceOf(v), 'ar')}${onOffer(v) ? ' (عرض)' : ''}`)
+                      .map((v) => `${v.label_ar}: ${dzd(v.price_dzd, 'ar')}`)
                       .join(' · ')}
               </span>
             </Link>

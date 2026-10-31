@@ -4,8 +4,6 @@ import { cart, resolve, useCart } from '@/lib/cart'
 import { useCatalog } from '@/lib/catalog'
 import { href, pick, useLang, useT } from '@/lib/lang'
 import { withViewTransition } from '@/lib/motion'
-import { useNow } from '@/lib/now'
-import { hasOffer, priceOf } from '@/lib/offers'
 import { cartDrawer, useCartDrawer } from '@/lib/overlays'
 import { ProductMark } from './BrandLogo'
 import { Money } from './Price'
@@ -13,8 +11,8 @@ import { Sheet } from './Sheet'
 import { Stepper } from './Stepper'
 
 /**
- * The cart, sliding in from the side (from the cart icons and the "added" notice): lines, quantities, the total
- * at today's prices, and the way to the order form on the cart page. Without JavaScript the icons lead there.
+ * The cart, sliding in from the side (from the cart icons and the "added" notice): lines, quantities, the total,
+ * and the way to the order form on the cart page. Without JavaScript the icons lead there.
  */
 export function CartDrawer() {
   const open = useCartDrawer()
@@ -22,8 +20,7 @@ export function CartDrawer() {
   const t = useT()
   const { catalog } = useCatalog()
   const lines = resolve(useCart(), catalog)
-  const now = useNow(open && hasOffer(lines.flatMap((l) => (l.variant ? [l.variant] : []))))
-  const total = lines.reduce((sum, l) => sum + (l.variant ? priceOf(l.variant, now) * l.q : 0), 0)
+  const total = lines.reduce((sum, l) => sum + (l.variant ? l.variant.price_dzd * l.q : 0), 0)
 
   return (
     <Sheet open={open} onClose={cartDrawer.close} labelledBy="drawer-title" className="drawer">
@@ -69,7 +66,7 @@ export function CartDrawer() {
                   </div>
                   {l.variant && (
                     <span key={l.q} className="animate-rise-fast self-start pt-1">
-                      <Money value={priceOf(l.variant, now) * l.q} className="text-base" />
+                      <Money value={l.variant.price_dzd * l.q} className="text-base" />
                     </span>
                   )}
                 </li>

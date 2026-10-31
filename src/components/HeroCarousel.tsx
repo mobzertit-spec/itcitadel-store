@@ -7,7 +7,7 @@ import { href, pick, useLang, useT } from '@/lib/lang'
 import { morphFrom, reducedMotion, useReducedMotion, useTilt } from '@/lib/motion'
 import { addToCart } from './AddedToast'
 import { ProductMark } from './BrandLogo'
-import { PlanPrice } from './Price'
+import { Money } from './Price'
 
 /** Seconds each product stays in front when the hero turns by itself. */
 const TURN = 7
@@ -219,7 +219,7 @@ function Slide({ product, catalog, i, total, active, enter }: { product: Product
         {buyable && (
           <p {...step(3)}>
             <span className="flex flex-wrap items-baseline gap-x-3 text-muted">
-              <PlanPrice variant={plan} className="text-4xl" />
+              <Money value={plan.price_dzd} className="text-4xl" />
               <span>{product.product_variants.length > 1 ? `· ${pick(plan, 'label', lang)}` : ''}</span>
             </span>
           </p>

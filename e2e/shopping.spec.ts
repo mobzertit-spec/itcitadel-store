@@ -1,4 +1,4 @@
-import { expect, test, type Page } from '@playwright/test'
+import { expect, test, type Locator, type Page } from '@playwright/test'
 import catalog from '../src/data/catalog.json' with { type: 'json' }
 import { fakeSupabase } from './supabase.ts'
 
@@ -16,6 +16,14 @@ const NOW = new Date('2026-11-01T10:00:00Z')
 async function stillClock(page: Page) {
   await page.clock.install({ time: new Date(NOW.getTime() - 1000) })
   await page.clock.pauseAt(NOW)
+}
+
+/** Taps a button on a floating card: brought to the middle of the screen, without waiting for the card to stand still. */
+async function tapFloating(button: Locator) {
+  // once the app runs (it replaces the prerendered page)
+  await button.page().waitForFunction(() => Object.keys(document.querySelector('main') ?? {}).some((k) => k.startsWith('__react')))
+  await button.evaluate((el) => el.scrollIntoView({ block: 'center', behavior: 'instant' }))
+  await button.click({ force: true })
 }
 
 /** The app has taken over the prerendered page (what is typed into the static HTML before that is lost). */
@@ -107,33 +115,14 @@ test('a search that finds nothing says so, and Enter still searches the store', 
   await expect(page).toHaveURL(/\/fr\/products\/\?q=zzqx$/)
 })
 
-test('an offer shows the old price struck through and a countdown, and ends on screen without a reload', async ({ page }) => {
-  await stillClock(page)
-  // the month's offer ends in 2 days, 3 hours, 4 minutes and 5 seconds
-  const ends = new Date(NOW.getTime() + ((2 * 24 + 3) * 3600 + 4 * 60 + 5) * 1000).toISOString()
-  const offer = month.price_dzd - 1000
-  await fakeSupabase(page, { offers: { [month.id]: { promo_price_dzd: offer, promo_ends_at: ends } } })
-  await page.goto('/ar/')
-  const tile = page.locator('article', { has: page.getByRole('link', { name: paired.name, exact: true }) })
-  await expect(tile.getByText('عرض')).toBeVisible()
-  await expect(tile.getByText(`2ي 03س`)).toBeVisible()
-
+test('prices are the plans’ own: nothing struck through, no countdown', async ({ page }) => {
+  await fakeSupabase(page)
   await page.goto(`/ar/p/${paired.slug}/`)
-  const plan = page.getByRole('radio', { name: new RegExp(`^${escape(month.label_ar)}`) })
-  await expect(plan).toBeChecked()
   const picker = page.getByRole('group', { name: 'المدة', exact: true })
-  await expect(picker.locator('s', { hasText: grouped(month.price_dzd) })).toBeVisible()
-  await expect(picker.getByText(grouped(offer), { exact: true })).toBeVisible()
-  const timer = page.getByRole('timer')
-  await expect(timer).toContainText('ينتهي العرض خلال')
-  await expect(timer).toContainText('02يوم')
-  await expect(timer).toContainText('03ساعة')
-
-  // the offer's last second passes: the normal price is back, the countdown gone
-  await page.clock.fastForward(((2 * 24 + 3) * 3600 + 4 * 60 + 6) * 1000)
-  await expect(page.getByRole('timer')).toHaveCount(0)
-  await expect(picker.locator('s')).toHaveCount(0)
+  await expect(picker.getByRole('radio', { name: new RegExp(`^${escape(month.label_ar)}`) })).toBeChecked()
   await expect(picker.getByText(grouped(month.price_dzd), { exact: true })).toBeVisible()
+  await expect(page.locator('main s')).toHaveCount(0)
+  await expect(page.getByRole('timer')).toHaveCount(0)
 })
 
 test('the monthly/yearly switch shows each period’s plans; a product sold one way has none', async ({ page }) => {
@@ -234,36 +223,55 @@ test.describe('with motion', () => {
     await expect.poll(state).toBe('paused')
   })
 
-  test('the logo’s light flashes when something is added to the cart', async ({ page }) => {
+  test('the logo opens from the gate into ITCITADEL and back, every 10 seconds; adding to the cart flashes its light', async ({ page }) => {
     await fakeSupabase(page)
     await page.goto('/fr/')
-    const light = page.locator('header .logo-light')
-    await expect.poll(() => light.evaluate((el) => el.getAnimations().length)).toBe(0)
-    await page.getByRole('button', { name: `Ajouter ${paired.name} au panier` }).click()
-    await expect.poll(() => light.evaluate((el) => el.getAnimations().length)).toBeGreaterThan(0)
+    const logo = page.locator('header .lg')
+    // the gate, the light and the seven other letters, all on one 10-second loop
+    const loops = () => logo.evaluate((el) => el.getAnimations({ subtree: true }).map((a) => [a.effect?.getTiming().duration, a.effect?.getTiming().iterations]))
+    await expect.poll(async () => (await loops()).length).toBe(9)
+    expect(new Set((await loops()).map(String))).toEqual(new Set(['10000,Infinity']))
+    await expect(page.locator('header').getByRole('link', { name: 'ITCITADEL', exact: true })).toBeVisible()
+    const light = page.locator('header .lg-i')
+    const flashes = () => light.evaluate((el) => el.getAnimations().filter((a) => !(a instanceof CSSAnimation)).length)
+    expect(await flashes()).toBe(0)
+    await tapFloating(page.getByRole('button', { name: `Ajouter ${paired.name} au panier` }))
+    await expect.poll(flashes).toBe(1)
+  })
+
+  test('product cards float, each at its own moment, and stand still under the mouse', async ({ page, isMobile }) => {
+    await fakeSupabase(page)
+    await page.goto('/fr/products/')
+    const card = page.locator('main article').first()
+    const bob = () => card.evaluate((el) => el.getAnimations().find((a) => a instanceof CSSAnimation && a.animationName === 'bob')?.playState)
+    await expect.poll(bob).toBe('running')
+    const delays = await page.locator('main article').evaluateAll((els) => els.slice(0, 3).map((el) => getComputedStyle(el).animationDelay))
+    expect(new Set(delays).size).toBe(3)
+    test.skip(isMobile, 'no mouse on a phone')
+    // the card moves; the mouse rests on its cell
+    await card.locator('..').hover()
+    await expect.poll(bob).toBe('paused')
   })
 })
 
-test('the owner puts a plan on offer until a date, and the dashboard refuses an offer above the price', async ({ page }) => {
+test('asked for less motion, the logo is the word ITCITADEL and the cards stand still', async ({ page }) => {
+  await fakeSupabase(page)
+  await page.goto('/fr/')
+  const logo = page.locator('header .lg')
+  await expect(logo).toHaveText('TITADEL')
+  expect(await logo.evaluate((el) => el.getAnimations({ subtree: true }).length)).toBe(0)
+  for (const letter of await logo.locator('.lg-l').all()) await expect(letter).toHaveCSS('opacity', '1')
+  expect(await page.locator('main article').first().evaluate((el) => el.getAnimations().length)).toBe(0)
+})
+
+test('the owner switches the recent-order notices off from the dashboard', async ({ page }) => {
   const sent = await fakeSupabase(page)
   await page.goto('/admin/products')
   await page.getByLabel('البريد الإلكتروني').fill('owner@itcitadel.dz')
   await page.getByLabel('كلمة المرور').fill('secret-password')
   await page.getByRole('button', { name: 'دخول' }).click()
   await expect(page.getByRole('button', { name: 'مفعّلة' })).toHaveAttribute('aria-pressed', 'true')
-  await page.getByRole('link', { name: new RegExp(escape(paired.name)) }).first().click()
-
-  const first = paired.product_variants[0]
-  await page.getByLabel('سعر العرض').first().fill(String(first.price_dzd + 500))
-  await page.getByLabel('نهاية العرض').first().fill('2031-06-15T12:00')
-  await page.getByRole('button', { name: 'حفظ', exact: true }).click()
-  await expect(page.getByText('سعر العرض يجب أن يكون أقل من السعر العادي.')).toBeVisible()
-
-  await page.getByLabel('سعر العرض').first().fill(String(first.price_dzd - 1000))
-  await page.getByRole('button', { name: 'حفظ', exact: true }).click()
-  await expect(page).toHaveURL(/\/admin\/products$/)
-  const upsert = sent.find((r) => r.url.includes('product_variants') && r.method === 'POST')!.body as { id: string; promo_price_dzd: number | null; promo_ends_at: string | null }[]
-  const saved = upsert.find((v) => v.id === first.id)!
-  expect(saved.promo_price_dzd).toBe(first.price_dzd - 1000)
-  expect(new Date(saved.promo_ends_at!).getFullYear()).toBe(2031)
+  await page.getByRole('button', { name: 'مفعّلة' }).click()
+  await expect(page.getByRole('button', { name: 'متوقفة' })).toHaveAttribute('aria-pressed', 'false')
+  await expect.poll(() => sent.find((r) => r.url.includes('store_settings') && r.method === 'PATCH')?.body).toMatchObject({ recent_orders: false })
 })

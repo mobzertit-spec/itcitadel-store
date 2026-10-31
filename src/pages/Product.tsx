@@ -6,7 +6,7 @@ import { BrandLogo, ProductMark } from '@/components/BrandLogo'
 import { logoFor } from '@/components/brand-logos'
 import { Meta } from '@/components/Meta'
 import { PlanPicker } from '@/components/PlanPicker'
-import { PlanPrice } from '@/components/Price'
+import { Money } from '@/components/Price'
 import { ProductTile } from '@/components/ProductTile'
 import { Stepper } from '@/components/Stepper'
 import { waLink } from '@/config'
@@ -14,7 +14,6 @@ import { fill } from '@/i18n/strings'
 import { useCatalog, type Catalog, type Product } from '@/lib/catalog'
 import { href, pick, pickList, useLang, useT } from '@/lib/lang'
 import { stagger, useMorphTarget, useTilt } from '@/lib/motion'
-import { priceOf } from '@/lib/offers'
 import { productJsonLd } from '@/lib/pages'
 import { track } from '@/lib/track'
 import NotFound from './NotFound'
@@ -68,7 +67,7 @@ function ProductView({ product, catalog }: { product: Product; catalog: Catalog 
   ].slice(0, 3)
 
   useEffect(() => {
-    track('ViewContent', { content_name: product.name, value: variant && priceOf(variant) })
+    track('ViewContent', { content_name: product.name, value: variant?.price_dzd })
     // once per product page
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.id])
@@ -206,7 +205,7 @@ function ProductView({ product, catalog }: { product: Product; catalog: Catalog 
               <b className="latin max-w-full truncate text-sm font-semibold">
                 <span className="ltr-iso">{product.name}</span>
               </b>
-              <PlanPrice variant={variant} className="text-base" />
+              <Money value={variant.price_dzd} className="text-base" />
             </span>
             <button type="button" className="btn-accent h-11 shrink-0 px-4" onClick={(e) => addToCart(product, variant, qty, lang, e.currentTarget)} aria-label={fill(t.cta.add, { name: product.name })}>
               <ShoppingBag className="size-5" aria-hidden="true" />

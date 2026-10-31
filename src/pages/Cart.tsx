@@ -14,8 +14,6 @@ import { useCatalog } from '@/lib/catalog'
 import { rememberOrder } from '@/lib/orders'
 import { href, pick, useLang, useT } from '@/lib/lang'
 import { withViewTransition } from '@/lib/motion'
-import { useNow } from '@/lib/now'
-import { hasOffer, priceOf } from '@/lib/offers'
 import { track } from '@/lib/track'
 
 export const DONE_KEY = 'itc:last-order'
@@ -26,9 +24,7 @@ export default function CartPage() {
   const navigate = useNavigate()
   const { catalog } = useCatalog()
   const lines = resolve(useCart(), catalog)
-  // an offer that ends while the cart is open: the prices and the total return to normal on screen
-  const now = useNow(hasOffer(lines.flatMap((l) => (l.variant ? [l.variant] : []))))
-  const total = lines.reduce((sum, l) => sum + (l.variant ? priceOf(l.variant, now) * l.q : 0), 0)
+  const total = lines.reduce((sum, l) => sum + (l.variant ? l.variant.price_dzd * l.q : 0), 0)
   const blocked = lines.some((l) => !l.product)
 
   const [errors, setErrors] = useState<FieldErrors>({})
@@ -141,7 +137,7 @@ export default function CartPage() {
                 </div>
                 {l.variant && (
                   <span key={l.q} className="animate-rise-fast">
-                    <Money value={priceOf(l.variant, now) * l.q} className="text-xl" />
+                    <Money value={l.variant.price_dzd * l.q} className="text-xl" />
                   </span>
                 )}
               </li>
@@ -200,7 +196,7 @@ export default function CartPage() {
                   <span className="ltr-iso">
                     {l.product.name} × {l.q}
                   </span>
-                  <Money value={priceOf(l.variant, now) * l.q} className="text-base" />
+                  <Money value={l.variant.price_dzd * l.q} className="text-base" />
                 </li>
               ),
           )}

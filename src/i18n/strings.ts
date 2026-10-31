@@ -171,12 +171,6 @@ const ar = {
     none: 'لا توجد نتائج لـ «{q}»',
     results: 'نتائج البحث',
   },
-  offer: {
-    badge: 'عرض',
-    ends: 'ينتهي العرض خلال',
-    units: { d: 'يوم', h: 'ساعة', m: 'دقيقة', s: 'ثانية' },
-    short: { d: 'ي', h: 'س' },
-  },
   period: {
     label: 'مدة الاشتراك',
     month: 'شهري',
@@ -413,12 +407,6 @@ const fr: Dict = {
     none: 'Aucun résultat pour « {q} »',
     results: 'Résultats de recherche',
   },
-  offer: {
-    badge: 'Offre',
-    ends: 'Fin de l’offre dans',
-    units: { d: 'jours', h: 'h', m: 'min', s: 's' },
-    short: { d: 'j', h: 'h' },
-  },
   period: {
     label: 'Durée de l’abonnement',
     month: 'Mensuel',
@@ -652,12 +640,6 @@ const en: Dict = {
     all: 'See all results for “{q}”',
     none: 'No results for “{q}”',
     results: 'Search results',
-  },
-  offer: {
-    badge: 'Offer',
-    ends: 'Offer ends in',
-    units: { d: 'days', h: 'hrs', m: 'min', s: 'sec' },
-    short: { d: 'd', h: 'h' },
   },
   period: {
     label: 'Subscription length',

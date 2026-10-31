@@ -1,5 +1,10 @@
 # Shopping Interactions Implementation Plan
 
+> **Changed after the preview (2026-10-31):**
+> - **Offers and countdowns removed:** the store sells at fixed prices (migration 011 drops the columns).
+> - **Product cards:** they float gently.
+> - **Logo:** it loops every 10 s. The gate opens, the light becomes the I, the gate turns into the C, and ITCITADEL forms.
+
 > **For agentic workers:** REQUIRED SUB-SKILL: Use superpowers:executing-plans to implement this plan task-by-task. Steps use checkbox (`- [ ]`) syntax for tracking.
 
 **Goal:** Eight storefront interactions plus an interactive logo, without new libraries.

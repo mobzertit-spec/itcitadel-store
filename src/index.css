@@ -298,6 +298,22 @@
     transform: scale(0.98);
   }
 }
+/* product cards float up and down a little, each at its own moment (ProductTile sets --i); still under the mouse or the keyboard */
+@keyframes bob {
+  50% {
+    translate: 0 -5px;
+  }
+}
+@utility bob {
+  @media (prefers-reduced-motion: no-preference) {
+    animation: bob 6s ease-in-out infinite;
+    animation-delay: calc(var(--i, 0) * -0.9s);
+    &:hover,
+    &:focus-within {
+      animation-play-state: paused;
+    }
+  }
+}
 /* the sticky header turns solid once the page has scrolled */
 @utility header-scroll {
   @supports (animation-timeline: scroll()) {
@@ -307,64 +323,124 @@
   }
 }
 /*
- * The logo in the header (Logo animated): the orange light rises in the doorway when the page opens, then the doorway
- * breathes a soft glow; under the mouse or the keyboard the light reaches the top of the door, as if it opened; a
- * press makes the mark give, and every add to the cart makes the light flash (Logo.tsx). Still with less motion.
+ * The header's logo (LogoLoop), every 10 s: the gate with its orange light; the light steps out to become the I, the
+ * gate turns a quarter into the C, the other letters appear (ITCITADEL), and after a while it folds back. The final
+ * word is the elements' own layout; the gate state is drawn by transforms computed from it below, in em (the mark's
+ * units: 40 across the gate, a capital's height in the word). With less motion: the word, still.
  */
-.logo-mark {
+.lg {
+  --cap: 0.7275em; /* Inter's capital height */
+  --u: calc(var(--cap) / 40); /* one unit of the mark's drawing, in the word */
+  --gap: 0.17em; /* between letters, as the old wordmark's tracking */
+  --side: 0.05em; /* the light's and the C's margins, as a letter's side bearings */
+  --t: 0.6em; /* the T's box */
+  --s: 2.0946; /* the gate's size over the C's: 1.6em tall */
+  /* half the way from the I to the C: the gate state sits in the middle, each part goes its way */
+  --half: calc((var(--side) * 2 + var(--u) * 25.5 + var(--gap) * 2 + var(--t)) / 2);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--gap);
+  height: 1.7em;
+  font-family: var(--font-latin);
+  font-size: 1.2rem;
+  line-height: 1;
+  color: var(--color-fg);
   transition: scale 160ms var(--ease-smooth);
 }
-.logo-light {
-  transform-box: fill-box;
-  transform-origin: 50% 100%;
-  transition:
-    transform 450ms var(--ease-spring),
-    filter 300ms;
+/* the light as the I: the gate's thickness, a capital's height */
+.lg-i {
+  width: calc(var(--u) * 9);
+  height: var(--cap);
+  margin-inline: var(--side);
+  background: var(--color-accent);
+  transition: box-shadow 300ms;
 }
-.logo-glow {
-  opacity: 0;
-  transition: opacity 400ms;
+.lg-l {
+  font-weight: 700;
+}
+.lg-t {
+  width: var(--t);
+  font-weight: 300;
+  text-align: center;
+}
+/* the gate turned into the C: its box is the turned gate's */
+.lg-c {
+  position: relative;
+  width: calc(var(--u) * 42);
+  height: var(--cap);
+  margin-inline: var(--side);
+}
+.lg-c svg {
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  width: calc(var(--u) * 40);
+  height: calc(var(--u) * 42);
+  margin: calc(var(--u) * -21) 0 0 calc(var(--u) * -20);
+  overflow: visible;
+  transform: translateX(0) rotate(-90deg) scale(1);
 }
 @media (prefers-reduced-motion: no-preference) {
-  .logo-light {
-    animation: light-up 900ms var(--ease-smooth) 250ms backwards;
+  .lg-c svg {
+    animation: lg-gate 10s var(--ease-smooth) infinite both;
   }
-  .logo-glow {
-    animation: breathe 5s ease-in-out 1.6s infinite;
+  .lg-i {
+    animation: lg-light 10s var(--ease-smooth) infinite both;
+  }
+  .lg-l {
+    animation: lg-letter 10s var(--ease-smooth) infinite both;
+    animation-delay: calc(var(--n, 0) * 80ms);
   }
 }
-@keyframes light-up {
-  from {
-    transform: scaleY(0);
+@keyframes lg-gate {
+  0%,
+  12%,
+  87%,
+  100% {
+    transform: translateX(calc(var(--half) * -1)) rotate(0deg) scale(var(--s));
+  }
+  23%,
+  76% {
+    transform: translateX(0) rotate(-90deg) scale(1);
   }
 }
-@keyframes breathe {
-  50% {
-    opacity: 0.55;
+/* in the gate, the light stands in the doorway: 8 units wide, 26 tall, its middle 8 units below the gate's */
+@keyframes lg-light {
+  0%,
+  12%,
+  87%,
+  100% {
+    transform: translate(var(--half), calc(var(--u) * var(--s) * 8)) scale(calc(var(--s) * 8 / 9), calc(var(--s) * 26 / 40));
+  }
+  23%,
+  76% {
+    transform: translate(0, 0) scale(1, 1);
+  }
+}
+@keyframes lg-letter {
+  0%,
+  17% {
+    opacity: 0;
+    translate: 0 0.35em;
+  }
+  24%,
+  72% {
+    opacity: 1;
+    translate: 0 0;
+  }
+  79%,
+  100% {
+    opacity: 0;
+    translate: 0 -0.25em;
   }
 }
 @media (hover: hover) {
-  .logo-link:hover .logo-light {
-    transform: scaleY(1.24);
-    filter: drop-shadow(0 0 3px rgb(255 106 0 / 0.9));
-  }
-  .logo-link:hover .logo-glow {
-    animation: none;
-    opacity: 0.85;
+  .logo-link:hover .lg-i {
+    box-shadow: 0 0 0.5em rgb(255 106 0 / 0.75);
   }
 }
-.logo-link:focus-visible .logo-light,
-.logo-link:active .logo-light {
-  transform: scaleY(1.24);
-  filter: drop-shadow(0 0 3px rgb(255 106 0 / 0.9));
-}
-.logo-link:focus-visible .logo-glow,
-.logo-link:active .logo-glow {
-  animation: none;
-  opacity: 0.85;
-}
-.logo-link:active .logo-mark {
-  scale: 0.92;
+.logo-link:active .lg {
+  scale: 0.96;
 }
 
 /*

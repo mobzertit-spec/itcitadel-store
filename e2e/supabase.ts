@@ -4,14 +4,11 @@ import catalog from '../src/data/catalog.json' with { type: 'json' }
 /** Answers every Supabase request the page makes, and records what was sent. */
 export const TRACK = '6f1d2c3b-4a5e-4f60-8a7b-9c0d1e2f3a4b'
 
-type Offer = { promo_price_dzd: number; promo_ends_at: string }
 type Options = {
   orders?: unknown[]
   admin?: boolean
   costs?: unknown[]
   tracking?: unknown
-  /** offers on plans, by plan id */
-  offers?: Record<string, Offer>
   /** what public.recent_orders() returns (nothing by default) */
   recent?: { slug: string; name: string; at: string }[]
 }
@@ -30,7 +27,7 @@ export async function fakeSupabase(page: Page, opts: Options = {}) {
     if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*' } })
     if (p.endsWith('/rest/v1/categories')) return json(route, catalog.categories)
     if (p.endsWith('/rest/v1/products') && req.method() === 'GET') {
-      const products = catalog.products.map((x) => ({ ...x, active: true, product_variants: x.product_variants.map((v) => ({ ...v, active: true, ...opts.offers?.[v.id] })) }))
+      const products = catalog.products.map((x) => ({ ...x, active: true, product_variants: x.product_variants.map((v) => ({ ...v, active: true })) }))
       if (one) return json(route, products.find((x) => `eq.${x.id}` === url.searchParams.get('id')))
       return json(route, products)
     }

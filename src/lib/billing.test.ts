@@ -23,11 +23,9 @@ describe('billing', () => {
     assert.equal(billing([v('a', 'Starter · 1 month', 1, 2500), v('b', 'Plus · 1 year', 12, 90000)]), null)
     assert.equal(billing([v('a', 'Standard · 1 device · 1 year', 12, 1990)]), null)
   })
-  it('counts what a year saves on twelve months, offers included', () => {
+  it('counts what a year saves on twelve months, never less than nothing', () => {
     const month = { price_dzd: 6500 }
     assert.equal(savings({ price_dzd: 63500 }, month), 14500)
     assert.equal(savings({ price_dzd: 90000 }, month), 0)
-    const now = Date.UTC(2026, 9, 31)
-    assert.equal(savings({ price_dzd: 63500, promo_price_dzd: 60000, promo_ends_at: '2026-11-30T00:00:00Z' }, month, now), 18000)
   })
 })

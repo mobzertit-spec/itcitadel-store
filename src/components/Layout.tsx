@@ -1,5 +1,5 @@
 import { House, LayoutGrid, MessageCircle, ShoppingBag } from 'lucide-react'
-import { useEffect, useLayoutEffect, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, useRef, type ReactNode } from 'react'
 import { NavLink, Outlet, useLocation, useParams } from 'react-router-dom'
 import type { Lang } from '@shared/validate'
 import { waLink } from '@/config'
@@ -33,10 +33,14 @@ export function Shell({ lang, content }: { lang: Lang; content: ReactNode }) {
     document.documentElement.lang = lang
     document.documentElement.dir = STRINGS[lang].dir
   }, [lang])
-  // new page → top; "#how" / "#office" → that section. Before paint, so a page transition shows the new page from its top
+  // new page → top; "#how" / "#office" → that section. Before paint, so a page transition shows the new page from its top.
+  // Not when the app first takes over a prerendered page: the visitor may have scrolled it already.
+  const firstPage = useRef(true)
   useLayoutEffect(() => {
+    const first = firstPage.current
+    firstPage.current = false
     if (hash) document.getElementById(hash.slice(1))?.scrollIntoView()
-    else window.scrollTo(0, 0)
+    else if (!first) window.scrollTo(0, 0)
   }, [pathname, hash])
   // a link inside the quick view or the cart drawer leads to another page: the sheet closes behind it
   useEffect(() => {
