@@ -13,6 +13,7 @@ import { fill } from '@/i18n/strings'
 import { useCatalog, type Catalog, type Product } from '@/lib/catalog'
 import { href, pick, pickList, useLang, useT } from '@/lib/lang'
 import { stagger, useMorphTarget, useTilt } from '@/lib/motion'
+import { priceOf } from '@/lib/offers'
 import { productJsonLd } from '@/lib/pages'
 import { track } from '@/lib/track'
 import NotFound from './NotFound'
@@ -48,7 +49,7 @@ function ProductView({ product, catalog }: { product: Product; catalog: Catalog 
   ].slice(0, 3)
 
   useEffect(() => {
-    track('ViewContent', { content_name: product.name, value: variant?.price_dzd })
+    track('ViewContent', { content_name: product.name, value: variant && priceOf(variant) })
     // once per product page
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [product.id])

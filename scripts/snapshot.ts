@@ -12,7 +12,7 @@ const env = loadEnv('production', root, 'VITE_')
 const url = env.VITE_SUPABASE_URL
 const key = env.VITE_SUPABASE_ANON_KEY
 
-const VARIANTS = 'id,label_ar,label_fr,label_en,price_dzd,sort'
+const VARIANTS = 'id,label_ar,label_fr,label_en,price_dzd,sort,months,promo_price_dzd,promo_ends_at'
 const PRODUCTS =
   'id,slug,category_id,name,tagline_ar,tagline_fr,tagline_en,description_ar,description_fr,description_en,' +
   'features_ar,features_fr,features_en,requirements_ar,requirements_fr,requirements_en,image_url,per_user,quote_only,featured,hero,sort'

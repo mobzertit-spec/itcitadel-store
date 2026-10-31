@@ -6,6 +6,7 @@ import { cart } from '@/lib/cart'
 import type { Product, Variant } from '@/lib/catalog'
 import { href, pick, useLang, useT } from '@/lib/lang'
 import { flyToCart } from '@/lib/motion'
+import { priceOf } from '@/lib/offers'
 import { track } from '@/lib/track'
 
 type Added = { ok: boolean; name: string; plan: string; key: number }
@@ -18,7 +19,7 @@ const EVENT = 'itc:added'
 export function addToCart(product: Product, variant: Variant, qty: number, lang: Lang, from?: Element): boolean {
   const ok = cart.add(variant.id, qty)
   if (ok) {
-    track('AddToCart', { content_name: product.name, value: variant.price_dzd * qty })
+    track('AddToCart', { content_name: product.name, value: priceOf(variant) * qty })
     if (from) flyToCart(from)
   }
   const detail: Added = { ok, name: product.name, plan: pick(variant, 'label', lang), key: Date.now() }

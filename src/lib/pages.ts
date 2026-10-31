@@ -7,6 +7,7 @@ import { BUSINESS } from '@/config'
 import { fill, STRINGS } from '@/i18n/strings'
 import { lowestPrice, type Catalog, type Product } from './catalog'
 import { pick } from './lang'
+import { onOffer, priceOf } from './offers'
 
 export type Page = { path: string; lang: Lang; title: string; description: string; index: boolean; alternates?: Record<Lang, string> }
 
@@ -35,7 +36,9 @@ export function pages(catalog: Catalog): Page[] {
 const json = (data: unknown) => JSON.stringify(data).replace(/</g, '\\u003c')
 
 export function productJsonLd(p: Product, lang: Lang) {
-  const prices = p.product_variants.map((v) => v.price_dzd)
+  const prices = p.product_variants.map((v) => priceOf(v))
+  // while an offer runs, its end is when these prices stop being valid
+  const ends = p.product_variants.filter((v) => onOffer(v)).map((v) => v.promo_ends_at as string).sort()[0]
   return json({
     '@context': 'https://schema.org',
     '@type': 'Product',
@@ -49,6 +52,7 @@ export function productJsonLd(p: Product, lang: Lang) {
       highPrice: Math.max(...prices),
       offerCount: prices.length,
       availability: 'https://schema.org/InStock',
+      ...(ends ? { priceValidUntil: ends.slice(0, 10) } : {}),
       seller: { '@type': 'Organization', name: BUSINESS.name },
     },
   })

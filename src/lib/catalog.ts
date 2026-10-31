@@ -1,8 +1,21 @@
 import { useEffect, useState } from 'react'
 import { SUPABASE_KEY, SUPABASE_URL } from '@/config'
 import snapshot from '@/data/catalog.json'
+import { priceOf } from './offers'
 
-export type Variant = { id: string; label_ar: string; label_fr: string; label_en: string; price_dzd: number; sort: number }
+export type Variant = {
+  id: string
+  label_ar: string
+  label_fr: string
+  label_en: string
+  price_dzd: number
+  sort: number
+  /** how long the plan lasts (renewal reminders, the monthly/yearly switch) */
+  months?: number | null
+  /** an offer set in the dashboard: its price until promo_ends_at (lib/offers.ts) */
+  promo_price_dzd?: number | null
+  promo_ends_at?: string | null
+}
 export type Category = { id: string; name_ar: string; name_fr: string; name_en: string; sort: number }
 export type Product = {
   id: string
@@ -40,7 +53,7 @@ export type Catalog = { categories: Category[]; products: Product[]; reviews: Re
  */
 export const SNAPSHOT = snapshot as Catalog
 
-const VARIANT_COLS = 'id,label_ar,label_fr,label_en,price_dzd,sort'
+const VARIANT_COLS = 'id,label_ar,label_fr,label_en,price_dzd,sort,months,promo_price_dzd,promo_ends_at'
 const PRODUCT_COLS =
   'id,slug,category_id,name,tagline_ar,tagline_fr,tagline_en,description_ar,description_fr,description_en,' +
   'features_ar,features_fr,features_en,requirements_ar,requirements_fr,requirements_en,image_url,per_user,quote_only,featured,hero,sort'
@@ -79,7 +92,8 @@ export function useCatalog(): { catalog: Catalog; settled: boolean } {
   return state
 }
 
-export const lowestPrice = (p: Product) => Math.min(...p.product_variants.map((v) => v.price_dzd))
+/** The lowest price in force (offers included) among a product's plans. */
+export const lowestPrice = (p: Product, now = Date.now()) => Math.min(...p.product_variants.map((v) => priceOf(v, now)))
 
 /** The home page's top product (chosen in the dashboard), then the two featured ones shown beside it. */
 export function heroProducts(catalog: Catalog): { hero?: Product; side: Product[] } {
