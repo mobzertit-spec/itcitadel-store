@@ -15,7 +15,8 @@ const font = (file: string) => `data:font/woff2;base64,${readFileSync(out(`node_
 const FONTS = `
 @font-face { font-family: Inter; src: url(${font('@fontsource-variable/inter/files/inter-latin-wght-normal.woff2')}) format('woff2'); font-weight: 100 900; }
 @font-face { font-family: Zain; src: url(${font('@fontsource/zain/files/zain-arabic-400-normal.woff2')}) format('woff2'); font-weight: 400; }
-@font-face { font-family: Zain; src: url(${font('@fontsource/zain/files/zain-arabic-800-normal.woff2')}) format('woff2'); font-weight: 800; }`
+@font-face { font-family: Zain; src: url(${font('@fontsource/zain/files/zain-arabic-800-normal.woff2')}) format('woff2'); font-weight: 800; }
+@font-face { font-family: Wordmark; src: url(data:font/woff2;base64,${readFileSync(out('src/assets/wordmark.woff2')).toString('base64')}) format('woff2'); font-weight: 200 800; }`
 
 const WHITE = '#F5F5F7'
 const BLACK = '#0B0B0C'
@@ -24,11 +25,11 @@ const BLACK = '#0B0B0C'
 const centred = (color: string, size: number, fill: number, light?: string) =>
   markSvg(color, `width="${size}" height="${size * fill}" style="display:block"`, light)
 
-/** "IT" light and "CITADEL" bold, spaced out, as in the site's header. */
+/** The mark beside the name in the logo's font, "IT" lighter and "CITADEL" heavy, as in the site's footer. */
 const lockup = (color: string, mark: number) => `
   <div id="lockup" style="display:inline-flex;align-items:center;gap:${mark * 0.33}px;padding:${mark * 0.25}px;color:${color}">
     ${markSvg(color, `height="${mark}" width="${(mark * 40) / 42}"`)}
-    <span style="font-family:Inter;font-size:${mark * 0.56}px;font-weight:300;letter-spacing:.18em">IT<b style="font-weight:700">CITADEL</b></span>
+    <span style="font-family:Wordmark;font-size:${mark * 0.62}px;font-weight:500;letter-spacing:.05em">IT<b style="font-weight:800">CITADEL</b></span>
   </div>`
 
 async function shoot(page: Page, html: string, file: string, size: { width: number; height: number }, transparent = false) {

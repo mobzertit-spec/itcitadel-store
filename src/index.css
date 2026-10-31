@@ -208,6 +208,11 @@
 @utility spotlight {
   background-image: radial-gradient(55% 75% at 22% 45%, rgb(255 255 255 / 0.13), transparent 70%);
 }
+/* the name beside the mark (Logo), in the logo's font: "IT" lighter, "CITADEL" heavy */
+@utility wordmark {
+  font-family: 'ITCITADEL Wordmark', var(--font-latin);
+  letter-spacing: 0.05em;
+}
 @utility eyebrow {
   @apply text-sm text-muted;
 }
@@ -329,20 +334,20 @@
  * units: 40 across the gate, a capital's height in the word). With less motion: the word, still.
  */
 .lg {
-  --cap: 0.7275em; /* Inter's capital height */
+  --cap: 0.66em; /* the wordmark font's capital height */
   --u: calc(var(--cap) / 40); /* one unit of the mark's drawing, in the word */
-  --gap: 0.17em; /* between letters, as the old wordmark's tracking */
-  --side: 0.05em; /* the light's and the C's margins, as a letter's side bearings */
-  --t: 0.6em; /* the T's box */
-  --s: 2.0946; /* the gate's size over the C's: 1.6em tall */
+  --gap: 0.05em; /* between letters */
+  --side: 0.04em; /* the light's and the C's margins, as a letter's side bearings */
+  --t: 0.553em; /* the T's box: its width at weight 500 */
+  --s: 2.3088; /* the gate's size over the C's: 1.6em tall */
   /* half the way from the I to the C: the gate state sits in the middle, each part goes its way */
   --half: calc((var(--side) * 2 + var(--u) * 25.5 + var(--gap) * 2 + var(--t)) / 2);
   display: inline-flex;
   align-items: center;
   gap: var(--gap);
   height: 1.7em;
-  font-family: var(--font-latin);
-  font-size: 1.2rem;
+  font-family: 'ITCITADEL Wordmark', var(--font-latin);
+  font-size: 1.25rem;
   line-height: 1;
   color: var(--color-fg);
   transition: scale 160ms var(--ease-smooth);
@@ -356,11 +361,11 @@
   transition: box-shadow 300ms;
 }
 .lg-l {
-  font-weight: 700;
+  font-weight: 800;
 }
 .lg-t {
   width: var(--t);
-  font-weight: 300;
+  font-weight: 500;
   text-align: center;
 }
 /* the gate turned into the C: its box is the turned gate's */

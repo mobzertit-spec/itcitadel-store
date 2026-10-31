@@ -3,3 +3,12 @@
 @import '@fontsource/zain/arabic-400.css';
 @import '@fontsource/zain/arabic-700.css';
 @import '@fontsource/zain/arabic-800.css';
+
+/* The logo's word (Logo.tsx; index.css: .lg, wordmark): Bricolage Grotesque reduced to the letters of ITCITADEL, small
+   enough to travel inside the stylesheet (SIL Open Font License: src/assets/wordmark-OFL.txt). */
+@font-face {
+  font-family: 'ITCITADEL Wordmark';
+  src: url('./assets/wordmark.woff2') format('woff2');
+  font-weight: 200 800;
+  font-display: swap;
+}

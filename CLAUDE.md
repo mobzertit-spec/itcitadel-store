@@ -10,6 +10,7 @@
 - Logo: the C of the initials as an arched gate, the I an orange light in its doorway. One drawing in
   `src/components/logo-mark.ts` (Logo.tsx); `npm run brand` regenerates the favicon, app icons, og.png and docs/brand/.
   In the header (`LogoLoop`, CSS `.lg` in index.css) the gate opens every 10 s into the word ITCITADEL and folds back.
+  The name is set in Bricolage Grotesque, reduced to its letters in `src/assets/wordmark.woff2` (OFL, inlined in the CSS).
 - Look: black and white, Zain (Arabic) + Inter (Latin), orange only for buying. Official product logos live in
   `src/components/brand-logos.ts` (picked by slug). Never invent reviews or "best seller" claims.
 - Motion (no library): CSS utilities in `index.css` (`reveal` is scroll-driven, `glow`, `lift`, view transitions) and

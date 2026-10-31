@@ -18,8 +18,8 @@ export function Logo({ className = '' }: { className?: string }) {
   return (
     <span className={`inline-flex items-center gap-2.5 text-fg ${className}`} dir="ltr">
       <LogoMark className="h-[30px] w-[29px]" />
-      <span className="latin text-[1.05rem] font-light tracking-[0.18em]">
-        IT<span className="font-bold">CITADEL</span>
+      <span className="wordmark text-[1.15rem] font-medium">
+        IT<span className="font-extrabold">CITADEL</span>
       </span>
     </span>
   )
