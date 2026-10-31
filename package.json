@@ -9,6 +9,7 @@
     "preview": "vite preview",
     "lint": "oxlint",
     "snapshot": "tsx scripts/snapshot.ts",
+    "brand": "tsx scripts/brand.ts",
     "test": "tsx --test supabase/functions/_shared/*.test.ts",
     "test:e2e": "playwright test"
   },

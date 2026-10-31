@@ -27,7 +27,7 @@ export function Header() {
       <header className="header-scroll sticky top-0 z-40 border-b border-line bg-bg/80 backdrop-blur-xl [view-transition-name:header]">
         <div className="container-x flex h-[72px] items-center gap-4 lg:gap-8">
           <Link to={href(lang)} viewTransition aria-label="ITCITADEL" className="shrink-0">
-            <Logo />
+            <Logo animated />
           </Link>
           <nav className="hidden items-center gap-7 lg:flex" aria-label={t.nav.menu}>
             <NavLink to={href(lang, 'products')} viewTransition className={({ isActive }) => `text-[1.05rem] transition hover:text-fg ${isActive ? 'text-fg' : 'text-muted'}`}>

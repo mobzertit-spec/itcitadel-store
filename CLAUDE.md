@@ -7,6 +7,8 @@
 - Prices are always taken from the database (`public.create_order`), never from the request.
 - The store sells to individuals only, who pay cash at the office (no companies, invoices, bank transfer or quotes). Orders come
   from a cart kept in the browser (`src/lib/cart.ts`); `create_order` takes `items: [{variant_id, quantity}]`.
+- Logo: the C of the initials as an arched gate, the I an orange light in its doorway. One drawing in
+  `src/components/logo-mark.ts` (Logo.tsx); `npm run brand` regenerates the favicon, app icons, og.png and docs/brand/.
 - Look: black and white, Zain (Arabic) + Inter (Latin), orange only for buying. Official product logos live in
   `src/components/brand-logos.ts` (picked by slug). Never invent reviews or "best seller" claims.
 - Motion (no library): CSS utilities in `index.css` (`reveal` is scroll-driven, `glow`, `lift`, view transitions) and

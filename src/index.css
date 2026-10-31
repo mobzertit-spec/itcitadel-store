@@ -306,3 +306,23 @@
     animation-range: 0 80px;
   }
 }
+/* the logo's orange light (Logo animated): it rises in the doorway when the page opens, and glows under the mouse */
+.logo-light {
+  transform-box: fill-box;
+  transform-origin: 50% 100%;
+  transition: filter 300ms;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .logo-light {
+    animation: light-up 900ms var(--ease-smooth) 250ms both;
+  }
+}
+@keyframes light-up {
+  from {
+    transform: scaleY(0);
+  }
+}
+a:hover .logo-light,
+a:focus-visible .logo-light {
+  filter: drop-shadow(0 0 3px rgb(255 106 0 / 0.9));
+}
