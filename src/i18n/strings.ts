@@ -23,6 +23,7 @@ const ar = {
   },
   cta: {
     addToCart: 'أضف إلى السلة',
+    addShort: 'أضف',
     add: 'أضف {name} إلى السلة',
     added: 'أُضيف إلى السلة',
     buyNow: 'اشترِ الآن',
@@ -39,6 +40,7 @@ const ar = {
     onYourAccount: 'على حسابك أنت',
     activation: 'تفعيل خلال 24 ساعة',
     carousel: 'اشتراكات مختارة',
+    marquee: 'كل اشتراكاتنا',
     slide: '{n} من {total}',
     pick: 'اختر الاشتراك المعروض',
     pause: 'أوقف التبديل التلقائي',
@@ -154,6 +156,38 @@ const ar = {
     waText: 'السلام عليكم، أرسلت الطلب رقم {number} على موقع ITCITADEL.',
     back: 'العودة إلى المتجر',
   },
+  quick: {
+    open: 'معاينة سريعة لـ {name}',
+    details: 'كل التفاصيل',
+    close: 'إغلاق',
+  },
+  drawer: {
+    title: 'سلتك',
+    checkout: 'أكمل الطلب',
+    keep: 'متابعة التسوق',
+  },
+  find: {
+    all: 'عرض كل النتائج لـ «{q}»',
+    none: 'لا توجد نتائج لـ «{q}»',
+    results: 'نتائج البحث',
+  },
+  offer: {
+    badge: 'عرض',
+    ends: 'ينتهي العرض خلال',
+    units: { d: 'يوم', h: 'ساعة', m: 'دقيقة', s: 'ثانية' },
+    short: { d: 'ي', h: 'س' },
+  },
+  period: {
+    label: 'مدة الاشتراك',
+    month: 'شهري',
+    year: 'سنوي',
+    upTo: 'وفّر حتى {pct}%',
+    save: 'وفّر {amount}',
+  },
+  recent: {
+    ordered: 'طُلب {name}',
+    close: 'إخفاء',
+  },
   track: {
     order: 'طلب #{number}',
     placed: 'أُرسل في {date}',
@@ -231,6 +265,7 @@ const fr: Dict = {
   },
   cta: {
     addToCart: 'Ajouter au panier',
+    addShort: 'Ajouter',
     add: 'Ajouter {name} au panier',
     added: 'Ajouté au panier',
     buyNow: 'Acheter maintenant',
@@ -247,6 +282,7 @@ const fr: Dict = {
     onYourAccount: 'Sur votre propre compte',
     activation: 'Activation sous 24 h',
     carousel: 'Abonnements à la une',
+    marquee: 'Tous nos abonnements',
     slide: '{n} sur {total}',
     pick: 'Choisir l’abonnement affiché',
     pause: 'Arrêter le défilement automatique',
@@ -362,6 +398,38 @@ const fr: Dict = {
     waText: 'Bonjour, j’ai passé la commande n° {number} sur le site ITCITADEL.',
     back: 'Retour à la boutique',
   },
+  quick: {
+    open: 'Aperçu rapide : {name}',
+    details: 'Tous les détails',
+    close: 'Fermer',
+  },
+  drawer: {
+    title: 'Votre panier',
+    checkout: 'Finaliser la commande',
+    keep: 'Continuer mes achats',
+  },
+  find: {
+    all: 'Voir tous les résultats pour « {q} »',
+    none: 'Aucun résultat pour « {q} »',
+    results: 'Résultats de recherche',
+  },
+  offer: {
+    badge: 'Offre',
+    ends: 'Fin de l’offre dans',
+    units: { d: 'jours', h: 'h', m: 'min', s: 's' },
+    short: { d: 'j', h: 'h' },
+  },
+  period: {
+    label: 'Durée de l’abonnement',
+    month: 'Mensuel',
+    year: 'Annuel',
+    upTo: 'jusqu’à −{pct} %',
+    save: 'Économisez {amount}',
+  },
+  recent: {
+    ordered: '{name} commandé',
+    close: 'Masquer',
+  },
   track: {
     order: 'Commande #{number}',
     placed: 'Envoyée le {date}',
@@ -437,6 +505,7 @@ const en: Dict = {
   },
   cta: {
     addToCart: 'Add to cart',
+    addShort: 'Add',
     add: 'Add {name} to cart',
     added: 'Added to cart',
     buyNow: 'Buy now',
@@ -453,6 +522,7 @@ const en: Dict = {
     onYourAccount: 'On your own account',
     activation: 'Activated within 24 h',
     carousel: 'Featured subscriptions',
+    marquee: 'All our subscriptions',
     slide: '{n} of {total}',
     pick: 'Choose the subscription shown',
     pause: 'Stop automatic rotation',
@@ -567,6 +637,38 @@ const en: Dict = {
     whatsapp: 'Send the order on WhatsApp to speed things up',
     waText: 'Hello, I placed order no. {number} on the ITCITADEL website.',
     back: 'Back to the store',
+  },
+  quick: {
+    open: 'Quick view: {name}',
+    details: 'All the details',
+    close: 'Close',
+  },
+  drawer: {
+    title: 'Your cart',
+    checkout: 'Complete the order',
+    keep: 'Keep shopping',
+  },
+  find: {
+    all: 'See all results for “{q}”',
+    none: 'No results for “{q}”',
+    results: 'Search results',
+  },
+  offer: {
+    badge: 'Offer',
+    ends: 'Offer ends in',
+    units: { d: 'days', h: 'hrs', m: 'min', s: 'sec' },
+    short: { d: 'd', h: 'h' },
+  },
+  period: {
+    label: 'Subscription length',
+    month: 'Monthly',
+    year: 'Yearly',
+    upTo: 'save up to {pct}%',
+    save: 'Save {amount}',
+  },
+  recent: {
+    ordered: '{name} ordered',
+    close: 'Hide',
   },
   track: {
     order: 'Order #{number}',

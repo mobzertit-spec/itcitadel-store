@@ -2,12 +2,12 @@ import { Clock3, Pause, Play, ShieldCheck } from 'lucide-react'
 import { useEffect, useRef, useState, type KeyboardEvent } from 'react'
 import { Link } from 'react-router-dom'
 import { fill } from '@/i18n/strings'
-import { lowestPrice, type Catalog, type Product } from '@/lib/catalog'
+import type { Catalog, Product } from '@/lib/catalog'
 import { href, pick, useLang, useT } from '@/lib/lang'
 import { morphFrom, reducedMotion, useReducedMotion, useTilt } from '@/lib/motion'
 import { addToCart } from './AddedToast'
 import { ProductMark } from './BrandLogo'
-import { Money } from './Price'
+import { PlanPrice } from './Price'
 
 /** Seconds each product stays in front when the hero turns by itself. */
 const TURN = 7
@@ -219,7 +219,7 @@ function Slide({ product, catalog, i, total, active, enter }: { product: Product
         {buyable && (
           <p {...step(3)}>
             <span className="flex flex-wrap items-baseline gap-x-3 text-muted">
-              <Money value={lowestPrice(product)} className="text-4xl" />
+              <PlanPrice variant={plan} className="text-4xl" />
               <span>{product.product_variants.length > 1 ? `· ${pick(plan, 'label', lang)}` : ''}</span>
             </span>
           </p>

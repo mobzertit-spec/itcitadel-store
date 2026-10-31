@@ -306,15 +306,31 @@
     animation-range: 0 80px;
   }
 }
-/* the logo's orange light (Logo animated): it rises in the doorway when the page opens, and glows under the mouse */
+/*
+ * The logo in the header (Logo animated): the orange light rises in the doorway when the page opens, then the doorway
+ * breathes a soft glow; under the mouse or the keyboard the light reaches the top of the door, as if it opened; a
+ * press makes the mark give, and every add to the cart makes the light flash (Logo.tsx). Still with less motion.
+ */
+.logo-mark {
+  transition: scale 160ms var(--ease-smooth);
+}
 .logo-light {
   transform-box: fill-box;
   transform-origin: 50% 100%;
-  transition: filter 300ms;
+  transition:
+    transform 450ms var(--ease-spring),
+    filter 300ms;
+}
+.logo-glow {
+  opacity: 0;
+  transition: opacity 400ms;
 }
 @media (prefers-reduced-motion: no-preference) {
   .logo-light {
-    animation: light-up 900ms var(--ease-smooth) 250ms both;
+    animation: light-up 900ms var(--ease-smooth) 250ms backwards;
+  }
+  .logo-glow {
+    animation: breathe 5s ease-in-out 1.6s infinite;
   }
 }
 @keyframes light-up {
@@ -322,7 +338,181 @@
     transform: scaleY(0);
   }
 }
-a:hover .logo-light,
-a:focus-visible .logo-light {
+@keyframes breathe {
+  50% {
+    opacity: 0.55;
+  }
+}
+@media (hover: hover) {
+  .logo-link:hover .logo-light {
+    transform: scaleY(1.24);
+    filter: drop-shadow(0 0 3px rgb(255 106 0 / 0.9));
+  }
+  .logo-link:hover .logo-glow {
+    animation: none;
+    opacity: 0.85;
+  }
+}
+.logo-link:focus-visible .logo-light,
+.logo-link:active .logo-light {
+  transform: scaleY(1.24);
   filter: drop-shadow(0 0 3px rgb(255 106 0 / 0.9));
+}
+.logo-link:focus-visible .logo-glow,
+.logo-link:active .logo-glow {
+  animation: none;
+  opacity: 0.85;
+}
+.logo-link:active .logo-mark {
+  scale: 0.92;
+}
+
+/*
+ * The quick view and the cart drawer (Sheet.tsx): native modal dialogs. The quick view rises from the bottom on
+ * phones and appears in the middle on wide screens; the cart slides in from the end side (the left in Arabic).
+ * Where the browser cannot animate a dialog, it simply appears. The page behind does not scroll.
+ */
+html:has(dialog.sheet[open]) {
+  overflow: hidden;
+}
+html {
+  scrollbar-gutter: stable;
+}
+dialog.sheet {
+  position: fixed;
+  z-index: 60;
+  margin: 0;
+  padding: 0;
+  border: 0;
+  max-width: none;
+  max-height: none;
+  overflow: hidden;
+  color: var(--color-fg);
+  background: var(--color-surface);
+  box-shadow: 0 40px 120px -20px rgb(0 0 0);
+  transition:
+    translate 340ms var(--ease-smooth),
+    opacity 340ms var(--ease-smooth),
+    overlay 340ms allow-discrete,
+    display 340ms allow-discrete;
+}
+dialog.sheet::backdrop {
+  background: rgb(0 0 0 / 0.62);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  opacity: 0;
+  transition:
+    opacity 340ms,
+    overlay 340ms allow-discrete,
+    display 340ms allow-discrete;
+}
+dialog.sheet[open]::backdrop {
+  opacity: 1;
+}
+@starting-style {
+  dialog.sheet[open]::backdrop {
+    opacity: 0;
+  }
+}
+dialog.quick {
+  inset: auto 0 0 0;
+  width: 100%;
+  max-height: min(88dvh, 760px);
+  border-radius: 28px 28px 0 0;
+  border-top: 1px solid var(--color-line-strong);
+  translate: 0 100%;
+}
+dialog.quick[open] {
+  translate: 0 0;
+}
+@starting-style {
+  dialog.quick[open] {
+    translate: 0 100%;
+  }
+}
+@media (min-width: 64rem) {
+  dialog.quick {
+    inset: 0;
+    margin: auto;
+    width: min(680px, 100% - 4rem);
+    height: fit-content;
+    max-height: 86dvh;
+    border: 1px solid var(--color-line-strong);
+    border-radius: 32px;
+    translate: 0 24px;
+    opacity: 0;
+  }
+  dialog.quick[open] {
+    translate: 0 0;
+    opacity: 1;
+  }
+  @starting-style {
+    dialog.quick[open] {
+      translate: 0 24px;
+      opacity: 0;
+    }
+  }
+}
+dialog.drawer {
+  --out: 100%;
+  inset-block: 0;
+  inset-inline: auto 0;
+  width: min(440px, 100%);
+  height: 100dvh;
+  border-inline-start: 1px solid var(--color-line-strong);
+  translate: var(--out) 0;
+}
+[dir='rtl'] dialog.drawer {
+  --out: -100%;
+}
+dialog.drawer[open] {
+  translate: 0 0;
+}
+@starting-style {
+  dialog.drawer[open] {
+    translate: var(--out) 0;
+  }
+}
+
+/*
+ * The products' logos gliding under the hero (Marquee.tsx): two identical sets, the track moves by one of them in the
+ * reading direction, faded at both ends. It stops under the mouse or the keyboard. With less motion: a row to swipe.
+ */
+.marquee {
+  --marquee-to: -50%;
+  overflow: hidden;
+  mask-image: linear-gradient(90deg, transparent, #000 7%, #000 93%, transparent);
+}
+[dir='rtl'] .marquee {
+  --marquee-to: 50%;
+}
+@media (prefers-reduced-motion: no-preference) {
+  .marquee-track {
+    animation: marquee var(--marquee-time, 40s) linear infinite;
+  }
+  .marquee:hover .marquee-track,
+  .marquee:focus-within .marquee-track {
+    animation-play-state: paused;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  .marquee {
+    overflow-x: auto;
+    scrollbar-width: none;
+  }
+  .marquee-track > [aria-hidden] {
+    display: none;
+  }
+}
+@keyframes marquee {
+  to {
+    translate: var(--marquee-to) 0;
+  }
+}
+
+/* on a product page, the "added" notice sits above the phone's sticky buy bar */
+@media (max-width: 63.999rem) {
+  html:has([data-sticky-buy]) .added-toast {
+    bottom: 10.5rem;
+  }
 }

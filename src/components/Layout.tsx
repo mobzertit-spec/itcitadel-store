@@ -1,18 +1,22 @@
 import { House, LayoutGrid, MessageCircle, ShoppingBag } from 'lucide-react'
-import { useLayoutEffect, type ReactNode } from 'react'
+import { useEffect, useLayoutEffect, type ReactNode } from 'react'
 import { NavLink, Outlet, useLocation, useParams } from 'react-router-dom'
 import type { Lang } from '@shared/validate'
 import { waLink } from '@/config'
 import { useCart } from '@/lib/cart'
 import { href, isLang, LangContext, useLang, useT } from '@/lib/lang'
 import { useSpotlight } from '@/lib/motion'
+import { cartDrawer, openDrawerInstead, quickView } from '@/lib/overlays'
 import { track } from '@/lib/track'
 import { STRINGS } from '@/i18n/strings'
 import NotFound from '@/pages/NotFound'
 import { AddedToast } from './AddedToast'
 import { LogoSprite } from './BrandLogo'
+import { CartDrawer } from './CartDrawer'
 import { Footer } from './Footer'
 import { Header } from './Header'
+import { QuickView } from './QuickView'
+import { RecentOrders } from './RecentOrders'
 import { WhatsAppFab } from './WhatsAppFab'
 
 /** Pages under /ar/, /fr/ and /en/: sets the language and direction of the whole document. */
@@ -34,6 +38,11 @@ export function Shell({ lang, content }: { lang: Lang; content: ReactNode }) {
     if (hash) document.getElementById(hash.slice(1))?.scrollIntoView()
     else window.scrollTo(0, 0)
   }, [pathname, hash])
+  // a link inside the quick view or the cart drawer leads to another page: the sheet closes behind it
+  useEffect(() => {
+    quickView.close()
+    cartDrawer.close()
+  }, [pathname])
 
   return (
     <LangContext.Provider value={lang}>
@@ -50,6 +59,9 @@ export function Shell({ lang, content }: { lang: Lang; content: ReactNode }) {
         <TabBar />
         <WhatsAppFab />
         <AddedToast />
+        <RecentOrders />
+        <QuickView />
+        <CartDrawer />
       </div>
     </LangContext.Provider>
   )
@@ -71,7 +83,7 @@ function TabBar() {
         <LayoutGrid className="size-[22px]" strokeWidth={1.8} aria-hidden="true" />
         {t.nav.store}
       </NavLink>
-      <NavLink to={href(lang, 'cart')} viewTransition className={item}>
+      <NavLink to={href(lang, 'cart')} onClick={openDrawerInstead} aria-haspopup="dialog" className={item}>
         <span className="relative" data-cart-target>
           <ShoppingBag className="size-[22px]" strokeWidth={1.8} aria-hidden="true" />
           {lines.length > 0 && (

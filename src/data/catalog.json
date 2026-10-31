@@ -75,7 +75,10 @@
      "label_fr": "1 mois",
      "label_en": "1 month",
      "price_dzd": 6500,
-     "sort": 1
+     "sort": 1,
+     "months": 1,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "3cfd4df1-f879-4341-a526-29f71cba80b7",
@@ -83,7 +86,10 @@
      "label_fr": "12 mois",
      "label_en": "12 months",
      "price_dzd": 63500,
-     "sort": 2
+     "sort": 2,
+     "months": 12,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     }
    ]
   },
@@ -132,7 +138,10 @@
      "label_fr": "1 mois",
      "label_en": "1 month",
      "price_dzd": 6500,
-     "sort": 1
+     "sort": 1,
+     "months": 1,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "3fd82663-a81f-4c8b-a9eb-4e4b90788237",
@@ -140,7 +149,10 @@
      "label_fr": "3 mois",
      "label_en": "3 months",
      "price_dzd": 19000,
-     "sort": 2
+     "sort": 2,
+     "months": 3,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     }
    ]
   },
@@ -189,7 +201,10 @@
      "label_fr": "1 mois",
      "label_en": "1 month",
      "price_dzd": 6500,
-     "sort": 1
+     "sort": 1,
+     "months": 1,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     }
    ]
   },
@@ -238,7 +253,10 @@
      "label_fr": "Premium · 1 mois",
      "label_en": "Premium · 1 month",
      "price_dzd": 5500,
-     "sort": 1
+     "sort": 1,
+     "months": 1,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "aa2c036a-70be-493f-a2ea-05f394d23862",
@@ -246,7 +264,10 @@
      "label_fr": "Premium · 1 an",
      "label_en": "Premium · 1 year",
      "price_dzd": 23500,
-     "sort": 2
+     "sort": 2,
+     "months": 12,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "2dd26a86-130c-4855-838f-846a30f86fbb",
@@ -254,7 +275,10 @@
      "label_fr": "Premium+ · 1 mois",
      "label_en": "Premium+ · 1 month",
      "price_dzd": 12500,
-     "sort": 3
+     "sort": 3,
+     "months": 1,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "cecdb7c9-ec92-4243-b621-836797479041",
@@ -262,7 +286,10 @@
      "label_fr": "Premium+ · 1 an",
      "label_en": "Premium+ · 1 year",
      "price_dzd": 113000,
-     "sort": 4
+     "sort": 4,
+     "months": 12,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "7678b368-8965-4469-992a-4f1ce59effc5",
@@ -270,7 +297,10 @@
      "label_fr": "Pro · 1 mois",
      "label_en": "Pro · 1 month",
      "price_dzd": 31000,
-     "sort": 5
+     "sort": 5,
+     "months": 1,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "356f635a-85c6-435f-a1f5-02d35a89c5fb",
@@ -278,7 +308,10 @@
      "label_fr": "Pro · 1 an",
      "label_en": "Pro · 1 year",
      "price_dzd": 287000,
-     "sort": 6
+     "sort": 6,
+     "months": 12,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     }
    ]
   },
@@ -327,7 +360,10 @@
      "label_fr": "Toutes les applications (Creative Cloud Pro) · 12 mois",
      "label_en": "All apps (Creative Cloud Pro) · 12 months",
      "price_dzd": 248000,
-     "sort": 1
+     "sort": 1,
+     "months": 12,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "9205713f-a0d8-43f5-ac80-c8d359bf9c65",
@@ -335,7 +371,10 @@
      "label_fr": "Photoshop · 12 mois",
      "label_en": "Photoshop · 12 months",
      "price_dzd": 84000,
-     "sort": 2
+     "sort": 2,
+     "months": 12,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "8c39c40c-9685-44a9-b302-3b60ce83796f",
@@ -343,7 +382,10 @@
      "label_fr": "Illustrator · 12 mois",
      "label_en": "Illustrator · 12 months",
      "price_dzd": 84000,
-     "sort": 3
+     "sort": 3,
+     "months": 12,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     }
    ]
   },
@@ -392,7 +434,10 @@
      "label_fr": "1 mois",
      "label_en": "1 month",
      "price_dzd": 5500,
-     "sort": 1
+     "sort": 1,
+     "months": 1,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "14870fae-27cb-4965-9d50-ec2cfa6c5591",
@@ -400,7 +445,10 @@
      "label_fr": "12 mois",
      "label_en": "12 months",
      "price_dzd": 46000,
-     "sort": 2
+     "sort": 2,
+     "months": 12,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     }
    ]
   },
@@ -449,7 +497,10 @@
      "label_fr": "Business Starter · 1 mois",
      "label_en": "Business Starter · 1 month",
      "price_dzd": 2500,
-     "sort": 1
+     "sort": 1,
+     "months": 1,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "a22ddf6e-1a5c-4735-913c-c8cac3b12e16",
@@ -457,7 +508,10 @@
      "label_fr": "Business Standard · 1 mois",
      "label_en": "Business Standard · 1 month",
      "price_dzd": 5500,
-     "sort": 2
+     "sort": 2,
+     "months": 1,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "e14c3c65-127f-4006-a126-e830255384fc",
@@ -465,7 +519,10 @@
      "label_fr": "Business Plus · 1 mois",
      "label_en": "Business Plus · 1 month",
      "price_dzd": 8500,
-     "sort": 3
+     "sort": 3,
+     "months": 1,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     }
    ]
   },
@@ -514,7 +571,10 @@
      "label_fr": "Personal · 1 mois",
      "label_en": "Personal · 1 month",
      "price_dzd": 3000,
-     "sort": 1
+     "sort": 1,
+     "months": 1,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "e33baa03-ee5d-41cc-a4ee-e55b6ccb22a5",
@@ -522,7 +582,10 @@
      "label_fr": "Personal · 1 an",
      "label_en": "Personal · 1 year",
      "price_dzd": 32000,
-     "sort": 2
+     "sort": 2,
+     "months": 12,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "a695ad86-dd06-4612-b3f3-65f8e835b7c5",
@@ -530,7 +593,10 @@
      "label_fr": "Family · 1 mois",
      "label_en": "Family · 1 month",
      "price_dzd": 4000,
-     "sort": 3
+     "sort": 3,
+     "months": 1,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "2f6ad48a-5c3c-4a67-8d09-2c15c1bbe327",
@@ -538,7 +604,10 @@
      "label_fr": "Family · 1 an",
      "label_en": "Family · 1 year",
      "price_dzd": 41500,
-     "sort": 4
+     "sort": 4,
+     "months": 12,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     }
    ]
   },
@@ -587,7 +656,10 @@
      "label_fr": "Pro · 1 mois",
      "label_en": "Pro · 1 month",
      "price_dzd": 5500,
-     "sort": 1
+     "sort": 1,
+     "months": 1,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "922f4bf1-ca27-41d5-a5f4-3ed41d93ace2",
@@ -595,7 +667,10 @@
      "label_fr": "Pro · 1 an",
      "label_en": "Pro · 1 year",
      "price_dzd": 54000,
-     "sort": 2
+     "sort": 2,
+     "months": 12,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "ab8309fc-bad4-4aa8-aa79-5fac1fa516fd",
@@ -603,7 +678,10 @@
      "label_fr": "Business · 1 mois",
      "label_en": "Business · 1 month",
      "price_dzd": 7000,
-     "sort": 3
+     "sort": 3,
+     "months": 1,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "7e8ee2b9-ddc0-4ed2-a992-10fc119d905a",
@@ -611,7 +689,10 @@
      "label_fr": "Business · 1 an",
      "label_en": "Business · 1 year",
      "price_dzd": 70000,
-     "sort": 4
+     "sort": 4,
+     "months": 12,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     }
    ]
   },
@@ -660,7 +741,10 @@
      "label_fr": "Standard · 1 appareil · 1 an",
      "label_en": "Standard · 1 device · 1 year",
      "price_dzd": 1990,
-     "sort": 1
+     "sort": 1,
+     "months": 12,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "da0faecb-b86f-4008-bf62-42f20450b0f0",
@@ -668,7 +752,10 @@
      "label_fr": "Plus · 5 appareils · 1 an",
      "label_en": "Plus · 5 devices · 1 year",
      "price_dzd": 6490,
-     "sort": 2
+     "sort": 2,
+     "months": 12,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     },
     {
      "id": "32dcba1a-f226-448b-a3cd-15d503ff7c41",
@@ -676,7 +763,10 @@
      "label_fr": "Premium · 5 appareils · 1 an",
      "label_en": "Premium · 5 devices · 1 year",
      "price_dzd": 6990,
-     "sort": 3
+     "sort": 3,
+     "months": 12,
+     "promo_price_dzd": null,
+     "promo_ends_at": null
     }
    ]
   }

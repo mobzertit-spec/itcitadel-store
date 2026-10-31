@@ -4,7 +4,19 @@ import catalog from '../src/data/catalog.json' with { type: 'json' }
 /** Answers every Supabase request the page makes, and records what was sent. */
 export const TRACK = '6f1d2c3b-4a5e-4f60-8a7b-9c0d1e2f3a4b'
 
-export async function fakeSupabase(page: Page, opts: { orders?: unknown[]; admin?: boolean; costs?: unknown[]; tracking?: unknown } = {}) {
+type Offer = { promo_price_dzd: number; promo_ends_at: string }
+type Options = {
+  orders?: unknown[]
+  admin?: boolean
+  costs?: unknown[]
+  tracking?: unknown
+  /** offers on plans, by plan id */
+  offers?: Record<string, Offer>
+  /** what public.recent_orders() returns (nothing by default) */
+  recent?: { slug: string; name: string; at: string }[]
+}
+
+export async function fakeSupabase(page: Page, opts: Options = {}) {
   const sent: { url: string; method: string; body: unknown }[] = []
   const json = (route: Route, body: unknown, status = 200) => route.fulfill({ status, contentType: 'application/json', body: JSON.stringify(body) })
   await page.route(/supabase\.co\//, async (route) => {
@@ -18,7 +30,7 @@ export async function fakeSupabase(page: Page, opts: { orders?: unknown[]; admin
     if (req.method() === 'OPTIONS') return route.fulfill({ status: 204, headers: { 'access-control-allow-origin': '*', 'access-control-allow-headers': '*' } })
     if (p.endsWith('/rest/v1/categories')) return json(route, catalog.categories)
     if (p.endsWith('/rest/v1/products') && req.method() === 'GET') {
-      const products = catalog.products.map((x) => ({ ...x, active: true, product_variants: x.product_variants.map((v) => ({ ...v, active: true })) }))
+      const products = catalog.products.map((x) => ({ ...x, active: true, product_variants: x.product_variants.map((v) => ({ ...v, active: true, ...opts.offers?.[v.id] })) }))
       if (one) return json(route, products.find((x) => `eq.${x.id}` === url.searchParams.get('id')))
       return json(route, products)
     }
@@ -26,6 +38,8 @@ export async function fakeSupabase(page: Page, opts: { orders?: unknown[]; admin
     if (p.endsWith('/rest/v1/pricing_rules')) return req.method() === 'GET' ? json(route, { usd_rate: 245, eur_rate: 285, margin_percent: 30 }) : route.fulfill({ status: 204 })
     if (p.endsWith('/rest/v1/variant_costs') && req.method() === 'GET') return json(route, opts.costs ?? [])
     if (p.endsWith('/rest/v1/reviews') && req.method() === 'POST') return json(route, { id: 'r1', created_at: '2026-10-24T09:00:00Z', sort: 0, ...body })
+    if (p.endsWith('/rest/v1/rpc/recent_orders')) return json(route, opts.recent ?? [])
+    if (p.endsWith('/rest/v1/store_settings')) return req.method() === 'GET' ? json(route, { recent_orders: true }) : route.fulfill({ status: 204 })
     if (p.endsWith('/functions/v1/place-order')) return json(route, { ok: true, number: 1007, track: TRACK })
     // an order's tracking page: the order given by the test, for its own code only
     if (p.endsWith('/rest/v1/rpc/order_track')) return json(route, (body as { p_token?: string })?.p_token === TRACK ? (opts.tracking ?? null) : null)

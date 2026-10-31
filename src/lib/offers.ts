@@ -12,6 +12,9 @@ export function onOffer(v: Priced, now = Date.now()): boolean {
 /** The price in force: the offer price while it runs, else the normal price. */
 export const priceOf = (v: Priced, now = Date.now()) => (onOffer(v, now) ? (v.promo_price_dzd as number) : v.price_dzd)
 
+/** Has any of these plans an offer set? Pages showing them then follow the clock, so an offer ends on screen. */
+export const hasOffer = (plans: Priced[]) => plans.some((v) => v.promo_ends_at != null)
+
 /** Time left until `endsAt`, split for a countdown. */
 export function timeLeft(endsAt: string, now = Date.now()) {
   const ms = Math.max(0, Date.parse(endsAt) - now)

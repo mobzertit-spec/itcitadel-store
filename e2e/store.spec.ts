@@ -47,6 +47,8 @@ test('the language switch keeps the visitor on the same page', async ({ page }) 
 test('buying sends the chosen plans and quantities, never a price, and opens the order’s own page', async ({ page }) => {
   const sent = await fakeSupabase(page, { tracking: tracking('new') })
   await page.goto(`/ar/p/${priced.slug}/`)
+  // a yearly plan of a product also sold monthly is behind the switch
+  if (plan.months === 12 && priced.product_variants.some((v) => v.months === 1)) await page.getByRole('button', { name: /سنوي/ }).click()
   // the radio's name is "<plan> <price>"
   await page.getByRole('radio', { name: new RegExp(`^${escape(plan.label_ar)}`) }).check()
   await page.getByRole('button', { name: '+' }).click()

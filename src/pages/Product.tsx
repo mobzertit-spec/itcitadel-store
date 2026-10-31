@@ -1,11 +1,12 @@
 import { Check, Clock3, Mail, MapPin, MessageCircle, ShoppingBag } from 'lucide-react'
-import { useEffect, useRef, useState } from 'react'
+import { useEffect, useRef, useState, type RefObject } from 'react'
 import { Link, useNavigate, useParams } from 'react-router-dom'
 import { addToCart } from '@/components/AddedToast'
 import { BrandLogo, ProductMark } from '@/components/BrandLogo'
 import { logoFor } from '@/components/brand-logos'
 import { Meta } from '@/components/Meta'
-import { Money } from '@/components/Price'
+import { PlanPicker } from '@/components/PlanPicker'
+import { PlanPrice } from '@/components/Price'
 import { ProductTile } from '@/components/ProductTile'
 import { Stepper } from '@/components/Stepper'
 import { waLink } from '@/config'
@@ -17,6 +18,22 @@ import { priceOf } from '@/lib/offers'
 import { productJsonLd } from '@/lib/pages'
 import { track } from '@/lib/track'
 import NotFound from './NotFound'
+
+/**
+ * Has the element scrolled up out of sight, under the sticky header? (Not while it is on screen or below it.) The
+ * watched area reaches far below the screen, so a jump from below to above still counts as leaving it.
+ */
+function useScrolledPast(ref: RefObject<HTMLElement | null>) {
+  const [past, setPast] = useState(false)
+  useEffect(() => {
+    const el = ref.current
+    if (!el || typeof IntersectionObserver !== 'function') return
+    const observer = new IntersectionObserver(([entry]) => setPast(!entry.isIntersecting), { rootMargin: '-140px 0px 100000px 0px' })
+    observer.observe(el)
+    return () => observer.disconnect()
+  }, [ref])
+  return past
+}
 
 const INFO_ICONS = [Clock3, Mail, MapPin]
 
@@ -36,6 +53,8 @@ function ProductView({ product, catalog }: { product: Product; catalog: Catalog 
   const [variantId, setVariantId] = useState(variants[0]?.id)
   const [qty, setQty] = useState(1)
   const logoTile = useRef<HTMLDivElement>(null)
+  const buyBox = useRef<HTMLDivElement>(null)
+  const pastBuyBox = useScrolledPast(buyBox)
   const tilt = useTilt<HTMLDivElement>(10)
   useMorphTarget(logoTile, product.slug)
   const variant = variants.find((v) => v.id === variantId) ?? variants[0]
@@ -105,27 +124,10 @@ function ProductView({ product, catalog }: { product: Product; catalog: Catalog 
             <p className="text-xl text-muted">{tagline}</p>
           </div>
 
-          <fieldset className="flex flex-col gap-3">
-            <legend className="mb-3 font-bold">{t.product.plan}</legend>
-            {variants.map((v) => {
-              const on = v.id === variant?.id
-              return (
-                <label
-                  key={v.id}
-                  className={`flex cursor-pointer items-center justify-between gap-3 rounded-[20px] bg-surface px-5 py-4 transition active:scale-[0.99] ${on ? 'border-2 border-fg' : 'border border-line-strong/60 hover:border-fg/50'}`}
-                >
-                  <span className="flex items-center gap-3.5">
-                    <input type="radio" name="variant" value={v.id} checked={on} onChange={() => setVariantId(v.id)} className="size-5 accent-fg" />
-                    <span className="text-lg font-bold">{pick(v, 'label', lang)}</span>
-                  </span>
-                  {buyable && <Money value={v.price_dzd} className="text-xl" />}
-                </label>
-              )
-            })}
-          </fieldset>
+          <PlanPicker product={product} value={variant?.id} onChange={setVariantId} name="variant" legend={t.product.plan} />
 
           {buyable && variant ? (
-            <div className="flex flex-col gap-3">
+            <div ref={buyBox} className="flex flex-col gap-3">
               <div className="flex gap-3">
                 <Stepper value={qty} onChange={setQty} label={product.per_user ? t.product.users : t.product.quantity} />
                 <button type="button" className="btn-accent h-14 flex-1" onClick={(e) => addToCart(product, variant, qty, lang, e.currentTarget)}>
@@ -192,6 +194,27 @@ function ProductView({ product, catalog }: { product: Product; catalog: Catalog 
           </div>
         )}
       </section>
+
+      {buyable && variant && pastBuyBox && (
+        // phones: once the buy buttons have scrolled away, the plan, its price and "add" stay above the tab bar
+        <div data-fly-scope data-sticky-buy className="fixed inset-x-4 bottom-[96px] z-30 animate-rise-fast lg:hidden">
+          <div className="glass flex items-center gap-3 rounded-[22px] p-2 ps-2.5">
+            <span data-fly className="logo-stage size-11 shrink-0 rounded-[14px]">
+              <ProductMark product={product} size={24} />
+            </span>
+            <span className="flex min-w-0 flex-1 flex-col items-start">
+              <b className="latin max-w-full truncate text-sm font-semibold">
+                <span className="ltr-iso">{product.name}</span>
+              </b>
+              <PlanPrice variant={variant} className="text-base" />
+            </span>
+            <button type="button" className="btn-accent h-11 shrink-0 px-4" onClick={(e) => addToCart(product, variant, qty, lang, e.currentTarget)} aria-label={fill(t.cta.add, { name: product.name })}>
+              <ShoppingBag className="size-5" aria-hidden="true" />
+              {t.cta.addShort}
+            </button>
+          </div>
+        </div>
+      )}
 
       {related.length > 0 && (
         <section className="mt-24 flex flex-col gap-7">

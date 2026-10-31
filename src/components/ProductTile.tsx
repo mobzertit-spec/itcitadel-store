@@ -1,4 +1,4 @@
-import { Check, Plus } from 'lucide-react'
+import { Check, Eye, Plus } from 'lucide-react'
 import { useEffect, useRef, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { waLink } from '@/config'
@@ -6,17 +6,19 @@ import { fill } from '@/i18n/strings'
 import type { Catalog, Product } from '@/lib/catalog'
 import { href, pick, useLang, useT } from '@/lib/lang'
 import { morphFrom, stagger } from '@/lib/motion'
+import { quickView } from '@/lib/overlays'
 import { addToCart } from './AddedToast'
 import { ProductMark } from './BrandLogo'
+import { OfferBadge } from './Countdown'
 import { FromPrice } from './Price'
 
 /** Grid columns for n tiles on wide screens: one even row up to six products, rows of five after that. */
 export const tileGrid = (n: number) => `grid grid-cols-2 gap-3 sm:gap-4 md:grid-cols-3 ${n <= 6 ? 'xl:grid-cols-6' : 'xl:grid-cols-5'}`
 
 /**
- * A store tile: the official logo on a neutral stage, the name, the price, and "+" for the default plan.
- * It appears as it scrolls in (`i`: its place in the grid), lights up under the mouse, and its logo grows into
- * the product page when opened.
+ * A store tile: the official logo on a neutral stage, the name, the price, "+" for the default plan and the eye for
+ * a quick view of every plan. It appears as it scrolls in (`i`: its place in the grid), lights up under the mouse,
+ * and its logo grows into the product page when opened. A running offer shows its countdown on the logo.
  */
 export function ProductTile({ product, catalog, i = 0 }: { product: Product; catalog: Catalog; i?: number }) {
   const lang = useLang()
@@ -38,8 +40,20 @@ export function ProductTile({ product, catalog, i = 0 }: { product: Product; cat
       className="glow lift reveal group relative flex flex-col gap-3.5 rounded-3xl border border-line bg-surface p-2.5"
       style={{ ...stagger(i % 6), viewTransitionName: `tile-${product.slug}` }}
     >
-      <div ref={stage} data-fly className="logo-stage aspect-[1.25] overflow-hidden *:transition *:duration-500 *:ease-smooth group-hover:*:scale-[1.08]">
-        <ProductMark product={product} size={60} />
+      <div className="relative">
+        <div ref={stage} data-fly className="logo-stage aspect-[1.25] overflow-hidden *:transition *:duration-500 *:ease-smooth group-hover:*:scale-[1.08]">
+          <ProductMark product={product} size={60} />
+        </div>
+        <OfferBadge product={product} className="pointer-events-none absolute start-2 bottom-2 z-[2]" />
+        <button
+          type="button"
+          onClick={() => quickView.open(product.slug)}
+          aria-haspopup="dialog"
+          aria-label={fill(t.quick.open, { name: product.name })}
+          className="absolute end-2 top-2 z-[2] inline-flex size-9 items-center justify-center rounded-full border border-line bg-bg/60 text-fg backdrop-blur-md transition hover:bg-fg hover:text-bg focus-visible:opacity-100 active:scale-90 [@media(hover:hover)]:opacity-0 [@media(hover:hover)]:group-hover:opacity-100"
+        >
+          <Eye className="size-[18px]" strokeWidth={1.8} aria-hidden="true" />
+        </button>
       </div>
       <div className="flex flex-col gap-0.5 px-2">
         {category && <span className="text-sm text-faint">{pick(category, 'name', lang)}</span>}

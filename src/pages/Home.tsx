@@ -3,6 +3,7 @@ import { useState } from 'react'
 import { BrandLogo } from '@/components/BrandLogo'
 import { logoFor } from '@/components/brand-logos'
 import { HeroCarousel } from '@/components/HeroCarousel'
+import { Marquee } from '@/components/Marquee'
 import { Meta } from '@/components/Meta'
 import { ProductTile, tileGrid } from '@/components/ProductTile'
 import { BUSINESS, telLink } from '@/config'
@@ -30,7 +31,10 @@ export default function Home() {
       <h1 className="sr-only">{t.brandTagline}</h1>
 
       <div className="container-x flex flex-col gap-24 pt-6 sm:gap-28 sm:pt-8">
-        {hero && <HeroCarousel products={[hero, ...side]} catalog={catalog} />}
+        <div className="flex flex-col gap-8 sm:gap-10">
+          {hero && <HeroCarousel products={[hero, ...side]} catalog={catalog} />}
+          <Marquee products={catalog.products} />
+        </div>
 
         <ul className="grid grid-cols-2 gap-x-6 border-y border-line lg:grid-cols-4">
           {t.home.trust.map((item, i) => {

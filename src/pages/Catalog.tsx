@@ -2,15 +2,9 @@ import { Link, useSearchParams } from 'react-router-dom'
 import { Meta } from '@/components/Meta'
 import { ProductTile, tileGrid } from '@/components/ProductTile'
 import { fill } from '@/i18n/strings'
-import { useCatalog, type Catalog as CatalogData, type Product } from '@/lib/catalog'
+import { useCatalog } from '@/lib/catalog'
 import { href, pick, useLang, useT } from '@/lib/lang'
-
-/** Does a product match the search box? Looks at the name, every language's texts and the category names. */
-function matches(p: Product, catalog: CatalogData, q: string) {
-  const c = catalog.categories.find((x) => x.id === p.category_id)
-  const haystack = [p.name, p.slug, p.tagline_ar, p.tagline_fr, p.tagline_en, p.description_ar, p.description_fr, p.description_en, c?.name_ar, c?.name_fr, c?.name_en]
-  return haystack.join(' ').toLowerCase().includes(q.toLowerCase())
-}
+import { rankProducts } from '@/lib/search'
 
 export default function Catalog() {
   const lang = useLang()
@@ -19,7 +13,9 @@ export default function Catalog() {
   const [params] = useSearchParams()
   const active = params.get('c')
   const q = params.get('q')?.trim() ?? ''
-  const products = catalog.products.filter((p) => (!active || p.category_id === active) && (!q || matches(p, catalog, q)))
+  // the same search as the header's suggestions (lib/search.ts): names first, Arabic spellings of the brands too
+  const inCategory = catalog.products.filter((p) => !active || p.category_id === active)
+  const products = q ? rankProducts(inCategory, catalog.categories, q) : inCategory
 
   return (
     <div className="container-x pt-10 sm:pt-14">

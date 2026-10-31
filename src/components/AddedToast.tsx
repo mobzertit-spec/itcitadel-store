@@ -2,15 +2,15 @@ import { Check, TriangleAlert } from 'lucide-react'
 import { useEffect, useState } from 'react'
 import { Link } from 'react-router-dom'
 import type { Lang } from '@shared/validate'
-import { cart } from '@/lib/cart'
+import { ADDED_EVENT, cart } from '@/lib/cart'
 import type { Product, Variant } from '@/lib/catalog'
 import { href, pick, useLang, useT } from '@/lib/lang'
 import { flyToCart } from '@/lib/motion'
 import { priceOf } from '@/lib/offers'
+import { openDrawerInstead, useCartDrawer } from '@/lib/overlays'
 import { track } from '@/lib/track'
 
 type Added = { ok: boolean; name: string; plan: string; key: number }
-const EVENT = 'itc:added'
 
 /**
  * Puts a plan in the cart and tells the page (the notice below shows it). False when the cart is full.
@@ -23,20 +23,23 @@ export function addToCart(product: Product, variant: Variant, qty: number, lang:
     if (from) flyToCart(from)
   }
   const detail: Added = { ok, name: product.name, plan: pick(variant, 'label', lang), key: Date.now() }
-  window.dispatchEvent(new CustomEvent(EVENT, { detail }))
+  window.dispatchEvent(new CustomEvent(ADDED_EVENT, { detail }))
   return ok
 }
 
-/** "Added to cart · ChatGPT Plus — 1 month · View cart", for a few seconds after each add. */
+/** "Added to cart · ChatGPT Plus — 1 month · View cart", for a few seconds after each add (not over the open cart). */
 export function AddedToast() {
   const lang = useLang()
   const t = useT()
+  const drawerOpen = useCartDrawer()
   const [added, setAdded] = useState<Added | null>(null)
+  // the cart drawer shows what was added: no notice over it, nor after it closes
+  if (drawerOpen && added) setAdded(null)
 
   useEffect(() => {
     const show = (e: Event) => setAdded((e as CustomEvent<Added>).detail)
-    window.addEventListener(EVENT, show)
-    return () => window.removeEventListener(EVENT, show)
+    window.addEventListener(ADDED_EVENT, show)
+    return () => window.removeEventListener(ADDED_EVENT, show)
   }, [])
   useEffect(() => {
     if (!added) return
@@ -45,8 +48,8 @@ export function AddedToast() {
   }, [added])
 
   return (
-    <div aria-live="polite" className="pointer-events-none fixed inset-x-4 bottom-28 z-50 flex justify-center lg:bottom-8">
-      {added && (
+    <div aria-live="polite" className="added-toast pointer-events-none fixed inset-x-4 bottom-28 z-50 flex justify-center lg:bottom-8">
+      {added && !drawerOpen && (
         <div key={added.key} className="glass pointer-events-auto flex max-w-lg animate-rise items-center gap-4 rounded-full py-2.5 ps-5 pe-2.5">
           {added.ok ? <Check className="size-5 shrink-0" aria-hidden="true" /> : <TriangleAlert className="size-5 shrink-0 text-accent" aria-hidden="true" />}
           <span className="min-w-0 text-sm">
@@ -61,7 +64,7 @@ export function AddedToast() {
               t.cart.full
             )}
           </span>
-          <Link to={href(lang, 'cart')} className="btn-light h-10! shrink-0 px-4! text-sm!">
+          <Link to={href(lang, 'cart')} onClick={openDrawerInstead} aria-haspopup="dialog" className="btn-light h-10! shrink-0 px-4! text-sm!">
             {t.cta.viewCart}
           </Link>
         </div>

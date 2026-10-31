@@ -5,6 +5,9 @@ import type { Catalog, Product, Variant } from './catalog'
 /** A cart line: a plan id and how many. Prices are never stored here: they always come from the catalog. */
 export type CartLine = { v: string; q: number }
 
+/** Sent on window after every add to the cart (detail: { ok, name, plan, key }): the notice and the logo's light answer it. */
+export const ADDED_EVENT = 'itc:added'
+
 const KEY = 'itc:cart'
 const EMPTY: CartLine[] = []
 const listeners = new Set<() => void>()

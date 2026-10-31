@@ -118,6 +118,7 @@ export default function ProductEdit() {
     if (variants.some((v) => !v.label_ar.trim() || !v.label_fr.trim() || !v.label_en.trim())) return setError('اكتب اسم كل خطة باللغات الثلاث.')
     if (variants.some((v) => (v.promo_price_dzd == null) !== !v.promo_ends_at)) return setError('العرض يحتاج سعراً وتاريخ نهاية معاً.')
     if (variants.some((v) => v.promo_price_dzd != null && v.promo_price_dzd >= v.price_dzd)) return setError('سعر العرض يجب أن يكون أقل من السعر العادي.')
+    if (variants.some((v) => v.promo_ends_at && Date.parse(v.promo_ends_at) <= Date.now())) return setError('نهاية العرض مرّت: اختر تاريخاً قادماً أو ألغِ العرض.')
     setBusy(true)
     setError('')
     const { id: productId, ...fields } = d

@@ -14,6 +14,10 @@
 - Motion (no library): CSS utilities in `index.css` (`reveal` is scroll-driven, `glow`, `lift`, view transitions) and
   `src/lib/motion.ts`. Calm, white light only; never hide content until a script runs; everything stops under
   prefers-reduced-motion. Browser tests run with reduced motion; `test.describe('with motion')` switches it on.
+- Shopping extras: the quick view and the cart drawer are native `<dialog>`s (`Sheet.tsx`) opened from anywhere through
+  `src/lib/overlays.ts`; cart links keep working without JavaScript. Every shown price goes through `priceOf` (offers,
+  `src/lib/offers.ts`, charged the same by `create_order`) and follows the shared clock `src/lib/now.ts` while a plan has an
+  offer. Search ranking (`src/lib/search.ts`) and monthly/yearly pairs (`src/lib/billing.ts`) are tested with `npm test`.
 - Pricing rule (`_shared/pricing.ts`, tested): purchase price × rate (USD/EUR, set in the dashboard) × (1 + margin), nearest
   500 DZD (1 000 from 100 000). Costs live in `variant_costs` (admins only); the owner may override a final price.
 - Supabase project: `gkrbvpncamkcuxhvzjax`. Schema changes go in a new numbered file in `supabase/migrations/`.
